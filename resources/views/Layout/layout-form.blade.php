@@ -3,6 +3,8 @@
 @section('css-body')
   <link href="{{ url('/') }}/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
   <link href="{{ url('/') }}/assets/css/dashboard/dash_2.css" rel="stylesheet" type="text/css" />
+  <link href="{{ url('/') }}/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/select2/select2.min.css">
 
   <style>
     .toggle-switch {
@@ -128,6 +130,8 @@
 
 
 @section('js-body')
-
+  <script src="{{ url('/') }}/assets/js/scrollspyNav.js"></script>
+  <script src="{{ url('/') }}/plugins/select2/select2.min.js"></script>
+  <script src="{{ url('/') }}/plugins/select2/custom-select2.js"></script>
   @yield('js-form')
 @endsection

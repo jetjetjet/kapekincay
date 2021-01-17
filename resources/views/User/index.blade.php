@@ -2,11 +2,11 @@
 
 @section('breadcumb')
   <div class="title">
-    <h3>Meja</h3>
+    <h3>User</h3>
   </div>
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data</a></li>
-    <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">Meja</a></li>
+    <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">User</a></li>
   </ol>
 @endsection
 
@@ -16,8 +16,8 @@
       <table id="grid" class="table table-hover" style="width:100%">
         <thead>
           <tr>
-            <th>Nomor Meja</th>
-            <th>Lantai</th>
+            <th>Nama Lengkap</th>
+            <th>Telp/Hp</th>
             <th>Kapasitas/Orang</th>
             <th class="no-content"></th>
           </tr>
@@ -69,7 +69,7 @@
         "pageLength": 15,
         columns: [
           { 
-            data: 'boardnumber',
+            data: 'number',
             render: function (data, type, full, meta){
               let link =  "" + full.id ;
               return '<a href="' + link + '">' + full.boardnumber + '</a>';

@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Board;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class BoardSeeder extends Seeder
 {
@@ -14,6 +16,14 @@ class BoardSeeder extends Seeder
      */
     public function run()
     {
+        User::create([
+            'username' => 'superadmin',
+            'userpassword' => Hash::make('superadmin'),
+            'useractive' => '1',
+            'userfullname' => 'superadmin',
+            'usercreatedat' => now()->toDateTimeString(),
+            'usercreatedby' => '1'
+        ]);
         Board::factory()->count(25)->create();
     }
 }

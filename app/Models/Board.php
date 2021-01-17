@@ -7,27 +7,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Board extends Model
 {
-	use HasFactory;
+  use HasFactory;
+  public $timestamps = false;
 	protected $fillable = [
-    'number',
-    'floor',
-    'space',
-    'active',
-    'created_at',
-    'modified_at',
-    'created_by',
-    'modified_by'
+    'boardnumber',
+    'boardfloor',
+    'boardspace',
+    'boardactive',
+    'boardcreatedat',
+    'boardcreatedby',
+    'boardmodifiedat',
+    'boardmodifiedby'
   ];
 
   public static function getFields($model){
     $model->id = null;
-    $model->floor = null;
-    $model->number = null;
-    $model->space = null;
-    $model->created_at = null;
-    $model->created_by = null;
-    $model->updated_at = null;
-    $model->updated_by = null;
+    $model->boardnumber = null;
+    $model->boardfloor = null;
+    $model->boardspace = null;
+    $model->boardcreatedat = null;
+    $model->boardcreatedby = null;
+    $model->boardmodifiedat = null;
+    $model->boardmodifiedby = null;
 
     return $model;
   }

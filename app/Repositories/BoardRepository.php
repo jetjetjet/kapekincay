@@ -8,7 +8,7 @@ class BoardRepository
 {
   public static function grid()
   {
-    return Board::where('active', '1')->get();
+    return Board::where('boardactive', '1')->get();
   }
 
   public static function get($respon, $id)
@@ -17,9 +17,9 @@ class BoardRepository
     $respon['data'] = Board::getFields($data);
 
     if($id){
-      $respon['data'] = Board::where('active', '1')
+      $respon['data'] = Board::where('boardactive', '1')
       ->where('id', $id)
-      ->select('id', 'number', 'floor', 'space')
+      ->select('id', 'boardnumber', 'boardfloor', 'boardspace')
       ->first();
 
       if($respon['data'] == null){
@@ -33,21 +33,20 @@ class BoardRepository
   public static function save($respon, $inputs, $loginid)
   {
     $id = $inputs['id'] ?? 0;
-    $number = $inputs['number'];
+    $number = $inputs['boardnumber'];
 
-    $data = Board::where('active', '1')
+    $data = Board::where('boardactive', '1')
       ->where(function($q) use($id, $number){
         $q->where('id', $id)
-          ->orWhere('number', $number);
+          ->orWhere('boardnumber', $number);
      })->first();
     try{
       if ($data != null){
         $data = $data->update([
-          'floor' => $inputs['floor'],
-          'space' => $inputs['space'],
-          'active' => '1',
-          'updated_at' => now()->toDateTimeString(),
-          'updated_by' => $loginid
+          'boardfloor' => $inputs['boardfloor'],
+          'boardspace' => $inputs['boardspace'],
+          'boardmodifiedat' => now()->toDateTimeString(),
+          'boardmodifiedby' => $loginid
         ]);
 
         $respon['status'] = 'success';
@@ -55,12 +54,12 @@ class BoardRepository
         
       } else {
         $data = Board::create([
-          'number' => $inputs['number'],
-          'floor' => $inputs['floor'],
-          'space' => $inputs['space'],
-          'active' => '1',
-          'created_at' => now()->toDateTimeString(),
-          'created_by' => $loginid
+          'boardnumber' => $inputs['boardnumber'],
+          'boardfloor' => $inputs['boardfloor'],
+          'boardspace' => $inputs['boardspace'],
+          'boardactive' => '1',
+          'boardcreatedat' => now()->toDateTimeString(),
+          'boardcreatedby' => $loginid
         ]);
 
         $respon['status'] = 'success';
@@ -77,17 +76,17 @@ class BoardRepository
 
   public static function delete($respon, $id, $loginid)
   {
-    $data = Board::where('active', '1')
-    ->where('id', $id)
-    ->first();
+    $data = Board::where('boardactive', '1')
+      ->where('id', $id)
+      ->first();
 
     $cekDelete = false;
 
     if ($data != null){
       $data->update([
-        'active' => '0',
-        'updated_by' => $loginid,
-        'updated_at' => now()->toDateTimeString()
+        'boardactive' => '0',
+        'boardmodifiedby' => $loginid,
+        'boardmodifiedat' => now()->toDateTimeString()
       ]);
       
       $cekDelete = true;

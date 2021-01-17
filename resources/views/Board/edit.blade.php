@@ -30,11 +30,11 @@
               <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
               <div class="col-md-6 mb-5">
                 <label for="number">Nomor Meja</label>
-                <input type="text" name="number" value="{{ old('number', $data->number) }}" class="form-control" id="number" placeholder="Nomor Meja" required {{ $data->id == null ? '' : 'readonly' }}>
+                <input type="text" name="boardnumber" value="{{ old('boardnumber', $data->boardnumber) }}" class="form-control" id="number" placeholder="Nomor Meja" required {{ $data->id == null ? '' : 'readonly' }}>
               </div>
               <div class="col-md-6 mb-5">
                   <label for="floor">Lantai</label>
-                  <input type="text" name="floor" value="{{ old('floor', $data->floor) }}" class="form-control" id="floor" placeholder="Lantai" required>
+                  <input type="text" name="boardfloor" value="{{ old('boardfloor', $data->boardfloor) }}" class="form-control" id="floor" placeholder="Lantai" required>
               </div>
               <!-- <div class="col-md-4 mb-5">
                 <label for="validationTooltipUsername">Username</label>
@@ -53,7 +53,7 @@
               <div class="col-md-12 mb-5">
                 <label for="space">Kapasitas Meja</label>
                 <div class="input-group mb-4">
-                  <input type="text" name="space" value="{{ old('space', $data->space) }}" id="space" class="form-control" placeholder="Kapasitas Meja">
+                  <input type="text" name="boardspace" value="{{ old('boardspace', $data->boardspace) }}" id="space" class="form-control" placeholder="Kapasitas Meja">
                   <div class="input-group-append">
                     <span class="input-group-text" id="basic-addon6">Orang</span>
                   </div>

@@ -15,14 +15,15 @@ class CreateBoardsTable extends Migration
     {
         Schema::create('boards', function (Blueprint $table) {
             $table->id();
-            $table->integer('number');
-            $table->string('floor')->nullable();
-            $table->integer('space')->nullable();
+            $table->integer('boardnumber');
+            $table->string('boardfloor')->nullable();
+            $table->integer('boardspace')->nullable();
             //$table->string('status')->nullable();
-            $table->boolean('active');
-            $table->timestamps();
-            $table->integer('created_by');
-            $table->integer('updated_by')->nullable();
+            $table->boolean('boardactive');
+            $table->dateTime('boardcreatedat');
+            $table->integer('boardcreatedby');
+            $table->dateTime('boardmodifiedat')->nullable();
+            $table->integer('boardmodifiedby')->nullable();
         });
     }
 

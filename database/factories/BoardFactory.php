@@ -23,12 +23,12 @@ class BoardFactory extends Factory
     {
         $faker =  $this->faker;
         return [
-            'number' => $faker->unique()->numberBetween(1,30),
-            'floor' => $faker->randomElement($array = array ('1', '2', '3')),
-            'space' => $faker->randomElement($array = array ('2', '4', '6')),
-            'active' => '1',
-            'created_at' => now(),
-            'created_by' => 1,
+            'boardnumber' => $faker->unique()->numberBetween(1,30),
+            'boardfloor' => $faker->randomElement($array = array ('1', '2', '3')),
+            'boardspace' => $faker->randomElement($array = array ('2', '4', '6')),
+            'boardactive' => '1',
+            'boardcreatedat' => now(),
+            'boardcreatedby' => 1,
         ];
     }
 }
