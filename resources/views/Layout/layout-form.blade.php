@@ -133,5 +133,7 @@
   <script src="{{ url('/') }}/assets/js/scrollspyNav.js"></script>
   <script src="{{ url('/') }}/plugins/select2/select2.min.js"></script>
   <script src="{{ url('/') }}/plugins/select2/custom-select2.js"></script>
+  <script src="{{ url('/') }}/plugins/input-mask/jquery.inputmask.bundle.min.js"></script>
+  <script src="{{ url('/') }}/plugins/input-mask/input-mask.js"></script>
   @yield('js-form')
 @endsection

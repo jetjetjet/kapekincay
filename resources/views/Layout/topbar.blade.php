@@ -43,6 +43,7 @@
 							<ul class="collapse submenu list-unstyled animated fadeInUp" id="app" data-parent="#topAccordion">
 								<li><a href="{{ url('/jabatan') }}">Jabatan</a></li>
 								<li><a href="{{ url('/meja') }}">Meja</a></li>
+								<li><a href="{{ url('/menu') }}">Menu</a></li>
 								<li><a href="{{ url('/user') }}">User</a></li>
 							</ul>
 						</li>
