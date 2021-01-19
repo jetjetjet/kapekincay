@@ -6,8 +6,8 @@
   </div>
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);">Jabatan</a></li>
-    <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">Tambah</a></li>
+    <li class="breadcrumb-item"><a href="{{ url('/jabatan') }}">Jabatan</a></li>
+    <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">{{ empty($data->id) ? 'Tambah' : 'Ubah'}} Jabatan</a></li>
   </ol>
 @endsection
 
@@ -19,7 +19,7 @@
         <div class="widget-header">                                
           <div class="row">
             <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-              <h4>Tambah Jabatan</h4>
+              <h4>{{ empty($data->id) ? 'Tambah' : 'Ubah'}} Jabatan</h4>
             </div>                                                                        
           </div>
         </div>

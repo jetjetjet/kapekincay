@@ -47,15 +47,14 @@ class RoleController extends Controller
 
     $inputs = $request->all();
 		$validator = validator::make($inputs, $rules);
-
 		if ($validator->fails()){
 			return redirect()->back()->withErrors($validator)->withInput($inputs);
 		}
 
-		$results = RoleRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
+    $results = RoleRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
 		//cek
 		$request->session()->flash($results['status'], $results['messages']);
-		return redirect()->action([RoleController::class, 'getById'], ['id' => $results['id']]);
+		return redirect()->action([RoleController::class, 'getById'], ['id' => $results['roleid']]);
 	}
 
 	public function deleteById(Request $request, $id)

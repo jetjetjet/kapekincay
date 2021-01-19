@@ -16,9 +16,10 @@
       <table id="grid" class="table table-hover" style="width:100%">
         <thead>
           <tr>
+            <th>Username</th>
             <th>Nama Lengkap</th>
-            <th>Telp/Hp</th>
-            <th>Kapasitas/Orang</th>
+            <th>Jabatan</th>
+            <th>Telp/HP</th>
             <th class="no-content"></th>
           </tr>
         </thead>
@@ -26,9 +27,10 @@
         </tbody>
         <tfoot>
           <tr>
-            <th>Nomor Meja</th>
-            <th>Lantai</th>
-            <th>Kapasitas/Orang</th>
+            <th>Username</th>
+            <th>Nama Lengkap</th>
+            <th>Jabatan</th>
+            <th>Telp/HP</th>
             <th></th>
           </tr>
         </tfoot>
@@ -42,7 +44,7 @@
     $(document).ready(function (){
       let grid = $('#grid').DataTable({
         ajax: {
-          url: "{{ url('meja/grid') }}",
+          url: "{{ url('user/grid') }}",
           dataSrc: ''
       },
         dom: '<"row"<"col-md-12"<"row"<"col-md-6"B><"col-md-6"f> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
@@ -51,7 +53,7 @@
               text: "Tambah Baru",
               className: 'btn',
               action: function ( e, dt, node, config ) {
-                window.location = "{{ url('/meja/detail') }}";
+                window.location = "{{ url('/user/detail') }}";
               }
             }]
         },
@@ -69,37 +71,42 @@
         "pageLength": 15,
         columns: [
           { 
-            data: 'number',
-            render: function (data, type, full, meta){
-              let link =  "" + full.id ;
-              return '<a href="' + link + '">' + full.boardnumber + '</a>';
-            },
+            data: 'username',
             searchText: true
           },
           { 
-              data: 'floor',
-              render: function(data, type, full, meta){
-                return 'Lantai ' + full.boardfloor
-              },
+              data: 'userfullname',
               searchText: true
           },
           { 
-              data: 'boardspace',
+              data: 'roles',
+              searchText: true
+          },
+          { 
+              data: 'usercontact',
               searchText: true
           },
           { 
             data:null,
             render: function(data, type, full, meta){
-              return '<a href="#" title="Delete" class="gridDelete"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash p-1 br-6 mb-1"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></a>';
+              return '<a href="#" title="Edit" class="gridEdit"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit p-1 br-6 mb-1"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></a>'
+                + '<a href="#" title="Delete" class="gridDelete"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash p-1 br-6 mb-1"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></a>';
             }
           }
         ]
       });
+      $('#grid').on('click', 'a.gridEdit', function (e) {
+        e.preventDefault();
+        const rowData = grid.row($(this).closest('tr')).data();
+
+        window.location = "{{ url('/user/detail') . '/' }}"+ rowData.id;
+      });
+
       $('#grid').on('click', 'a.gridDelete', function (e) {
         e.preventDefault();
         
         const rowData = grid.row($(this).closest('tr')).data();
-        const url = "{{ url('meja/hapus') . '/' }}" + rowData.id;
+        const url = "{{ url('user/hapus') . '/' }}" + rowData.id;
         const title = 'Hapus Data Meja';
         const pesan = 'Apakah anda yakin ingin menghapus data ini?'
         console.log(rowData, url)

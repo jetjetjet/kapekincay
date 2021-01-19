@@ -28,11 +28,9 @@ class RoleRepository
       ->where('id', $id)
       ->select(
         'id',
-        'rolefullname',
         'rolename',
-        'rolecontact',
-        'roleaddress',
-        'rolejoindate')
+        'roledetail',
+        'rolepermissions')
       ->first();
 
       if($respon['data'] == null){
@@ -41,95 +39,48 @@ class RoleRepository
       }
 
       //User Role
-      $subs = UserRole::where('uractive', '1')
+      $subs = UserRoles::where('uractive', '1')
+        ->join('users', 'users.id', 'uruserid')
+        ->join('roles', 'roles.id', 'urroleid')
         ->where('urroleid', $id)->select('uruserid')->get();
       //push userid -> role->userid
       $is = Array();
       foreach($subs as $sub){
         array_push($is, $sub['uruserid']);
       }
-      $respon['data']->role_permissions = explode(",",$data->rolepermissions);
+      $respon['data']->rolepermissions = explode(",",$respon['data']->rolepermissions);
       $respon['data']->userid = $is;
     }
+
     return $respon;
-  }
-
-  public function saveRole($respon, $id, $inputs, $loginid)
-  {
-    $role = null;
-    if($id == null){
-
-    } else {
-      
-    }
   }
 
   public static function save($respon, $inputs, $loginid)
   {
-    dd($inputs);
     $id = $inputs['id'] ?? 0;
-    $perm = !empty($inputs['permissions']) ? $inputs['permissions'] : array();
+    $perm = !empty($inputs['rolepermissions']) ? $inputs['rolepermissions'] : array();
     $inputs['perm'] = implode(",", $perm);
-
     try{
-      DB::transaction(function () use (&$respon, $id, $inputs, $loginId){
-        $valid = self::saveRole($result, $id, $inputs, $loginId);
-        if (!$valid) return $result;
+      DB::transaction(function () use (&$respon, $id, $inputs, $loginid){
+        $respon = self::saveRole($respon, $id, $inputs, $loginid);
+        if (!$respon['success']) return $respon;
 
         if($id != null){
-          $valid = self::removeMissingUserRole($result, $id, $inputs, $loginId);
+          $valid = self::removeMissingUserRole($respon, $id, $inputs, $loginid);
         }
 
-        $valid = self::saveUserRole($result, $id, $inputs, $loginId);
-        if (!$valid) return $result;
+        $valid = self::saveUserRole($respon, $id, $inputs, $loginid);
+        if (!$valid) return $respon;
 
-        $result['success'] = true;
+        $respon['status'] = 'success';
       });
     }catch(\Exception $ex){
-
-    }
-
-
-
-    $data = Role::where('roleactive', '1')
-      ->where('id', $id)
-      ->first();
-
-    try{
-      if ($data != null){
-        $data = $data->update([
-          'rolename' => $inputs['rolename'],
-          'roledetail' => $inputs['roledetail'],
-          'rolemodifiedat' => now()->toDateTimeString(),
-          'rolemodifiedby' => $loginid
-        ]);
-
-        $respon['status'] = 'success';
-        array_push($respon['messages'], 'Data Jabatan berhasil diubah.');
-        
-      } else {
-        $data = Role::create([
-          'rolename' => $inputs['rolename'],
-          'roledetail' => $inputs['roledetail'],
-          'roleactive' => '1',
-          'rolecreatedat' => now()->toDateTimeString(),
-          'rolecreatedby' => $loginid
-        ]);
-
-        $respon['status'] = 'success';
-        array_push($respon['messages'], 'Data Jabatan berhasil ditambah.');
-      }
-    } catch(\Exception $e){
+      dd($ex);
       $respon['status'] = 'error';
       array_push($respon['messages'], 'Kesalahan! tidak dapat memproses perintah.');
     }
-    $respon['id'] = ($data->id ?? $inputs['id']) ?? null;
+    $respon['id'] = $id;
     return $respon;
-  }
-
-  public static function savePerm($respon, $id, $inputs, $loginid)
-  {
-
   }
 
   public static function delete($respon, $id, $loginid)
@@ -147,6 +98,15 @@ class RoleRepository
         'rolemodifiedat' => now()->toDateTimeString()
       ]);
       
+      //Delete UserRoles
+      $sub= UserRoles::where('uractive', '1')
+        ->where('urroleid', $id)
+        ->update([
+          'uractive' => '0',
+          'urmodifiedby' => $loginid,
+          'urmodifiedat' => now()->toDateTimeString()
+        ]);
+
       $cekDelete = true;
     }
 
@@ -157,6 +117,74 @@ class RoleRepository
     
     return $respon;
   }
+
+  public static function saveRole($respon, $id, $inputs, $loginid)
+  {
+    $respon['success'] = false;
+    $role = null;
+    if($id == null){
+      $role = Role::create([
+        'rolename' => $inputs['rolename'],
+        'roledetail' => $inputs['roledetail'],
+        'rolepermissions' => $inputs['perm'],
+        'roleactive' => '1',
+        'rolecreatedat' => now()->toDateTimeString(),
+        'rolecreatedby' => $loginid
+      ]);
+      array_push($respon['messages'], 'Data Jabatan berhasil ditambah.');
+    } else {
+      $role = Role::where('roleactive', '1')->where('id', $id)->firstOrFail();
+      $role->update([
+        'rolename' => $inputs['rolename'],
+        'roledetail' => isset($inputs['roledetail']) ? $inputs['roledetail'] :null,
+        'rolepermissions' => $inputs['perm'],
+        'rolemodifiedat' => now()->toDateTimeString(),
+        'rolemodifiedby' => $loginid
+      ]);
+      array_push($respon['messages'], 'Data Jabatan berhasil diubah.');
+    }
+    $respon['roleid'] = $role->id ?? $id;
+    $respon['data'] = $role;
+    $respon['success'] = true;
+    return $respon;
+  }
+
+  public static function removeMissingUserRole(&$respon, $id, $inputs, $loginId)
+  {
+    $inputs['userid'] = isset($inputs['userid']) ? $inputs['userid'] : array();
+    $data = UserRoles::where('uractive', '1')
+      ->where('urroleid', $id)
+      ->whereNotIn('uruserid', $inputs['userid'])
+      ->update([
+        'uractive' => '0',
+        'urmodifiedby' => $loginId,
+        'urmodifiedat' => now()->toDateTimeString()
+        ]);
+    return true;
+  }
+
+  public static function saveUserRole(&$respon, $id, $inputs, $loginId)
+  {
+    $idusers = isset($inputs['userid']) ? $inputs['userid'] : array();
+    $nId = $respon['roleid'] ?? $id;
+    foreach($idusers as $iduser){
+      $userRole = UserRoles::where('urroleid', $nId)
+        ->where('uruserid', $iduser)
+        ->where('uractive', '1')
+        ->first();
+      if($userRole == null){
+        UserRoles::create([
+          'urroleid' => $nId,
+          'uruserid' => $iduser,
+          'uractive' => '1',
+          'urcreatedby' => $loginId,
+          'urcreatedat' =>now()->toDateTimeString()
+        ]);
+      }
+    }
+    return true;
+  }
+
 
   public static function getFields($model)
   {

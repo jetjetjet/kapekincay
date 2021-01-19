@@ -39,13 +39,19 @@ class UserController extends Controller
 	public function save(Request $request)
 	{
 		$respon = Helpers::$responses;
+		$inputs = $request->all();
 		
 		$rules = array(
-			'Userfloor' => 'required',
-			'Usernumber' => 'required'
+			'username' => 'required',
 		);
+		
+		if(!isset($inputs['id'])){
+			$rules = array(
+				'username' => 'required|unique:users,username',
+				'userpassword' => 'required'
+			);
+		}
 
-		$inputs = $request->all();
 		$validator = validator::make($inputs, $rules);
 
 		if ($validator->fails()){

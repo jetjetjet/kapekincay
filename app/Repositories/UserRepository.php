@@ -9,12 +9,23 @@ class UserRepository
 {
   public static function grid()
   {
+    $sub = DB::table('userroles as ur')
+      ->join('roles as r', 'r.id', 'urroleid')
+      ->where('uractive', '1')
+      ->where('roleactive', '1')
+      ->groupBy('uruserid')
+      ->select('uruserid', DB::raw("string_agg(rolename,', ') as roles"));
+
     return User::where('useractive', '1')
+      ->leftJoinSub($sub, 'sub', function($q){
+        $q->on('users.id', 'sub.uruserid');
+      })
       ->select(
-        'id',
+        'users.id',
         'userfullname',
         'username',
-        'usercontact')
+        'usercontact',
+        'sub.roles')
       ->get();
   }
 
@@ -85,6 +96,7 @@ class UserRepository
         array_push($respon['messages'], 'Data User berhasil ditambah.');
       }
     } catch(\Exception $e){
+      dd($e);
       $respon['status'] = 'error';
       array_push($respon['messages'], 'Kesalahan! tidak dapat memproses perintah.');
     }
