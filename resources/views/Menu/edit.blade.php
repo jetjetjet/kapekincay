@@ -41,21 +41,22 @@
                 </select>
               </div>
               <div class="col-md-6 mb-5">
-                  <label for="price">Harga</label>
-                  <input name="menuprice" value="{{ old('menuprice', $data->menuprice) }}" class="form-control" id="pricing" placeholder="Harga" required>
-            </div> 
-            <div class="col-md-12 mb-5">
+                <label for="price">Harga</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Rp </span>
+                  </div>
+                  <input name="menuprice" value="{{ old('menuprice', $data->menuprice) }}" class="form-control rupiah" id="pricing" placeholder="Harga" required>
+                </div>
+              </div> 
+              <div class="col-md-12 mb-5">
                 <label for="detail">Detail Menu</label>
-                <textarea name="menudetail" rows="3" class="form-control" id="detail" placeholder="Detail Menu" >{{ old('menudetail', $data->menudetail) }}
-                </textarea>
-            </div>
-            <div class="col-md-6 mb-5">
-            <input type="file" class="custom-file-input" id="menuimg">
-            <label class="custom-file-label" for="menuimg">Pilih Gambar</label>
-            </div>
-            <div class="widget-content widget-content-area">
-                                    <label for="price">Rp.999,9999,999.99</label>
-                                    <input type="text" class="form-control mb-4" id="pricing">
+                <textarea name="menudetail" rows="3" class="form-control" id="detail" placeholder="Detail Menu" >{{ old('menudetail', $data->menudetail) }}</textarea>
+              </div>
+              <div class="col-md-6 mb-5">
+                <label class="custom-file-label" for="menuimg">Pilih Gambar</label>
+                <input type="file" class="custom-file-input" id="menuimg">
+              </div>
             </div>
             <div class="float-right">
               <a href="{{ url('/menu') }}" type="button" class="btn btn-danger mt-2" type="submit">Batal</a>
@@ -71,12 +72,13 @@
 <script>
   
   $(document).ready(function (){
-    $("#pricing").inputmask({mask:"Rp.999.999.999"});
     // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    var forms = document.getElementsByClassName('needs-validation');
+    let forms = document.getElementsByClassName('needs-validation');
+
     // Loop over them and prevent submission
-    var validation = Array.prototype.filter.call(forms, function(form) {
+    let validation = Array.prototype.filter.call(forms, function(form) {
       form.addEventListener('submit', function(event) {
+        
         if (form.checkValidity() === false) {
           event.preventDefault();
           event.stopPropagation();

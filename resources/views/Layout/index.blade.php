@@ -108,7 +108,7 @@
     <script>
 			$(document).ready(function() {
 				feather.replace();
-				// App.init();
+				App.init();
 			});
     </script>
     <script src="{{ url('/') }}/assets/js/custom.js"></script>

@@ -77,7 +77,6 @@
 
 @section('js-form')
 <script>
-  
   $(document).ready(function (){
     let f1 = flatpickr($('#userjoindate'));
 

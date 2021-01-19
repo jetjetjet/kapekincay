@@ -1,11 +1,11 @@
 @extends('Layout.index')
 
 @section('css-body')
+  <link href="{{ url('/') }}/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
   <link href="{{ url('/') }}/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
   <link href="{{ url('/') }}/plugins/flatpickr/flatpickr.css" rel="stylesheet" type="text/css">
   <link href="{{ url('/') }}/plugins/flatpickr/custom-flatpickr.css" rel="stylesheet" type="text/css">
   <link href="{{ url('/') }}/assets/css/dashboard/dash_2.css" rel="stylesheet" type="text/css" />
-  <link href="{{ url('/') }}/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/select2/select2.min.css">
 
   <style>
@@ -139,5 +139,13 @@
   <script src="{{ url('/') }}/plugins/select2/custom-select2.js"></script>
   <script src="{{ url('/') }}/plugins/input-mask/jquery.inputmask.bundle.min.js"></script>
   <script src="{{ url('/') }}/plugins/input-mask/input-mask.js"></script>
+  <script>
+    $(".rupiah").inputmask({alias: 'currency', 
+      allowMinus: false,
+      prefix: '',
+      digits: 0,
+      removeMaskOnSubmit: true
+    });
+  </script>
   @yield('js-form')
 @endsection
