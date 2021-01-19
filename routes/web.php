@@ -6,6 +6,7 @@ use App\Http\Controllers\BoardController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\MenuController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,6 +24,12 @@ Route::post('login', [LoginController::class, 'postLogin']);
 Route::group(array('middleware' => 'auth'), function ()
 {
   Route::get('/', [DashboardController::class, 'index']);
+ 
+  Route::get('/jabatan', [RoleController::class, 'index']);
+  Route::get('/jabatan/grid', [RoleController::class, 'getLists']);
+  Route::get('/jabatan/detail/{id?}', [RoleController::class, 'getById']);
+  Route::post('/jabatan/simpan', [RoleController::class, 'save']);
+  Route::post('/jabatan/hapus/{id}', [RoleController::class, 'deleteById']);
 
   Route::get('/meja', [BoardController::class, 'index']);
   Route::get('/meja/grid', [BoardController::class, 'getLists']);
@@ -30,11 +37,11 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/meja/simpan', [BoardController::class, 'save']);
   Route::post('/meja/hapus/{id}', [BoardController::class, 'deleteById']);
 
-  Route::get('/jabatan', [RoleController::class, 'index']);
-  Route::get('/jabatan/grid', [RoleController::class, 'getLists']);
-  Route::get('/jabatan/detail/{id?}', [RoleController::class, 'getById']);
-  Route::post('/jabatan/simpan', [RoleController::class, 'save']);
-  Route::post('/jabatan/hapus/{id}', [RoleController::class, 'deleteById']);
+  Route::get('/menu', [MenuController::class, 'index']);
+  Route::get('/menu/grid', [MenuController::class, 'getLists']);
+  Route::get('/menu/detail/{id?}', [MenuController::class, 'getById']);
+  Route::post('/menu/simpan', [MenuController::class, 'save']);
+  Route::post('/menu/hapus/{id}', [MenuController::class, 'deleteById']);
 
   Route::get('/user', [UserController::class, 'index']);
   Route::get('/user/grid', [UserController::class, 'getLists']);
