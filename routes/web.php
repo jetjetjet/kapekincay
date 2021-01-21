@@ -7,6 +7,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\ImageUploadController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -42,6 +43,8 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('/menu/detail/{id?}', [MenuController::class, 'getById']);
   Route::post('/menu/simpan', [MenuController::class, 'save']);
   Route::post('/menu/hapus/{id}', [MenuController::class, 'deleteById']);
+  Route::get('image-upload', [ MenuController::class, 'imageUpload' ]);
+  Route::post('image-upload', [ MenuController::class, 'imageUploadPost' ]);
 
   Route::get('/user', [UserController::class, 'index']);
   Route::get('/user/grid', [UserController::class, 'getLists']);

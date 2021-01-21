@@ -9,7 +9,7 @@ class MenuRepository
 {
     public static function grid()
     {
-      return Menu::where('menuactive', '1')->select('id','menuname', 'menutype', 'menuprice',)->get();
+      return Menu::where('menuactive', '1')->select('id','menuname', 'menutype', 'menuprice')->get();
     }
   
     public static function get($respon, $id)
@@ -20,7 +20,7 @@ class MenuRepository
       if($id){
         $respon['data'] = Menu::where('menuactive', '1')
         ->where('id', $id)
-        ->select('id', 'menuname', 'menutype', 'menuprice','menudetail')
+        ->select('id', 'menuname', 'menutype', 'menuprice','menudetail','menuimg')
         ->first();
   
         if($respon['data'] == null){
@@ -43,7 +43,7 @@ class MenuRepository
           $data = $data->update([
             'menuname' => $inputs['menuname'],
             'menutype' => $inputs['menutype'],
-            //'menuimg' => $inputs['menuimg'],
+            'menuimg' => $inputs['menuimgpath'],
             'menudetail' => $inputs['menudetail'],
             'menuprice' => $inputs['menuprice'],
             'menumodifiedat' => now()->toDateTimeString(),
@@ -57,7 +57,7 @@ class MenuRepository
           $data = Menu::create([
             'menuname' => $inputs['menuname'],
             'menutype' => $inputs['menutype'],
-            //'menuimg' => $inputs['menuimg'],
+            'menuimg' => $inputs['menuimgpath'],
             'menudetail' => $inputs['menudetail'],
             'menuprice' => $inputs['menuprice'],
             'menuactive' => '1',

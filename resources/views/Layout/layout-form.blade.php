@@ -7,6 +7,8 @@
   <link href="{{ url('/') }}/plugins/flatpickr/custom-flatpickr.css" rel="stylesheet" type="text/css">
   <link href="{{ url('/') }}/assets/css/dashboard/dash_2.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/select2/select2.min.css">
+  <link rel="stylesheet" type="text/css" href="{{ url('/') }}/assets/css/forms/theme-checkbox-radio.css">
+  <link href="{{ url('/') }}/plugins/file-upload/file-upload-with-preview.min.css" rel="stylesheet" type="text/css" />
 
   <style>
     .toggle-switch {
@@ -118,6 +120,14 @@
       -ms-transform: translateX(34px);
       transform: translateX(34px);
     }
+
+    .imgrespo {
+  height: auto;
+  width: 42vw;
+  min-width: 187px;
+  /* max-height: 10%; */
+  max-width: 625px;
+}
       
   </style>
 @endsection
@@ -139,6 +149,7 @@
   <script src="{{ url('/') }}/plugins/select2/custom-select2.js"></script>
   <script src="{{ url('/') }}/plugins/input-mask/jquery.inputmask.bundle.min.js"></script>
   <script src="{{ url('/') }}/plugins/input-mask/input-mask.js"></script>
+  <script src="{{ url('/') }}/plugins/file-upload/file-upload-with-preview.min.js"></script>
   <script>
     $(".rupiah").inputmask({alias: 'currency', 
       allowMinus: false,

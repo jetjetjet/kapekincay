@@ -39,12 +39,18 @@ class MenuController extends Controller
 	public function save(Request $request)
 	{
 		$respon = Helpers::$responses;
-		
+	// 	if($request['menuimg'] == !null){
+	// 	$rules = array(
+	// 		'menuname' => 'required',
+	// 		'menuimg' => 'nullable|mimes:jpeg,png,jpg,gif,svg|max:2048',
+	// 		'menuprice' => 'required|integer'
+	// 	);
+	// }else{
 		$rules = array(
 			'menuname' => 'required',
 			'menuprice' => 'required|integer'
 		);
-
+	// }
 		$inputs = $request->all();
 		$validator = validator::make($inputs, $rules);
 
@@ -52,7 +58,21 @@ class MenuController extends Controller
 			return redirect()->back()->withErrors($validator)->withInput($inputs);
 		}
 
+		// $imageName = time().'.'.$request['menuimg']->extension();     
+		// $inputs['menuimg']->move(public_path('images'), $imageName);
+		// $inputs['menuimgpath']='/images/'.$imageName;
+
+		if($request['menuimg'] == !null){
+			$imageName = $request['id'].'.'.$request['menuimg']->extension();
+			$inputs['menuimg']->move(public_path('images'), $imageName);
+		 $inputs['menuimgpath'] = '/images/'.$imageName;
+		} elseif($request['delimg'] == '1'){
+			$inputs['menuimgpath'] = null ;
+		} elseif($request['menuimg'] == null){
+			$inputs['menuimgpath'] = $request['hidimg'];
+		}
 		$results = MenuRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
+		// dd($inputs);
 		//cek
 		$request->session()->flash($results['status'], $results['messages']);
 		return redirect()->action([MenuController::class, 'getById'], ['id' => $results['id']]);
