@@ -65,7 +65,7 @@
             <div class="float-left">
             </div>
             <div class="float-right">
-              <a href="{{ url('/jabatan') }}" type="button" class="btn btn-danger mt-2" type="submit">Batal</a>
+              <a href="{{ url('/user') }}" type="button" class="btn btn-danger mt-2" type="submit">Batal</a>
               <button class="btn btn-primary mt-2" type="submit">Simpan</button>
             </div>
           </form>
