@@ -48,7 +48,7 @@
         dom: '<"row"<"col-md-12"<"row"<"col-md-6"B><"col-md-6"f> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
         buttons: {
             buttons: [{ 
-              text: "Tambah Baru",
+              text: "Tambah Meja",
               className: 'btn',
               action: function ( e, dt, node, config ) {
                 window.location = "{{ url('/meja/detail') }}";
