@@ -9,6 +9,7 @@
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/select2/select2.min.css">
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/assets/css/forms/theme-checkbox-radio.css">
   <link href="{{ url('/') }}/plugins/file-upload/file-upload-with-preview.min.css" rel="stylesheet" type="text/css" />
+  <link href="{{ url('/') }}/plugins/flatpickr/custom-flatpickr.css" rel="stylesheet" type="text/css">
 
   <style>
     .toggle-switch {
