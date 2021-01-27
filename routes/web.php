@@ -8,8 +8,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\MenuController;
-use App\Http\Controllers\ShiftController;
-use App\Http\Controllers\ImageUploadController;
+use App\Http\Controllers\OrderController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -54,6 +53,8 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('image-upload', [ MenuController::class, 'imageUpload' ]);
   Route::post('image-upload', [ MenuController::class, 'imageUploadPost' ]);
 
+  Route::get('/order', [OrderController::class, 'order']);
+
   Route::get('/shift', [ShiftController::class, 'index']);
   Route::get('/shift/grid', [ShiftController::class, 'getLists']);
   Route::get('/shift/detail/{id?}', [ShiftController::class, 'getById']);
@@ -67,6 +68,7 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('/user', [UserController::class, 'index']);
   Route::get('/user/grid', [UserController::class, 'getLists']);
   Route::get('/user/detail/{id?}', [UserController::class, 'getById']);
+  Route::get('/user/cari', [UserController::class, 'searchUser']);
   Route::post('/user/simpan', [UserController::class, 'save']);
   Route::post('/user/ubahpassword/{id}',[UserController::class, 'changePassword']);
   Route::post('/user/hapus/{id}', [UserController::class, 'deleteById']);

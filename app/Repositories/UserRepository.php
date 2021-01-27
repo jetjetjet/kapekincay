@@ -166,6 +166,14 @@ class UserRepository
     return User::where('useractive', '1');
   }
 
+  public static function search($cari)
+  {
+    return User::whereRaw('UPPER(username) LIKE UPPER(\'%'. $cari .'%\')')
+      ->where('useractive', '1')
+      ->select('id', 'username')
+      ->get();
+  }
+
   public static function getFields($model)
   {
     $model->id = null;

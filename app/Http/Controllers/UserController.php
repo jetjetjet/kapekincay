@@ -92,4 +92,14 @@ class UserController extends Controller
 		$results = UserRepository::delete($respon, $id, Auth::user()->getAuthIdentifier());
 		return response()->json($results);
 	}
+
+	public function searchUser(Request $request)
+  {
+    if ($request->has('q')) {
+      $cari = $request->q;
+      $data = UserRepository::search($cari);
+      
+      return response()->json($data);
+    }
+  }
 }

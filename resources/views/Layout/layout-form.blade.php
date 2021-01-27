@@ -1,6 +1,8 @@
 @extends('Layout.index')
 
 @section('css-body')
+<link href="{{ url('/') }}/assets/css/components/tabs-accordian/custom-tabs.css" rel="stylesheet" type="text/css" />
+
   <link href="{{ url('/') }}/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
   <link href="{{ url('/') }}/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
   <link href="{{ url('/') }}/plugins/flatpickr/flatpickr.css" rel="stylesheet" type="text/css">
@@ -11,130 +13,82 @@
   <link href="{{ url('/') }}/plugins/file-upload/file-upload-with-preview.min.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/assets/css/forms/switches.css">
 
+  <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/editors/quill/quill.snow.css">
+  <link href="{{ url('/') }}/assets/css/apps/todolist.css" rel="stylesheet" type="text/css" />
+
   <style>
-    .toggle-switch {
-      display: flex;
-      margin-right: 7px;
-    }
-
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 35px;
-      height: 18px;
-    }
-    /* Hide default HTML checkbox */
-    .switch input {display:none;}
-    /* The slider */
-    .switch .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ebedf2;
-      -webkit-transition: .4s;
-      transition: .4s;
-    }
-    .switch.s-icons .slider svg {
-      position: absolute;
-      width: 19px;
-      height: 19px;
-      top: 4px;
-      color: #fff;
-      /* fill: rgba(224, 230, 237, 0.9686274509803922); */
-    }
-
-    .switch.s-icons .slider svg.feather-sun {
-      left: 4px;
-      color: #e2a03f;
-      fill: #e2a03f;
-    }
-    .switch.s-icons .slider svg.feather-moon {
-      right: 4px;
-    }
-
-    .switch .slider:before {
-      position: absolute;
-      content: "";
-      background-color: white;
-      -webkit-transition: .4s;
-      -ms-transition: .4s;
-      transition: .4s;
-      height: 14px;
-      width: 14px;
-      left: 2px;
-      bottom: 2px;
-      box-shadow: 0 1px 15px 1px rgba(52, 40, 104, 0.34);
-    }
-    .switch input:checked + .slider:before {
-      -webkit-transform: translateX(17px);
-      -ms-transform: translateX(17px);
-      transform: translateX(17px)
-    }
-    /* Rounded Slider Switches */
-    .switch .slider.round { border-radius: 34px; }
-    .switch .slider.round:before { border-radius: 50%; }
-
-    .switch.s-outline .slider {
-      border: 2px solid rgb(129, 149, 238);
-      background-color: transparent;
-      width: 36px;
-      height: 19px;
-    }
-      
-    .switch.s-outline .slider:before {     height: 21px;
-      width: 21px; z-index: 1; }
-    .switch.s-outline[class*="s-outline-"] .slider:before {
-      bottom: 2px;
-      left: 3px;
-      border: 2px solid #bfc9d4;
-      background-color: #bfc9d4;
-      color: #ebedf2;
-      box-shadow: 0 1px 15px 1px rgba(52, 40, 104, 0.25);
-    }
-
-    .switch.s-icons.s-outline-secondary { color: #5c1ac3; }
-    .switch.s-outline-secondary input:checked + .slider { border: 2px solid #e0e6ed; }
-    .switch.s-outline-secondary input:checked + .slider:before {
-      border: 2px solid #1b55e2;
-      background-color: #1b55e2;
-      box-shadow: 0 1px 15px 1px rgba(52, 40, 104, 0.34);
-    }
-    .switch.s-outline-secondary input:focus + .slider { box-shadow: 0 0 1px #5c1ac3; }
-
-    .switch.s-icons {
-      width: 57px;
-      height: 30px;
-    }
-    .switch.s-icons .slider {
-      width: 64px;
-      height: 30px;
-      background: #3b3f5c;
-      border-color: #3b3f5c;
-    }
-    .switch.s-outline-secondary input:checked + .slider { background: #e0e6ed; }
-
-    .switch.s-icons input:checked + .slider:before {
-      -webkit-transform: translateX(34px);
-      -ms-transform: translateX(34px);
-      transform: translateX(34px);
-    }
-
-    .imgrespo {
-  height: 30vw;
-  width: auto;
-  min-height: 55px;
-  max-height: 295px;
+    .container .jumbotron {
+  box-shadow: 0 0 50px #3F0C1F;
+  border: 2px solid #3F0C1F;
 }
-.imgrespo.w {
-  height: auto;
-  width: 42vw;
-  min-width: 187px;
-  max-width: 625px;
+
+#menu-tile, #specials-tile, #map-tile {
+  height: 250px;
+  width: 100%;
+  margin-bottom: 15px;
+  position: relative;
+  border: 2px solid #3F0C1F;
+  overflow: hidden; /* for map: to not stick out */
 }
-      
+#menu-tile:hover, #specials-tile:hover, #map-tile:hover {
+  box-shadow: 0 1px 5px 1px #cccccc;
+}
+
+#menu-tile {
+  background: url('https://usmile581.github.io/Bistro_Restaurant/images/menu-tile.jpg') no-repeat;
+  background-position: center;
+}
+#specials-tile {
+  background: url('https://usmile581.github.io/Bistro_Restaurant/images/specials-tile.jpg') no-repeat;
+  background-position: center;
+}
+
+#menu-tile span, #specials-tile span, #map-tile span {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 1.6em;
+  text-transform: uppercase;
+  background-color: #000;
+  color: #fff;
+  opacity: .8; /*transparent */
+}
+
+/* END HOME PAGE */
+
+/* MENU CATEGORIES PAGE */
+.category-tile { 
+  position: relative;
+  border: 1px solid #3F0C1F;
+  overflow: hidden;
+  width: 120px; /*automatically center image: give width, and margin left/right to auto */
+  height: 120px;
+  margin: 5px 5px 5px;
+}
+.category-tile span {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 1.2em;
+  text-transform: uppercase;
+  background-color: #000;
+  color: #fff;
+  opacity: .8;
+}
+.category-tile:hover {
+  box-shadow: 0 1px 5px 1px #cccccc;
+}
+
+/* END MENU CATEGORIES PAGE */
+
+
+
+
+
   </style>
 @endsection
 
@@ -156,6 +110,10 @@
   <script src="{{ url('/') }}/plugins/input-mask/jquery.inputmask.bundle.min.js"></script>
   <script src="{{ url('/') }}/plugins/input-mask/input-mask.js"></script>
   <script src="{{ url('/') }}/plugins/file-upload/file-upload-with-preview.min.js"></script>
+
+  <script src="{{ url('/') }}/assets/js/ie11fix/fn.fix-padStart.js"></script>
+    <script src="{{ url('/') }}/plugins/editors/quill/quill.js"></script>
+    <script src="{{ url('/') }}/assets/js/apps/todoList.js"></script>
   <script>
     $(".rupiah").inputmask({alias: 'currency', 
       allowMinus: false,
