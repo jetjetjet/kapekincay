@@ -20,7 +20,7 @@ class MenuRepository
       if($id){
         $respon['data'] = Menu::where('menuactive', '1')
         ->where('id', $id)
-        ->select('id', 'menuname', 'menutype', 'menuprice','menudetail','menuimg')
+        ->select('id', 'menuname', 'menutype', 'menuprice','menudetail','menuimg','menuavaible')
         ->first();
   
         if($respon['data'] == null){
@@ -46,6 +46,7 @@ class MenuRepository
             'menuimg' => $inputs['menuimgpath'],
             'menudetail' => $inputs['menudetail'],
             'menuprice' => $inputs['menuprice'],
+            'menuavaible' => $inputs['menuavaible']??'0',
             'menumodifiedat' => now()->toDateTimeString(),
             'menumodifiedby' => $loginid
           ]);
@@ -60,6 +61,7 @@ class MenuRepository
             'menuimg' => $inputs['menuimgpath'],
             'menudetail' => $inputs['menudetail'],
             'menuprice' => $inputs['menuprice'],
+            'menuavaible' => $inputs['menuavaible']??'0',
             'menuactive' => '1',
             'menucreatedat' => now()->toDateTimeString(),
             'menucreatedby' => $loginid
@@ -111,6 +113,7 @@ class MenuRepository
       $model->menuprice = null;
       $model->menudetail = null;
       $model->menuimg = null;
+      $model->menuavaible= null;
 
   
       return $model;

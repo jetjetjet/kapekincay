@@ -6,7 +6,7 @@
   </div>
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);">Menu</a></li>
+    <li class="breadcrumb-item"><a href="{{ url('/menu') }}">Menu</a></li>
     <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">{{ empty($data->id) ? 'Tambah' : 'Ubah'}} Menu</a></li>
   </ol>
 @endsection
@@ -48,6 +48,21 @@
                   </div>
                   <input name="menuprice" value="{{ old('menuprice', $data->menuprice) }}" class="form-control rupiah" id="pricing" placeholder="Harga" required>
                 </div>
+              </div>
+              <div class="col-md-12 mb-5">
+              <label>Status Menu(Kosong, Ada)</label>
+              <br>
+              @if(isset($data->menuavaible))
+              <label class="switch s-icons s-outline  s-outline-success  mb-4 mr-2">
+                <input type="checkbox" id="mav" name="menuavaible" {{ $data->menuavaible ? 'checked' : ''}}>
+                <span class="slider round"></span>
+                </label>
+              @elseif(empty($data->menuavaible))
+              <label class="switch s-icons s-outline  s-outline-success  mb-4 mr-2">
+                <input type="checkbox" id="mav" name="menuavaible" checked>
+                <span class="slider round"></span>
+                </label>
+                @endif
               </div> 
               <div class="col-md-12 mb-5">
                 <label for="detail">Detail Menu</label>
@@ -67,14 +82,14 @@
               @if(isset($data->menuimg))
               <div class="col-md-6 mb-5">                
                 <label for="img"><b>Gambar Menu Saat Ini</b></label>
-                <p>
+                <br>
                 <div class="n-chk">
                   <label class="new-control new-checkbox new-checkbox-rounded new-checkbox-text checkbox-danger">
                     <input type="checkbox" class="new-control-input" name="delimg" id ="delimg" value = "1">
                     <span class="new-control-indicator"></span><span class="new-chk-content">Hapus Foto</span>
                   </label>
                 </div> 
-                <p>
+                <br>
                 <img src="{{ url('/').$data->menuimg}}"style="vertical-align:top"  class="imgrespo"  ></img>
                 <input type="hidden" id="hidimg" name="hidimg" value="{{ old('menuimg', $data->menuimg) }}" />                
               </div>

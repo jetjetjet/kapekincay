@@ -14,6 +14,7 @@ class Menu extends Model
     'menudetail',
     'menuprice',
     'menuactive',
+    'menuavaible',
     'menucreatedat',
     'menucreatedby',
     'menumodifiedat',

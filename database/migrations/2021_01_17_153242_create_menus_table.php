@@ -20,6 +20,7 @@ class CreateMenusTable extends Migration
             $table->string('menuimg')->nullable();
             $table->string('menudetail')->nullable();
             $table->decimal('menuprice',16,0);
+            $table->boolean('menuavaible');
             $table->boolean('menuactive');
             $table->dateTime('menucreatedat');
             $table->integer('menucreatedby');
