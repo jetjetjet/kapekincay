@@ -108,7 +108,12 @@ class ShiftController extends Controller
     //cek
 
 		$request->session()->flash($results['status'], $results['messages']);
+		$cekRes = $results['status'];
+		if ($cekRes == 'success'){
+		return view('Shift.Index');
+		}elseif($cekRes == 'error'){
 		return redirect()->action([ShiftController::class, 'getEdit'], ['id' => $results['id']]);
+		}
 	}
 
 	public function close(Request $request)
