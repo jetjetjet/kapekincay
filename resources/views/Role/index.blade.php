@@ -95,8 +95,8 @@
         
         const rowData = grid.row($(this).closest('tr')).data();
         const url = "{{ url('/jabatan/hapus') . '/' }}" + rowData.id;
-        const title = 'Hapus Data Meja';
-        const pesan = 'Apakah anda yakin ingin menghapus data ini?'
+        const title = 'Hapus Jabatan';
+        const pesan = 'Apakah anda yakin ingin menghapus jabatan ini?'
         console.log(rowData, url)
         gridDeleteRow(url, title, pesan, grid);
       });

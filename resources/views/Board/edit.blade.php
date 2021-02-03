@@ -6,7 +6,7 @@
   </div>
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);">Meja</a></li>
+    <li class="breadcrumb-item"><a href="{{ url('/meja') }}">Meja</a></li>
     <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">{{ empty($data->id) ? 'Tambah' : 'Ubah'}} Meja</a></li>
   </ol>
 @endsection
