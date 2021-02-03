@@ -28,6 +28,7 @@
             <div class="form-row">
               <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
               <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
+              <input type="hidden" id="idd" name="getid" value="{{ old('getId', $data->getId) }}" />
               <div class="col-md-12 mb-5">
                 <label for="name">Nama</label>
                 <input type="text" name="menuname" value="{{ old('menuname', $data->menuname) }}" class="form-control" id="name" placeholder="Nama" required>

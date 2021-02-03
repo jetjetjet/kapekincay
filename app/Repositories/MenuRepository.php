@@ -16,7 +16,7 @@ class MenuRepository
     {
       $data = new \stdClass();
       $respon['data'] = self::getFields($data);
-  
+      $getId = Menu::select('id')->orderBy('id', 'DESC')->first();
       if($id){
         $respon['data'] = Menu::where('menuactive', '1')
         ->where('id', $id)
@@ -28,6 +28,7 @@ class MenuRepository
           array_push($respon['messages'],'Data tidak ditemukan!');
         }
       }
+      $respon['data']->getId = $getId->id;
       return $respon;
     }
   
