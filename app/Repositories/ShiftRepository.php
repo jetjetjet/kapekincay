@@ -10,19 +10,24 @@ class ShiftRepository
 {
   public static function grid()
   {
-    return DB::table('shifts')
-    ->where('shiftactive', '1')
+    return Shift::where('shiftactive', '1')
     ->join('users', 'shifts.shiftuserid', '=', 'users.id')
-    ->select('shifts.id','users.username', 'shifts.shiftstart', 'shifts.shiftclose','shifts.shiftenddetail')
+    ->select('shifts.id','users.username', 'shifts.shiftstart', 'shifts.shiftclose', DB::raw('left(shifts.shiftenddetail, 15) as shiftenddetail'))
     ->get();
   }
 
   public static function get($respon, $id)
   {
-    $data = new \stdClass();
+    $data = new \stdClass;
     $respon['data'] = Shift::getFields($data);
+    $cekId = Shift::where('id', $id)->select('shiftclose')->first();
+    $qClosed = $cekId->shiftclose ?? null;
 
-    if($id){
+    if($qClosed != null){
+      $respon['status'] = 'error';
+      array_push($respon['messages'],'Data sudah ditutup tidak bisa diedit');
+    }
+    elseif($id){
       $respon['data'] = Shift::where('shiftactive', '1')
       ->where('id', $id)
       ->select('id',
@@ -34,6 +39,7 @@ class ShiftRepository
       'shiftstartcoin',
       'shiftendcash',
       'shiftendcoin',
+      'shiftindex'
       )
       ->first();
 
@@ -42,6 +48,59 @@ class ShiftRepository
         array_push($respon['messages'],'Data tidak ditemukan!');
       }
     }
+    $cekIndex = Shift::whereRaw('shiftstart::date = now()::date')->where('shiftactive', '1')->select('shiftindex','shiftclose')->orderBy('shiftindex', 'DESC')->first();
+    $qIndex = $cekIndex->shiftindex ?? null;
+    $qClose = $cekIndex->shiftclose ?? null;
+  
+    if($qIndex != null && $qClose == null){
+      // error! data sudah ada dan belum diclose
+       $respon['status'] = 'error';
+       array_push($respon['messages'], 'Masih ada shift yang aktif');
+    } else if( $qIndex == null) {
+      $respon['data']->shiftindex = 1;
+    } else {
+      $respon['data']->shiftindex = $cekIndex->shiftindex + 1;
+    }
+// dd($respon);
+    return $respon;
+  }
+
+
+  public static function getclosedit($respon, $id)
+  {
+    $data = new \stdClass;
+    $respon['data'] = Shift::getFields($data);
+    $cekId = Shift::where('id', $id)->select('shiftclose')->first();
+    $qClosed = $cekId->shiftclose ?? null;
+
+    
+    if($qClosed != null){
+      $respon['status'] = 'error';
+      array_push($respon['messages'],'Data sudah ditutup tidak bisa diedit');
+    }
+    elseif($id){
+      $respon['data'] = Shift::where('shiftactive', '1')
+      ->where('id', $id)
+      ->select('id',
+      'shiftuserid',
+      'shiftstart',
+      'shiftclose',
+      'shiftenddetail',
+      'shiftstartcash',
+      'shiftstartcoin',
+      'shiftendcash',
+      'shiftendcoin',
+      'shiftindex'
+      )
+      ->first();
+     
+      if($respon['data'] == null){
+        $respon['status'] = 'error';
+        array_push($respon['messages'],'Data tidak ditemukan!');
+      }
+     
+    }
+    
     return $respon;
   }
 
@@ -50,7 +109,9 @@ class ShiftRepository
     $id = $inputs['id'] ?? 0;
     $data = Shift::where('shiftactive', '1')
       ->where('id', $id)
+      ->where('shiftclose', null)
       ->first();
+
     try{
       if ($data != null){
         $data = $data->update([
@@ -67,6 +128,7 @@ class ShiftRepository
         $data = Shift::create([
           'shiftuserid' => $loginid,
           'shiftstart' => now()->toDateTimeString(),
+          'shiftindex' => $inputs['shiftindex'],
           'shiftstartcash' => $inputs['shiftstartcash'],
           'shiftstartcoin' => $inputs['shiftstartcoin'],
           'shiftactive' => '1',
@@ -90,7 +152,7 @@ class ShiftRepository
   public static function close($respon, $inputs, $loginid)
   {
     $id = $inputs['id'] ?? 0;
-    $data = Shift::where('shiftactive', '1')
+    $data = Shift::where('shiftclose', null)
       ->where('id', $id)
       ->first();
     try{
@@ -119,6 +181,7 @@ class ShiftRepository
   {
     $data = Shift::where('shiftactive', '1')
       ->where('id', $id)
+      ->where('shiftclose', null)
       ->first();
 
     $cekDelete = false;
@@ -136,7 +199,7 @@ class ShiftRepository
     $respon['status'] = $data != null && $cekDelete ? 'success': 'error';
     $data != null && $cekDelete
       ? array_push($respon['messages'], 'Data Berhasil Dihapus.') 
-      : array_push($respon['messages'], 'Data Tidak Ditemukan');
+      : array_push($respon['messages'], 'Data Sudah Ditutup');
     
     return $respon;
   }

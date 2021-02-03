@@ -16,6 +16,7 @@ class CreateShiftsTable extends Migration
         Schema::create('shifts', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('shiftuserid');
+            $table->integer('shiftindex');
             $table->datetime('shiftstart');
             $table->datetime('shiftclose')->nullable();
             $table->decimal('shiftstartcash',16,0);

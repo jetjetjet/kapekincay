@@ -6,7 +6,7 @@
   </div>
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);">Shift</a></li>
+    <li class="breadcrumb-item"><a href="{{ url('/shift') }}">Shift</a></li>
     <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">Tutup Shift</a></li>
   </ol>
 @endsection

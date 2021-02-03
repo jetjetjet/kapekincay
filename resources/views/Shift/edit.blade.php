@@ -6,7 +6,7 @@
   </div>
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);">Shift</a></li>
+    <li class="breadcrumb-item"><a href="{{ url('/shift') }}">Shift</a></li>
     <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">{{ empty($data->id) ? 'Tambah' : 'Ubah'}} Shift</a></li>
   </ol>
 @endsection
@@ -24,13 +24,18 @@
           </div>
         </div>
         <div class="widget-content widget-content-area">
-          <form class="needs-validation" method="post" novalidate action="{{ url('/shift/simpan') }}">
+          <form class="needs-validation" method="post" novalidate action="{{ url('/shift') }}/{{ empty($data->id) ? 'simpan' : 'edit'}}">
             <div class="form-row">
               <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
               <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
               <div class="col-md-6 mb-5">
+                <label for="name">Shift</label>
+                <input readonly type="text" name="shiftindex" value="{{$data->shiftindex}}" class="form-control" id="name" placeholder="Nama" required>
+              </div><div class="col-md-6 mb-5">
+              </div>
+              <div class="col-md-6 mb-5">
                 <label>Tanggal</label>
-                <input id="get" class="form-control flatpickr flatpickr-input">            
+                <input id="get"  class="form-control flatpickr flatpickr-input">            
               </div>
               <div class="col-md-6 mb-5">
                 <label for="name">Karyawan</label>
@@ -68,14 +73,14 @@
 @section('js-form')
 <script>
   
-  $(document).ready(function (){
+  $(document).ready(function (){    
     let f1 = flatpickr($('#get'), {
     altinput: true,
-    altformat: "Y-m-d",
+    altformat: "d-m-Y",
     noCalendar: true,
     dateFormat: "d-m-Y",
     defaultDate: "today"
-});
+    });
     // Fetch all the forms we want to apply custom Bootstrap validation styles to
     let forms = document.getElementsByClassName('needs-validation');
 

@@ -26,6 +26,18 @@ class ShiftController extends Controller
 	{
 		$respon = Helpers::$responses;
 		$results = ShiftRepository::get($respon, $id);
+		if($results['status'] == 'error'){
+			$request->session()->flash($results['status'], $results['messages']);
+			return redirect()->action([ShiftController::class, 'index']);
+		}
+		// dd($respon);
+		return view('Shift.edit')->with('data', $results['data']);
+	}
+
+	public function getEdit(Request $request, $id = null)
+	{
+		$respon = Helpers::$responses;
+		$results = ShiftRepository::getclosedit($respon, $id);
 
 		if($results['status'] == 'error'){
 			$request->session()->flash($results['status'], $results['messages']);
@@ -38,7 +50,7 @@ class ShiftController extends Controller
 	public function getClose(Request $request, $id = null)
 	{
 		$respon = Helpers::$responses;
-		$results = ShiftRepository::get($respon, $id);
+		$results = ShiftRepository::getclosedit($respon, $id);
 
 		if($results['status'] == 'error'){
 			$request->session()->flash($results['status'], $results['messages']);
@@ -57,7 +69,6 @@ class ShiftController extends Controller
 		);
 
 		$inputs = $request->all();
-		// dd($inputs);
 		$validator = validator::make($inputs, $rules);
 
 		if ($validator->fails()){
@@ -65,10 +76,39 @@ class ShiftController extends Controller
 		}
 
 		$results = ShiftRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
+	
     //cek
 
 		$request->session()->flash($results['status'], $results['messages']);
+		$cekRes = $results['status'];
+		if ($cekRes == 'success'){
+		return view('Shift.Index');
+		}elseif($cekRes == 'error'){
 		return redirect()->action([ShiftController::class, 'getById'], ['id' => $results['id']]);
+		}
+	}
+
+	public function edit(Request $request)
+	{
+		$respon = Helpers::$responses;
+		$rules = array(
+			'shiftuserid' => 'required',
+			'shiftstartcash' => 'required'
+		);
+
+		$inputs = $request->all();
+		$validator = validator::make($inputs, $rules);
+
+		if ($validator->fails()){
+			return redirect()->back()->withErrors($validator)->withInput($inputs);
+		}
+
+		$results = ShiftRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
+	
+    //cek
+
+		$request->session()->flash($results['status'], $results['messages']);
+		return redirect()->action([ShiftController::class, 'getEdit'], ['id' => $results['id']]);
 	}
 
 	public function close(Request $request)
@@ -86,9 +126,14 @@ class ShiftController extends Controller
 			return redirect()->back()->withErrors($validator)->withInput($inputs);
 		}
 		$results = ShiftRepository::close($respon, $inputs, Auth::user()->getAuthIdentifier());
-    //cek
+		//cek
 		$request->session()->flash($results['status'], $results['messages']);
+		$cekRes = $results['status'];
+		if ($cekRes == 'success'){
+		return view('Shift.Index');
+		}elseif($cekRes == 'error'){
 		return redirect()->action([ShiftController::class, 'getClose'], ['id' => $results['id']]);
+		}
 	}
 
 	public function deleteById(Request $request, $id)

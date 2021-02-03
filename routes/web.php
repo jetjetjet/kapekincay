@@ -51,7 +51,9 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('/shift/grid', [ShiftController::class, 'getLists']);
   Route::get('/shift/detail/{id?}', [ShiftController::class, 'getById']);
   Route::get('/shift/close/{id}', [ShiftController::class, 'getClose']);
+  Route::get('/shift/edit/{id}', [ShiftController::class, 'getEdit']);
   Route::post('/shift/simpan', [ShiftController::class, 'save']);
+  Route::post('/shift/edit', [ShiftController::class, 'edit']);
   Route::post('/shift/close', [ShiftController::class, 'close']);
   Route::post('/shift/hapus/{id}', [ShiftController::class, 'deleteById']);
 

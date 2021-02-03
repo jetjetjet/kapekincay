@@ -11,6 +11,7 @@ class Shift extends Model
 	protected $fillable = [
         'shiftuserid',
         'shiftstart',
+        'shiftindex',
         'shiftclose',
         'shiftstartcash',
         'shiftstartcoin',
@@ -34,6 +35,7 @@ class Shift extends Model
       $model->shiftendcoin = null;
       $model->shiftenddetail = null;
       $model->shiftclose = null;
+      $model->shiftindex = null;
 
   
       return $model;
