@@ -106,27 +106,32 @@ class UserRepository
 
   public static function delete($respon, $id, $loginid)
   {
-    $data = User::where('useractive', '1')
-      ->where('id', $id)
-      ->first();
+    if ($id == 1){
+      array_push($respon['messages'], 'User superadmin tidak bisa dihapus.');
+      $respon['status'] = 'error';
 
-    $cekDelete = false;
+    }else{
+      $data = User::where('useractive', '1')
+        ->where('id', $id)
+        ->first();
 
-    if ($data != null){
-      $data->update([
-        'useractive' => '0',
-        'usermodifiedby' => $loginid,
-        'usermodifiedat' => now()->toDateTimeString()
-      ]);
-      
-      $cekDelete = true;
+      $cekDelete = false;
+
+      if ($data != null){
+        $data->update([
+          'useractive' => '0',
+          'usermodifiedby' => $loginid,
+          'usermodifiedat' => now()->toDateTimeString()
+        ]);
+        
+        $cekDelete = true;
+      }
+
+      $respon['status'] = $data != null && $cekDelete ? 'success': 'error';
+      $data != null && $cekDelete
+        ? array_push($respon['messages'], 'Data User berhasil dihapus.') 
+        : array_push($respon['messages'], 'Data User tidak ditemukan');
     }
-
-    $respon['status'] = $data != null && $cekDelete ? 'success': 'error';
-    $data != null && $cekDelete
-      ? array_push($respon['messages'], 'Data User berhasil dihapus.') 
-      : array_push($respon['messages'], 'Data User tidak ditemukan');
-    
     return $respon;
   }
 
@@ -148,8 +153,8 @@ class UserRepository
       $cekUpdate = true;
     }
   
-    $respon['status'] = $data != null && $cekDelete ? 'success': 'error';
-    $data != null && $cekDelete
+    $respon['status'] = $data != null && $cekUpdate ? 'success': 'error';
+    $data != null && $cekUpdate
       ? array_push($respon['messages'], 'Password berhasil diubah.') 
       : array_push($respon['messages'], 'Password gagal diubah.');
     

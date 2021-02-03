@@ -69,16 +69,20 @@ class UserController extends Controller
 		$respon = Helpers::$responses;
 		
 		$rules = array(
-			'userpassword' => 'required'
+			'userpassword' => 'required|same:userpass2'
 		);
 
 		$inputs = $request->all();
 		$validator = validator::make($inputs, $rules);
+		if($validator->fails()){
+			array_push($respon['messages'], 'Periksa Kembali Password Anda');
+			$respon['status'] = "error";
+			return response()->json($respon);
+		}
 
 		$results = UserRepository::changepassword($respon, $id, $inputs, Auth::user()->getAuthIdentifier());
 		//cek
-		$request->session()->flash($results['status'], $results['messages']);
-		return redirect()->action([UserController::class, 'getById'], ['id' => $results['id']]);
+		return response()->json($results);
 	}
 
 	public function deleteById(Request $request, $id)
