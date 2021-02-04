@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BoardController;
 use App\Http\Controllers\LoginController;
@@ -33,6 +34,12 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/jabatan/simpan', [RoleController::class, 'save']);
   Route::post('/jabatan/hapus/{id}', [RoleController::class, 'deleteById']);
 
+  Route::get('/cust', [CustomerController::class, 'index']);
+  Route::get('/cust/grid', [CustomerController::class, 'getLists']);
+  Route::get('/cust/detail/{id?}', [CustomerController::class, 'getById']);
+  Route::post('/cust/simpan', [CustomerController::class, 'save']);
+  Route::post('/cust/hapus/{id}', [CustomerController::class, 'deleteById']);
+  
   Route::get('/meja', [BoardController::class, 'index']);
   Route::get('/meja/grid', [BoardController::class, 'getLists']);
   Route::get('/meja/detail/{id?}', [BoardController::class, 'getById']);

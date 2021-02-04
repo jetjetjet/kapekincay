@@ -44,6 +44,7 @@
 								<li><a href="{{ url('/jabatan') }}">Jabatan</a></li>
 								<li><a href="{{ url('/meja') }}">Meja</a></li>
 								<li><a href="{{ url('/menu') }}">Menu</a></li>
+								<li><a href="{{ url('/cust') }}">Pelanggan</a></li>
 								<li><a href="{{ url('/shift') }}">Shift</a></li>
 								<li><a href="{{ url('/user') }}">User</a></li>
 							</ul>
