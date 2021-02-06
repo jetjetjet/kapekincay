@@ -15,10 +15,10 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('orderboardid')->nullable();
             $table->string('orderinvoice');
-            $table->string('ordercustname');
             $table->string('ordertype');
+            $table->bigInteger('orderboardid')->nullable();
+            $table->string('ordercustname');
             $table-dateTime('orderdate');
             $table->string('orderdetail')->nullable();
             $table->string('orderstatus');
