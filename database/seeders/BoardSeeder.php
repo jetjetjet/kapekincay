@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Board;
 use App\Models\User;
+use App\Models\Menu;
 use Illuminate\Support\Facades\Hash;
 
 class BoardSeeder extends Seeder
@@ -25,5 +26,6 @@ class BoardSeeder extends Seeder
             'usercreatedby' => '1'
         ]);
         Board::factory()->count(25)->create();
+        Menu::factory()->count(25)->create();
     }
 }

@@ -90,4 +90,12 @@ class MenuController extends Controller
 		$results = MenuRepository::delete($respon, $id, Auth::user()->getAuthIdentifier());
 		return response()->json($results);
 	}
+
+	public function menuOrder(Request $request)
+	{
+		$respon = Helpers::$responses;
+
+		$results = MenuRepository::menuapi($respon);
+		return response()->json($results);
+	}
 }

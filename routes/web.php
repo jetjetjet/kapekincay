@@ -56,6 +56,7 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/menu/hapus/{id}', [MenuController::class, 'deleteById']);
   Route::get('image-upload', [ MenuController::class, 'imageUpload' ]);
   Route::post('image-upload', [ MenuController::class, 'imageUploadPost' ]);
+  Route::get('/menu/menuorder', [ MenuController::class, 'menuOrder']);
 
   Route::get('/setting', [SettingController::class, 'index']);
   Route::get('/setting/grid', [SettingController::class, 'getLists']);

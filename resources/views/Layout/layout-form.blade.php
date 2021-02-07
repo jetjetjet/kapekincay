@@ -87,6 +87,19 @@
   box-shadow: 0 1px 5px 1px #cccccc;
 }
 
+.imgrespo {
+  height: 30vw;
+  width: auto;
+  min-height: 55px;
+  max-height: 295px;
+}
+.imgrespo.w {
+  height: auto;
+  width: 42vw;
+  min-width: 187px;
+  max-width: 625px;
+}
+
 /* END MENU CATEGORIES PAGE */
 
 

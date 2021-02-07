@@ -6,13 +6,15 @@ use Illuminate\Http\Request;use Validator;
 
 use App\Libs\Helpers;
 use App\Repositories\OrderRepository;
+use App\Repositories\MenuRepository;
 use Auth;
 
 class OrderController extends Controller
 {
   public function order()
   {
-    return view('Order.pickMenu');
+    $menu = MenuRepository::getMenu();
+    return view('Order.pickMenu')->with('menu', $menu);
   }
 
   public function save(Request $request, $id = null)

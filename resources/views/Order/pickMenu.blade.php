@@ -25,22 +25,55 @@
               <li class="nav-item">
                 <a class="nav-link" id="justify-right-pills-profile-tab" data-toggle="pill" href="#justify-right-pills-profile" role="tab" aria-controls="justify-right-pills-profile" aria-selected="false">Minuman</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" id="justify-right-pills-profile-paket" data-toggle="pill" href="#justify-right-pills-paket" role="tab" aria-controls="justify-right-pills-profile" aria-selected="false">Paket</a>
+              </li>
             </ul>
             <div class="tab-content" id="justify-right-pills-tabContent">
               <div class="tab-pane fade show active" id="justify-right-pills-home" role="tabpanel" aria-labelledby="justify-right-pills-home-tab">
                 <section class="row">
+                @foreach($menu['Makanan'] as $mkn)
                   <div>
-                    <a id="menuCard" data-id="1" data-menutext="Nasi Goreng" data-price="15.000">
+                    <a class="menuCard" data-id="{{$mkn['id']}}" data-menutext="{{$mkn['menuname']}}" data-price="{{$mkn['menuprice']}}">
                       <div class="category-tile">
-                        <img width="120" height="120" src="https://usmile581.github.io/Bistro_Restaurant/images/menu/B/B.jpg" alt="Lunch">
-                        <span>Nasi Goreng</span>
+                        <img width="120" height="120" src="{{ url('/').$mkn->menuimg}}" alt="Lunch">
+                        <span>{{$mkn['menuname']}}</span>
                       </div>
                     </a>
                   </div>
+                @endforeach
                 </section>
               </div>
               <div class="tab-pane fade" id="justify-right-pills-profile" role="tabpanel" aria-labelledby="justify-right-pills-profile-tab">
-                dsa
+                
+              <section class="row">
+                @foreach($menu['Minuman'] as $mkn)
+                  <div>
+                    <a class="menuCard" data-id="{{$mkn['id']}}" data-menutext="{{$mkn['menuname']}}" data-price="{{$mkn['menuprice']}}">
+                      <div class="category-tile">
+                        <img width="120" height="120" src="{{ url('/').$mkn->menuimg}}" alt="Lunch">
+                        <span>{{$mkn['menuname']}}</span>
+                      </div>
+                    </a>
+                  </div>
+                @endforeach
+                </section>
+                </div>
+
+              <div class="tab-pane fade" id="justify-right-pills-paket" role="tabpanel" aria-labelledby="justify-right-pills-paket">
+                
+              <section class="row">
+                @foreach($menu['Paket'] as $mkn)
+                  <div>
+                   <a class="menuCard" data-id="{{$mkn['id']}}" data-menutext="{{$mkn['menuname']}}" data-price="{{$mkn['menuprice']}}">
+                      <div class="category-tile">
+                        <img width="120" height="120" src="{{ url('/').$mkn->menuimg}}" alt="Lunch">
+                        <span>{{$mkn['menuname']}}</span>
+                      </div>
+                    </a>
+                  </div>
+                @endforeach
+                </section>
               </div>
             </div>
           </div>
@@ -173,7 +206,7 @@
       $('#orderMenuForm').submit();
     })
 
-    $('#menuCard').on('click', function(){
+    $('.menuCard').on('click', function(){
       let menuPrice = $(this).attr('data-price'),
           menuText = $(this).attr('data-menutext'),
           menuId = $(this).attr('data-id');
