@@ -62,7 +62,7 @@ class MenuController extends Controller
 		// $inputs['menuimg']->move(public_path('images'), $imageName);
 		// $inputs['menuimgpath']='/images/'.$imageName;
 		if($request['id'] == null){
-			$idimg = $request['getid']+'1';
+			$idimg = $request['getid'];
 		}else{
 		$idimg = $request['id'];
 		}

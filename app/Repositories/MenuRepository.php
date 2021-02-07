@@ -17,18 +17,21 @@ class MenuRepository
       $data = new \stdClass();
       $respon['data'] = self::getFields($data);
       $getId = Menu::select('id')->orderBy('id', 'DESC')->first();
+      $dId = $getId->id??null;
+      $respon['data']->getId = $dId + '1';
       if($id){
         $respon['data'] = Menu::where('menuactive', '1')
         ->where('id', $id)
         ->select('id', 'menuname', 'menutype', 'menuprice','menudetail','menuimg','menuavaible')
         ->first();
+
   
         if($respon['data'] == null){
           $respon['status'] = 'error';
           array_push($respon['messages'],'Data tidak ditemukan!');
         }
       }
-      $respon['data']->getId = $getId->id;
+      // dd($respon);
       return $respon;
     }
   
