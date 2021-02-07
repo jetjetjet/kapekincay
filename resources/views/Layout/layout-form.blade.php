@@ -17,6 +17,9 @@
   <link href="{{ url('/') }}/assets/css/apps/todolist.css" rel="stylesheet" type="text/css" />
   <link href="{{ url('/') }}/assets/css/tables/table-basic.css" rel="stylesheet" type="text/css" />
 
+  <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/editors/quill/quill.snow.css">
+  <link href="{{ url('/') }}/assets/css/apps/todolist.css" rel="stylesheet" type="text/css" />
+
   <style>
     .container .jumbotron {
   box-shadow: 0 0 50px #3F0C1F;
