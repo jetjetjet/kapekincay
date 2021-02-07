@@ -108,6 +108,48 @@ class MenuRepository
       
       return $respon;
     }
+
+    public static function menuapi($respon)
+    {
+      $tempdata = Array('Makanan'=>Array(), 'Minuman'=>Array(), 'Paket'=>Array());
+      $getCat = Menu::where('menuactive', '1')
+      ->select('menuname', 'menuimg', 'menuprice', 'menuavaible', 'menutype')
+      ->get();
+      foreach($getCat as $data )
+      {
+        if($data->menutype == 'Makanan'){
+        array_push($tempdata['Makanan'], $data);
+        }else if($data->menutype == 'Minuman'){
+          array_push($tempdata['Minuman'], $data);
+        }else if($data->menutype == 'Paket'){
+          array_push($tempdata['Paket'], $data);
+        }
+      }
+      $respon['status'] = 'success';
+      $respon['data'] = $tempdata;
+      return $respon;
+
+    }
+
+    public static function getMenu()
+    {
+      $tempdata = Array('Makanan'=>Array(), 'Minuman'=>Array(), 'Paket'=>Array());
+      $getCat = Menu::where('menuactive', '1')
+      ->select('id','menuname', 'menuimg', 'menuprice', 'menuavaible', 'menutype')
+      ->get();
+      foreach($getCat as $data )
+      {
+        if($data->menutype == 'Makanan'){
+        array_push($tempdata['Makanan'], $data);
+        }else if($data->menutype == 'Minuman'){
+          array_push($tempdata['Minuman'], $data);
+        }else if($data->menutype == 'Paket'){
+          array_push($tempdata['Paket'], $data);
+        }
+      }
+      return $tempdata;
+    }
+
     public static function getFields($model)
     {
       $model->id = null;
