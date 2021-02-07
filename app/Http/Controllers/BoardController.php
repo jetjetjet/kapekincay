@@ -36,6 +36,13 @@ class BoardController extends Controller
 		return view('Board.edit')->with('data', $results['data']);
 	}
 
+	public function searchAvailable(Request $request)
+	{
+		$data = BoardRepository::getAvailable();
+		
+		return response()->json($data);
+	}
+
 	public function save(Request $request)
 	{
 		$respon = Helpers::$responses;

@@ -18,7 +18,12 @@
     <link href="{{ url('/') }}/plugins/sweetalerts/sweetalert.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/assets/css/elements/alert.css">
     <!-- END GLOBAL MANDATORY STYLES -->
-
+    <style>
+      .btnTransparent{
+        border:none; 
+        background:transparent
+      }
+    </style>
   	<!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
 		@yield('css-body')
   	<!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
