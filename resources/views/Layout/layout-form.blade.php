@@ -15,6 +15,7 @@
 
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/editors/quill/quill.snow.css">
   <link href="{{ url('/') }}/assets/css/apps/todolist.css" rel="stylesheet" type="text/css" />
+  <link href="{{ url('/') }}/assets/css/tables/table-basic.css" rel="stylesheet" type="text/css" />
 
   <style>
     .container .jumbotron {

@@ -4,17 +4,20 @@
 
 <tr class="subitem">
   <td>
-    <p id="dtl[{{ $rowIndex }}][menuText]"></p>
+    <p id="dtl[{{ $rowIndex }}][odmenutext]"></p>
+    <input type="hidden" name="dtl[{{ $rowIndex }}][odmenutext]" class=" text-right"/>
   </td>
   <td>
-    <p width="50%" id="dtl[{{ $rowIndex }}][menuPrice]"></p>
+    <p width="50%" id="dtl[{{ $rowIndex }}][odprice]"></p>
+    <input type="hidden" name="dtl[{{ $rowIndex }}][odprice]" class=" text-right"/>
   </td>
   <td>
-    <input type="hidden" name="dtl[{{ $rowIndex }}][id]" class=" text-right"/>
-    <input type="text" name="dtl[{{ $rowIndex }}][qty]" style="width: 35px;" class=" text-right"/>
+    <input type="hidden" name="dtl[{{ $rowIndex }}][odmenuid]" class=" text-right"/>
+    <input type="text" name="dtl[{{ $rowIndex }}][odqty]" style="width: 35px;" class=" text-right"/>
   </td>
   <td>
-  asd
+    <input type="hidden" name="dtl[{{ $rowIndex }}][odremark]"/>
+    <p id="dtl[{{ $rowIndex }}][odremark]"></p>
   </td>
   <td>
     <button type="button" title="Hapus" style="border:none; background:transparent" remove-row>

@@ -13,9 +13,21 @@ class CreateOrderDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_details', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('orderdetail', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->bigInteger('odorderid');
+            $table->integer('odmenuid');
+            $table->integer('odqty');
+            $table->decimal('odprice',16,0);
+            $table->decimal('odtotalprice',16,0);
+            $table->string('odremark')->nullable();
+            $table->integer('odindex');
+
+            $table->boolean('odactive');
+            $table->dateTime('odcreatedat');
+            $table->integer('odcreatedby');
+            $table->dateTime('odmodifiedat')->nullable();
+            $table->integer('odmodifiedby')->nullable();
         });
     }
 
