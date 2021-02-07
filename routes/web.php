@@ -8,13 +8,10 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\MenuController;
-<<<<<<< HEAD
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ImageUploadController;
-=======
 use App\Http\Controllers\OrderController;
->>>>>>> 2c9ed6cfa777e7b5b25c3dc3c16ba55c4dcca043
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -60,16 +57,14 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('image-upload', [ MenuController::class, 'imageUpload' ]);
   Route::post('image-upload', [ MenuController::class, 'imageUploadPost' ]);
 
-<<<<<<< HEAD
   Route::get('/setting', [SettingController::class, 'index']);
   Route::get('/setting/grid', [SettingController::class, 'getLists']);
   Route::get('/setting/detail/{id?}', [SettingController::class, 'getById']);
   Route::post('/setting/simpan', [SettingController::class, 'save']);
-=======
+  
   Route::get('/order', [OrderController::class, 'order']);
   Route::post('/order/proceed/{id?}', [ OrderController::class, 'proceed' ]);
   Route::post('/order/save/{id?}', [OrderController::class, 'save']);
->>>>>>> 2c9ed6cfa777e7b5b25c3dc3c16ba55c4dcca043
 
   Route::get('/shift', [ShiftController::class, 'index']);
   Route::get('/shift/grid', [ShiftController::class, 'getLists']);
