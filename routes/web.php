@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ShiftController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ImageUploadController;
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +54,11 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/menu/hapus/{id}', [MenuController::class, 'deleteById']);
   Route::get('image-upload', [ MenuController::class, 'imageUpload' ]);
   Route::post('image-upload', [ MenuController::class, 'imageUploadPost' ]);
+
+  Route::get('/setting', [SettingController::class, 'index']);
+  Route::get('/setting/grid', [SettingController::class, 'getLists']);
+  Route::get('/setting/detail/{id?}', [SettingController::class, 'getById']);
+  Route::post('/setting/simpan', [SettingController::class, 'save']);
 
   Route::get('/shift', [ShiftController::class, 'index']);
   Route::get('/shift/grid', [ShiftController::class, 'getLists']);
