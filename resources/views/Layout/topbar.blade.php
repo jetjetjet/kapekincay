@@ -47,6 +47,7 @@
 								<li><a href="{{ url('/cust') }}">Pelanggan</a></li>
 								<li><a href="{{ url('/shift') }}">Shift</a></li>
 								<li><a href="{{ url('/user') }}">User</a></li>
+								<li><a href="{{ url('/setting') }}">Pengaturan</a></li>
 							</ul>
 						</li>
 					</ul>
