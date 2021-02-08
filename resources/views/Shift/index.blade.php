@@ -16,6 +16,7 @@
       <table id="grid" class="table table-hover" style="width:100%">
         <thead>
           <tr>
+            <th>Shift</th>
             <th>Karyawan</th>
             <th>Tanggal Buka</th>
             <th>Tanggal Tutup</th>
@@ -27,6 +28,7 @@
         </tbody>
         <tfoot>
           <tr>
+            <th>Shift</th>
             <th>Karyawan</th>
             <th>Tanggal Buka</th>
             <th>Tanggal Tutup</th>
@@ -71,6 +73,10 @@
         "lengthMenu": [10, 20, 50],
         "pageLength": 15,
         columns: [
+          { 
+            data: 'shiftindex',
+            searchText: true
+          },
           { 
             data: 'username',
             searchText: true
@@ -126,10 +132,10 @@
         
         const rowData = grid.row($(this).closest('tr')).data();
         const url = "{{ url('shift/hapus') . '/' }}" + rowData.id;
-        const title = 'Hapus Menu';
-        const pesan = 'Apakah anda yakin ingin menghapus menu ini?'
+        const title = 'Hapus Shift';
+        const pesan = 'Alasan hapus?'
         console.log(rowData, url)
-        gridDeleteRow(url, title, pesan, grid);
+        gridDeleteInput(url, title, pesan, grid);
       });
       $('#grid').on('click', 'a.gridnoDelete', function (e) {
         e.preventDefault();

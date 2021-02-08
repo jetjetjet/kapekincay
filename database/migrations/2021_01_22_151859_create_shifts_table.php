@@ -24,6 +24,7 @@ class CreateShiftsTable extends Migration
             $table->decimal('shiftendcash',16,0)->nullable();
             $table->decimal('shiftendcoin',16,0)->nullable();
             $table->string('shiftenddetail')->nullable();
+            $table->string('shiftdeleteremark')->nullable();
             $table->boolean('shiftactive');
             $table->dateTime('shiftcreatedat');
             $table->integer('shiftcreatedby');

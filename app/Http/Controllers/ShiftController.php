@@ -82,9 +82,9 @@ class ShiftController extends Controller
 		$request->session()->flash($results['status'], $results['messages']);
 		$cekRes = $results['status'];
 		if ($cekRes == 'success'){
-		return view('Shift.Index');
+			return redirect()->action([ShiftController::class, 'index']);
 		}elseif($cekRes == 'error'){
-		return redirect()->action([ShiftController::class, 'getById'], ['id' => $results['id']]);
+			return redirect()->action([ShiftController::class, 'getById'], ['id' => $results['id']]);
 		}
 	}
 
@@ -110,9 +110,9 @@ class ShiftController extends Controller
 		$request->session()->flash($results['status'], $results['messages']);
 		$cekRes = $results['status'];
 		if ($cekRes == 'success'){
-		return view('Shift.Index');
+			return redirect()->action([ShiftController::class, 'index']);
 		}elseif($cekRes == 'error'){
-		return redirect()->action([ShiftController::class, 'getEdit'], ['id' => $results['id']]);
+			return redirect()->action([ShiftController::class, 'getEdit'], ['id' => $results['id']]);
 		}
 	}
 
@@ -135,17 +135,28 @@ class ShiftController extends Controller
 		$request->session()->flash($results['status'], $results['messages']);
 		$cekRes = $results['status'];
 		if ($cekRes == 'success'){
-		return view('Shift.Index');
+			return redirect()->action([ShiftController::class, 'index']);
 		}elseif($cekRes == 'error'){
-		return redirect()->action([ShiftController::class, 'getClose'], ['id' => $results['id']]);
+			return redirect()->action([ShiftController::class, 'getClose'], ['id' => $results['id']]);
 		}
 	}
 
 	public function deleteById(Request $request, $id)
 	{
 		$respon = Helpers::$responses;
+		$rules = array(
+			'shiftdeleteremark' => 'required'
+		);
 
-		$results = ShiftRepository::delete($respon, $id, Auth::user()->getAuthIdentifier());
+		$inputs = $request->all();
+		
+		$validator = validator::make($inputs, $rules);
+
+		if ($validator->fails()){
+			return response()->json($results);
+		}
+
+		$results = ShiftRepository::delete($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
 		return response()->json($results);
 	}
 

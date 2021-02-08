@@ -19,6 +19,7 @@
             <th>Nama</th>
             <th>Kategori</th>
             <th>Harga</th>
+            <th>Status</th>
             <th class="no-content"></th>
           </tr>
         </thead>
@@ -29,6 +30,7 @@
             <th>Name</th>
             <th>Kategori</th>
             <th>Harga</th>
+            <th>Status</th>
             <th></th>
           </tr>
         </tfoot>
@@ -79,6 +81,17 @@
           { 
               data: 'menuprice',
               searchText: true
+          },
+          { 
+              data:null,
+              searchText: true,
+              render: function(data, type, full, meta){
+                if(data.menuavaible == 'Tersedia'){
+                  return '<span class="badge badge-success"> Tersedia </span>';  
+                }else{
+                  return '<span class="badge badge-danger"> Kosong </span>';
+                }
+              }
           },
           { 
             data:null,

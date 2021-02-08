@@ -61,8 +61,8 @@
               </div>             
             </div>  
               <div class="float-right">
-                <a href="{{ url('/shift') }}" type="button" class="btn btn-danger mt-2" type="submit">Batal</a>
-                <button class="btn btn-primary mt-2" type="submit">Simpan</button>
+                <a href="{{ url('/shift') }}" type="button"  class="btn btn-danger mt-2" type="submit">Batal</a>
+                <button class="btn btn-primary mt-2" id="sub" type="submit">Simpan</button>
               </div>
           </form>
         </div>
@@ -73,7 +73,9 @@
 @section('js-form')
 <script>
   
-  $(document).ready(function (){    
+  // var dis = $('#sub').attr('disabled', true);
+
+  $(document).ready(function (){   
     let f1 = flatpickr($('#get'), {
     altinput: true,
     altformat: "d-m-Y",
@@ -91,8 +93,10 @@
         if (form.checkValidity() === false) {
           event.preventDefault();
           event.stopPropagation();
+        }else if (form.checkValidity() === true){
+        $('#sub').attr('disabled', true);
         }
-        form.classList.add('was-validated');
+        form.classList.add('was-validated');     
       }, false);
     });
   })

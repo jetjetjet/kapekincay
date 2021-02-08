@@ -12,7 +12,9 @@ class ShiftRepository
   {
     return Shift::where('shiftactive', '1')
     ->join('users', 'shifts.shiftuserid', '=', 'users.id')
-    ->select('shifts.id','users.username', 'shifts.shiftstart', 'shifts.shiftclose', DB::raw('left(shifts.shiftenddetail, 15) as shiftenddetail'))
+    ->select('shifts.id','username','shiftindex', 'shiftstart', 'shiftclose', DB::raw('left(shiftenddetail, 15) as shiftenddetail'))
+    ->orderBy('shiftstart', 'DESC')
+    ->orderBy('shiftindex', 'ASC')
     ->get();
   }
 
@@ -76,7 +78,7 @@ class ShiftRepository
     
     if($qClosed != null){
       $respon['status'] = 'error';
-      array_push($respon['messages'],'Data sudah ditutup tidak bisa diedit');
+      array_push($respon['messages'],'Shift sudah ditutup tidak bisa diedit');
     }
     elseif($id){
       $respon['data'] = Shift::where('shiftactive', '1')
@@ -122,7 +124,7 @@ class ShiftRepository
         ]);
 
         $respon['status'] = 'success';
-        array_push($respon['messages'], 'pesan sukses update');
+        array_push($respon['messages'], 'Shift berhasil diperbarui');
         
       } else {
         $data = Shift::create([
@@ -137,7 +139,7 @@ class ShiftRepository
         ]);
 
         $respon['status'] = 'success';
-        array_push($respon['messages'], 'pesan sukses tambah');
+        array_push($respon['messages'], 'Shift berhasil ditambah');
       }
     } catch(\Exception $e){
       dd($e);
@@ -165,7 +167,7 @@ class ShiftRepository
           'shiftmodifiedby' => $loginid
         ]);
         $respon['status'] = 'success';
-        array_push($respon['messages'], 'pesan sukses update');
+        array_push($respon['messages'], 'Shift berhasil ditutup');
 
     } catch(\Exception $e){
       dd($e);
@@ -177,7 +179,7 @@ class ShiftRepository
   }
 
 
-  public static function delete($respon, $id, $loginid)
+  public static function delete($respon, $id, $loginid, $inputs)
   {
     $data = Shift::where('shiftactive', '1')
       ->where('id', $id)
@@ -188,6 +190,7 @@ class ShiftRepository
 
     if ($data != null){
       $data->update([
+        'shiftdeleteremark' => $inputs['shiftdeleteremark'],
         'shiftactive' => '0',
         'shiftmodifiedby' => $loginid,
         'shiftmodifiedat' => now()->toDateTimeString()
@@ -198,8 +201,8 @@ class ShiftRepository
 
     $respon['status'] = $data != null && $cekDelete ? 'success': 'error';
     $data != null && $cekDelete
-      ? array_push($respon['messages'], 'Data Berhasil Dihapus.') 
-      : array_push($respon['messages'], 'Data Sudah Ditutup');
+      ? array_push($respon['messages'], 'Shift Berhasil Dihapus.') 
+      : array_push($respon['messages'], 'Shift Sudah Ditutup');
     
     return $respon;
   }

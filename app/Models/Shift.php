@@ -18,6 +18,7 @@ class Shift extends Model
         'shiftendcash',
         'shiftendcoin',
         'shiftenddetail',
+        'shiftdeleteremark',
         'shiftactive',
         'shiftcreatedat',
         'shiftcreatedby',
@@ -36,7 +37,7 @@ class Shift extends Model
       $model->shiftenddetail = null;
       $model->shiftclose = null;
       $model->shiftindex = null;
-
+      $model->shiftdeleteremark = null;
   
       return $model;
     }

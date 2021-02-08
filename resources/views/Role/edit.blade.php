@@ -73,7 +73,7 @@
             </div>
             <div class="float-right">
               <a href="{{ url('/jabatan') }}" type="button" class="btn btn-danger mt-2" type="submit">Batal</a>
-              <button class="btn btn-primary mt-2" type="submit">Simpan</button>
+              <button class="btn btn-primary mt-2" id="sub" type="submit">Simpan</button>
             </div>
           </form>
         </div>
@@ -98,6 +98,8 @@
         if (form.checkValidity() === false) {
           event.preventDefault();
           event.stopPropagation();
+        }else if (form.checkValidity() === true){
+        $('#sub').attr('disabled', true);
         }
         form.classList.add('was-validated');
       }, false);

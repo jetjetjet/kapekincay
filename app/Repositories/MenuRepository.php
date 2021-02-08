@@ -9,7 +9,9 @@ class MenuRepository
 {
     public static function grid()
     {
-      return Menu::where('menuactive', '1')->select('id','menuname', 'menutype', 'menuprice')->get();
+      return Menu::where('menuactive', '1')
+      ->select('id','menuname', 'menutype', DB::raw("to_char(menuprice, '999G999G999G999D99')as menuprice"), DB::raw("CASE WHEN menus.menuavaible = true THEN 'Tersedia' ELSE 'Kosong' END as menuavaible"))
+      ->get();
     }
   
     public static function get($respon, $id)
