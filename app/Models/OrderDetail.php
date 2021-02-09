@@ -7,5 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderDetail extends Model
 {
-    use HasFactory;
+  use HasFactory;
+  protected $table = 'orderdetail';
+  public $timestamps = false;
+	protected $fillable = [
+    'odorderid',
+    'odmenuid',
+    'odqty',
+    'odprice',
+    'odtotalprice',
+    'odremark',
+    'odindex',
+    'odactive',
+    'odcreatedat',
+    'odcreatedby',
+    'odmodifiedat',
+    'odmodifiedby'
+  ];
 }

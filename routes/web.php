@@ -45,7 +45,7 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('/meja', [BoardController::class, 'index']);
   Route::get('/meja/grid', [BoardController::class, 'getLists']);
   Route::get('/meja/detail/{id?}', [BoardController::class, 'getById']);
-  Route::get('/meja/cariTersedia', [BoardController::class, 'searchAvailable']);
+  Route::get('/meja/cariTersedia/{id?}', [BoardController::class, 'searchAvailable']);
   Route::post('/meja/simpan', [BoardController::class, 'save']);
   Route::post('/meja/hapus/{id}', [BoardController::class, 'deleteById']);
 
@@ -63,7 +63,7 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('/setting/detail/{id?}', [SettingController::class, 'getById']);
   Route::post('/setting/simpan', [SettingController::class, 'save']);
   
-  Route::get('/order', [OrderController::class, 'order']);
+  Route::get('/order/{id?}', [OrderController::class, 'order']);
   Route::post('/order/proceed/{id?}', [ OrderController::class, 'proceed' ]);
   Route::post('/order/save/{id?}', [OrderController::class, 'save']);
 

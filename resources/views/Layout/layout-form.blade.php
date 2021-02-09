@@ -21,91 +21,41 @@
   <link href="{{ url('/') }}/assets/css/apps/todolist.css" rel="stylesheet" type="text/css" />
 
   <style>
+    /* SELECT2 MODAL */
+    .select2-close-mask{
+      z-index: 2099;
+    }
+    .select2-dropdown{
+      z-index: 3051;
+    }
+
     .container .jumbotron {
-  box-shadow: 0 0 50px #3F0C1F;
-  border: 2px solid #3F0C1F;
-}
+      box-shadow: 0 0 50px #3F0C1F;
+      border: 2px solid #3F0C1F;
+    }
 
-#menu-tile, #specials-tile, #map-tile {
-  height: 250px;
-  width: 100%;
-  margin-bottom: 15px;
-  position: relative;
-  border: 2px solid #3F0C1F;
-  overflow: hidden; /* for map: to not stick out */
-}
-#menu-tile:hover, #specials-tile:hover, #map-tile:hover {
-  box-shadow: 0 1px 5px 1px #cccccc;
-}
-
-#menu-tile {
-  background: url('https://usmile581.github.io/Bistro_Restaurant/images/menu-tile.jpg') no-repeat;
-  background-position: center;
-}
-#specials-tile {
-  background: url('https://usmile581.github.io/Bistro_Restaurant/images/specials-tile.jpg') no-repeat;
-  background-position: center;
-}
-
-#menu-tile span, #specials-tile span, #map-tile span {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  text-align: center;
-  font-size: 1.6em;
-  text-transform: uppercase;
-  background-color: #000;
-  color: #fff;
-  opacity: .8; /*transparent */
-}
-
-/* END HOME PAGE */
-
-/* MENU CATEGORIES PAGE */
-.category-tile { 
-  position: relative;
-  border: 1px solid #3F0C1F;
-  overflow: hidden;
-  width: 120px; /*automatically center image: give width, and margin left/right to auto */
-  height: 120px;
-  margin: 5px 5px 5px;
-}
-.category-tile span {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  text-align: center;
-  font-size: 1.2em;
-  text-transform: uppercase;
-  background-color: #000;
-  color: #fff;
-  opacity: .8;
-}
-.category-tile:hover {
-  box-shadow: 0 1px 5px 1px #cccccc;
-}
-
-.imgrespo {
-  height: 30vw;
-  width: auto;
-  min-height: 55px;
-  max-height: 295px;
-}
-.imgrespo.w {
-  height: auto;
-  width: 42vw;
-  min-width: 187px;
-  max-width: 625px;
-}
+    /* MENU CATEGORIES PAGE */
+    .category-tile { 
+      position: relative;
+      border: 1px solid #3F0C1F;
+      overflow: hidden;
+      width: 120px; /*automatically center image: give width, and margin left/right to auto */
+      height: 120px;
+      margin: 5px 5px 5px;
+    }
+    .category-tile span {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      text-align: center;
+      text-transform: uppercase;
+      background-color: #000;
+      color: #fff;
+      opacity: .8;
+    }
 
 /* END MENU CATEGORIES PAGE */
-
-
-
-
-
   </style>
 @endsection
 

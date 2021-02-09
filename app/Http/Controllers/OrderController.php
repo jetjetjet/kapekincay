@@ -11,10 +11,12 @@ use Auth;
 
 class OrderController extends Controller
 {
-  public function order()
+  public function order(Request $request, $id = null)
   {
+    $respon = Helpers::$responses;
     $menu = MenuRepository::getMenu();
-    return view('Order.pickMenu')->with('menu', $menu);
+    $data = OrderRepository::getOrder($respon, $id);
+    return view('Order.pickMenu')->with('menu', $menu)->with('data', $data);
   }
 
   public function save(Request $request, $id = null)
@@ -25,16 +27,16 @@ class OrderController extends Controller
     $rules = array(
 			'ordercustname' => 'required'
     );
-    dd($inputs);
+
     $validator = validator::make($inputs, $rules);
 		if ($validator->fails()){
 			return redirect()->back()->withErrors($validator)->withInput($inputs);
     }
     
-    $results = OrderRepository::save($request, $inputs, $loginid);
+    $results = OrderRepository::save($respon, $id, $inputs, Auth::user()->getAuthIdentifier());
     $request->session()->flash($results['status'], $results['messages']);
 
-		return redirect()->action([OrderController::class, 'detailOrder'], ['id' => $results['id']]);
+		dd($results);
   }
 
   public function proceed(Request $request, $id = null)

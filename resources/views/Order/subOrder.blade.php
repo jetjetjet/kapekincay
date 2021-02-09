@@ -1,23 +1,29 @@
 <?php
   $rowIndex = $rowIndex ?? null;
+
+  $menuText = $sub->odmenutext ?? null;
+  $menuPrice = $sub->odprice ?? null;
+  $menuid = $sub->odmenuid ?? null;
+  $menuQty = $sub->odqty ?? null;
+  $menuRemark = $sub->odremark ?? null;
 ?>
 
 <tr class="subitem">
   <td>
-    <p id="dtl[{{ $rowIndex }}][odmenutext]"></p>
-    <input type="hidden" name="dtl[{{ $rowIndex }}][odmenutext]" class=" text-right"/>
+    <p id="dtl[{{ $rowIndex }}][odmenutext]">{{$menuText}}</p>
   </td>
   <td>
-    <p width="50%" id="dtl[{{ $rowIndex }}][odprice]"></p>
-    <input type="hidden" name="dtl[{{ $rowIndex }}][odprice]" class=" text-right"/>
+    <p width="40%" id="dtl[{{ $rowIndex }}][odprice]">{{$menuPrice}}</p>
+    <input type="hidden" name="dtl[{{ $rowIndex }}][odprice]" value="{{$menuPrice}}" class=" text-right"/>
   </td>
   <td>
-    <input type="hidden" name="dtl[{{ $rowIndex }}][odmenuid]" class=" text-right"/>
-    <input type="text" name="dtl[{{ $rowIndex }}][odqty]" style="width: 35px;" class=" text-right"/>
+    <input type="hidden" name="dtl[{{ $rowIndex }}][id]" value="{{ isset($rowIndex) && isset($sub->id) ? $sub->id : null }}" class=" text-right"/>
+    <input type="hidden" name="dtl[{{ $rowIndex }}][odmenuid]" value="{{$menuid}}" class=" text-right"/>
+    <input type="text" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}" style="width: 35px;" class=" text-right"/>
   </td>
   <td>
-    <input type="hidden" name="dtl[{{ $rowIndex }}][odremark]"/>
-    <p id="dtl[{{ $rowIndex }}][odremark]"></p>
+    <input type="hidden" value="{{$menuRemark}}" name="dtl[{{ $rowIndex }}][odremark]"/>
+    <p id="dtl[{{ $rowIndex }}][odremark]"> {{$menuRemark}}</p>
   </td>
   <td>
     <button type="button" title="Hapus" style="border:none; background:transparent" remove-row>

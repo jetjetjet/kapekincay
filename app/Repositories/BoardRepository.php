@@ -30,16 +30,20 @@ class BoardRepository
     return $respon;
   }
 
-  public static function getAvailable()
+  public static function getAvailable($id)
   {
-    return Board::leftJoin('orders', function($q){
+    $data =  Board::leftJoin('orders', function($q){
       $q->whereRaw("orderactive = '1'")
         ->whereRaw('orderboardid = boards.id');})
       ->where('boardactive', '1')
       ->whereRaw("(orderstatus is null or orderstatus = 'DIBAYAR')")
       ->orderBy('boardfloor', 'asc')
-      ->orderBy('boardnumber', 'asc')
-      ->select('boards.id', 
+      ->orderBy('boardnumber', 'asc');
+      
+      if($id)
+        $data = $data->where('boards.id', $id);
+
+      return $data->select('boards.id', 
         DB::raw("concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor, ' Kapasitas ', boardspace, ' Orang') as text"))
     // Board::whereRaw('UPPER(customer_name) LIKE UPPER(\'%'. $cari .'%\')')
       ->get();
