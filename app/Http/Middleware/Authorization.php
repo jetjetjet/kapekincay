@@ -15,8 +15,8 @@ class Authorization
      * @param  \Closure  $next
      * @return mixed
      */
-    private static $unauhorizedMessage = "You are not authorized to access this resource / execute the action!";
-    private static $unauthenticatedMessage = "You are not logged in!";
+    private static $unauhorizedMessage = "Tidak dapat menjalankan perintah!";
+    private static $unauthenticatedMessage = "Anda belum login!";
     
     public function handle($request, Closure $next, ...$actions)
     {
