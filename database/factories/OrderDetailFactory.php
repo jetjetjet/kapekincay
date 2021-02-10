@@ -28,6 +28,7 @@ class OrderDetailFactory extends Factory
             'odqty' => 1,
             'odprice' => 20000,
             'odtotalprice' => 20000,
+            'oddelivered' => '1',
             //'odindex' => "KPC000000000",
             'odactive' => "1",
             'odcreatedat' => now(),
