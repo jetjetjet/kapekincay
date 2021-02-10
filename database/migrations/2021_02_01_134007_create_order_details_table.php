@@ -22,6 +22,7 @@ class CreateOrderDetailsTable extends Migration
             $table->decimal('odtotalprice',16,0);
             $table->string('odremark')->nullable();
             $table->integer('odindex');
+            $table->boolean('oddelivered');
 
             $table->boolean('odactive');
             $table->dateTime('odcreatedat');

@@ -178,6 +178,7 @@ class OrderRepository
             'odprice' => $dtl['odprice'],
             'odtotalprice' => ($dtl['odprice'] * $dtl['odqty']),
             'odremark' => $dtl['odremark'],
+            'oddelivered' => '0',
             'odindex' => $key,
             'odactive' => '1',
             'odcreatedat' => now()->toDateTimeString(),

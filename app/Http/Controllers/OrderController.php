@@ -36,18 +36,14 @@ class OrderController extends Controller
     $results = OrderRepository::save($respon, $id, $inputs, Auth::user()->getAuthIdentifier());
     $request->session()->flash($results['status'], $results['messages']);
 
-		dd($results);
+		return redirect()->action([OrderController::class, 'detail'], ['id' => $results['id']]);
   }
 
-  public function proceed(Request $request, $id = null)
+  public function detail(Request $request, $id)
   {
-    $inputs = $request->all();
-    $orderHeader = new \StdClass();
-    if($inputs['id'] == null){
-      $orderHeader = OrderRepository::dbOrderHeader($orderHeader);
-      $orderHeader->orderDetails = $inputs['dtl'];
-    }
-    return view('Order.proceed')->with('data', $orderHeader);
+    $respon = Helpers::$responses;
+    $results = OrderRepository::getOrder($respon, $id);
+    return view('Order.detail')->with('data', $results);
     
   }
 }

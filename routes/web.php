@@ -64,7 +64,7 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/setting/simpan', [SettingController::class, 'save']);
   
   Route::get('/order/{id?}', [OrderController::class, 'order']);
-  Route::post('/order/proceed/{id?}', [ OrderController::class, 'proceed' ]);
+  Route::get('/order/detail/{id?}', [ OrderController::class, 'detail' ]);
   Route::post('/order/save/{id?}', [OrderController::class, 'save']);
 
   Route::get('/shift', [ShiftController::class, 'index']);
