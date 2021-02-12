@@ -30,7 +30,7 @@ Route::group(array('middleware' => 'auth'), function ()
 {
   Route::get('/', [DashboardController::class, 'index']);
  
-  Route::get('/jabatan', [RoleController::class, 'index']);
+  Route::get('/jabatan', [RoleController::class, 'index'])->middleware('can:jabatan_lihat');
   Route::get('/jabatan/grid', [RoleController::class, 'getLists']);
   Route::get('/jabatan/detail/{id?}', [RoleController::class, 'getById']);
   Route::post('/jabatan/simpan', [RoleController::class, 'save']);
