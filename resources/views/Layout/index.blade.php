@@ -25,7 +25,10 @@
       }
     </style>
   	<!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
-		@yield('css-body')
+    <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/table/datatable/custom_dt_html5.css">
+    <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/table/datatable/dt-global_style.css">
+    @yield('css-body')
   	<!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
     
 </head>
@@ -107,7 +110,7 @@
     <script src="{{ url('/') }}/bootstrap/js/bootstrap.min.js"></script>
     <script src="{{ url('/') }}/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="{{ url('/') }}/assets/js/app.js"></script>
-    <script src="{{ url('/') }}/assets/js/cafe.js"></script>
+    <script src="{{ url('/') }}/js/cafe.js"></script>
     <script src="{{ url('/') }}/plugins/font-icons/feather/feather.min.js"></script>
     <script src="{{ url('/') }}/plugins/sweetalerts/sweetalert2.min.js"></script>
     <script>
@@ -118,7 +121,9 @@
     </script>
     <script src="{{ url('/') }}/assets/js/custom.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
-
+    <script src="{{ url('/') }}/plugins/table/datatable/datatables.js"></script>
+    <script src="{{ url('/') }}/plugins/table/datatable/button-ext/dataTables.buttons.min.js"></script>    
+    <script src="{{ url('/') }}/plugins/table/datatable/button-ext/buttons.html5.min.js"></script>
 		@yield('js-body')
 </body>
 </html>

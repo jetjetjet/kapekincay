@@ -65,7 +65,9 @@ Route::group(array('middleware' => 'auth'), function ()
   
   Route::get('/order/{id?}', [OrderController::class, 'order']);
   Route::get('/order/detail/{id?}', [ OrderController::class, 'detail' ]);
+  Route::get('/order/detail/grid/{idOrder}', [ OrderController::class, 'getDetail' ]);
   Route::post('/order/save/{id?}', [OrderController::class, 'save']);
+  Route::post('/order/delivered/{id?}', [OrderController::class, 'deliver']);
 
   Route::get('/shift', [ShiftController::class, 'index']);
   Route::get('/shift/grid', [ShiftController::class, 'getLists']);

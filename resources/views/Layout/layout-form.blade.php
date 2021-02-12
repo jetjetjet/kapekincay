@@ -55,6 +55,13 @@
       opacity: .8;
     }
 
+    .imgrespo {
+  height: 30vw;
+  width: auto;
+  min-height: 55px;
+  max-height: 295px;
+}
+
 /* END MENU CATEGORIES PAGE */
   </style>
 @endsection

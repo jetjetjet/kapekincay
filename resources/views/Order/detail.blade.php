@@ -5,7 +5,7 @@
     <h3>Order</h3>
   </div>
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);">Order</a></li>
+    <li class="breadcrumb-item"><a href="{{ url('/order').'/'.$data->id }}">Order</a></li>
     <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">{{ empty($data->id) ? 'Proses' : 'Ubah'}} Menu</a></li>
   </ol>
 @endsection
@@ -47,52 +47,33 @@
                 </div>                                                                        
               </div>
               <div class="table-responsive">
-                <table class="table table-bordered mb-4">
+                <table id=grid class="table table-bordered mb-4">
                     <thead>
+                      <th></th>
                       <th>Menu</th>
                       <th>Qty</th>
                       <th>Harga</th>
+                      <th>Total</th>
                       <th>Catatan</th>
-                      <th></th>
+                      <th>Status Pesanan</th>
+                      <th><input title="Pilih Semua" type="checkbox" id="checkall"></th>
                     </thead>
                     <tbody>
-                      @foreach($data->subOrder as $key=>$row)
-                        <tr>
-                          <td>
-                            <input type="hidden" name="dtl[{{$key}}][odmenutext]" value="{{$row['odmenutext']}}" />
-                            {{$row['odmenutext']}}
-                          </td>
-                          <td>
-                            <input type="hidden" name="dtl[{{$key}}][odqty]" value="{{$row['odqty']}}" />
-                            {{$row['odqty']}}
-                          </td>
-                          <td>
-                            <input type="hidden" name="dtl[{{$key}}][odprice]" value="{{$row['odprice']}}" />
-                            {{$row['odprice']}}
-                          </td>
-                          <td>
-                            <input type="hidden" name="dtl[{{$key}}][odremark]" value="{{$row['odremark']}}" />
-                            {{$row['odremark']}}
-                          </td>
-                          <td>
-                          </td>
-                        </tr>
-                      @endforeach
                     </tbody>
                 </table>
               </div>
             </div>
           </form>
+          <div class="float-right">
+          <button id="deliver" disabled class="btn btn-info mt-2">menu selesai</button>
+          </div>
         </div>
         <div class="row fixed-bottom">
           <div class="col-sm-12 ">
             <div class="widget-content widget-content-area">
-              <div class="float-left">
-                <a href="" type="button" class="btn btn-danger mt-2" type="submit">Batal</a>
-              </div>
               <div class="float-right">
-                <a href="" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah {{isset($data->id) ? 'Meja' : 'Pelanggan'}}</a>
-                <a type="button" id="prosesOrder" class="btn btn-primary mt-2">Simpan</a>
+                <a href="{{ url('/order').'/'.$data->id }}" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Pesanan</a>
+                <a type="button" id="prosesOrder" class="btn btn-primary mt-2">Pembayaran</a>
               </div>
             </div>
           </div>
@@ -105,8 +86,138 @@
 
 @section('js-form')
 <script>
-  
+
+
   $(document).ready(function (){
+
+
+    let grid = $('#grid').DataTable({
+        ajax: {
+          url: "{{ url('order/detail/grid').'/' }}" + '{{$data->id}}',
+          dataSrc: ''
+        },
+        dom: '<"row"<"col-md-12"<"row" > ><"col-md-12"rt> <"col-md-12"<"row">> >',
+
+        "paging": false,
+        "ordering": false,
+        columns: [
+          { 
+            data: 'id',
+            visible : false
+          },
+          { 
+            data: 'odmenutext',
+          },
+          { 
+            data: 'odqty',
+          },
+          { 
+            data: 'odprice',
+          },
+          { 
+            data: 'odtotalprice',
+          },
+          { 
+            data: 'odremark',
+          },
+          { 
+            data: 'oddelivertext',
+          },
+          { 
+            data:null,
+            render: function(data, type, full, meta){
+              if(data.oddelivertext == 'Sedang Diproses'){
+                return '<input type="checkbox" name="customCheck1" class="customCheck1" value="' + data.id+ '" >';
+              }else{
+                return'<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8dbf42" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+              }
+            }
+          }
+        ]
+      });
+    
+        const toast = swal.mixin({
+          toast: true,
+          position: 'center',
+          showConfirmButton: false,
+          timer: 3000,
+          padding: '2em'
+        });
+  
+    let idSub = [];
+  
+    $('#grid').on('change', 'input.customCheck1', function(){
+      let cek = $(this).is(':checked') ? true : false;
+      var input = $(this).closest('tr').find('.customCheck1').val();
+
+      if(cek){ 
+        idSub.push(input);
+      }else{
+        idSub = idSub.filter(item => item !== input)
+      }
+      
+      if(idSub.length >= 1){
+        $('#deliver').removeAttr('disabled');
+      }else{
+        $('#deliver').attr('disabled', true);
+      }
+      console.log(idSub)
+    });
+
+    $("#checkall").on('change', function(){
+      idSub = [];
+      let cek = $(this).is(':checked') ? true : false; 
+      $('.customCheck1').prop('checked', this.checked);
+      if(cek){
+        $("input:checkbox[name=customCheck1]:checked").each(function(){
+        idSub.push($(this).val());
+        });
+      }else{
+        idSub = [];
+        $('#deliver').attr('disabled', true);
+      }
+      if(idSub.length >= 1){
+        $('#deliver').removeAttr('disabled');
+      }
+      console.log(idSub)
+    })
+
+    $('#deliver').on('click',function(){
+      if(idSub.length >= 1){
+        $.ajax({
+          url: "{{ url('order/delivered') . '/'}}" + '{{$data -> id}}',
+          type: "post",
+          data: { idsub: idSub},
+          success: function(result){
+            console.log(result);
+            var msg = result.messages[0];
+            if(result.status == 'success'){
+              toast({
+                type: 'success',
+                title: msg,
+                padding: '2em',
+              })
+              grid.ajax.reload(null, true);
+              $('#deliver').attr('disabled', true);
+            }else{
+              toast({
+                type: 'error',
+                title: msg,
+                padding: '2em',
+              })
+            }
+          },
+          error:function(error){
+          }
+        });
+      }else{
+        toast({
+          type: 'error',
+          title: 'Terjadi Masalah',
+          padding: '2em',
+        })
+      }
+    })
 
     inputSearch('#cariMeja', "{{ Url('/meja/cariTersedia') }}", 'resolve', function(item) {
       return {

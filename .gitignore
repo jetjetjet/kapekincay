@@ -4,6 +4,7 @@
 /public/assets
 /public/bootstrap
 /public/plugins
+/public/images
 /storage/*.key
 /vendor
 .env

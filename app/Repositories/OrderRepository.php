@@ -57,6 +57,8 @@ class OrderRepository
         'odqty',
         'odprice',
         'odtotalprice',
+        DB::raw("CASE WHEN oddelivered = true then 'Sudah Diantar' ELSE 'Sedang Diproses' END as oddelivertext"),
+        'oddelivered',
         'odremark',
         'odindex'
         )
@@ -277,5 +279,28 @@ class OrderRepository
       $invoice['invoice'] = "KPKCO" . Carbon::now()->format('ymd'). $incr ;
     }
     return $invoice;
+  }
+
+  public static function deliver($respon, $id, $loginid, $inputs)
+  {
+    try{
+      $data = OrderDetail::whereIn('id', $inputs['idsub'])
+      ->where('oddelivered', '0')
+      ->where('odactive', '1')
+      ->update([
+        'oddelivered' => '1',
+        'odmodifiedby' => $loginid,
+        'odmodifiedat' => now()->toDateTimeString()
+      ]);
+
+      $respon['status'] = 'success';
+      array_push($respon['messages'], 'Menu sudah diantar');
+      
+    }catch(\Exception $e){
+      $respon['status'] = 'error';
+      array_push($respon['messages'], 'Kesalahan');
+    }
+    
+    return $respon;
   }
 }
