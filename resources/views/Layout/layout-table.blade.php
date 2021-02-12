@@ -1,9 +1,8 @@
 @extends('Layout.index')
 
 @section('css-body')
-  <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/table/datatable/datatables.css">
-  <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/table/datatable/custom_dt_html5.css">
-  <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/table/datatable/dt-global_style.css">
+
+  <link href="{{ url('/') }}/assets/css/apps/notes.css" rel="stylesheet" type="text/css" />
 @endsection
 
 @section('content-breadcumb')
@@ -16,8 +15,7 @@
 
 
 @section('js-body')
-  <script src="{{ url('/') }}/plugins/table/datatable/datatables.js"></script>
-  <script src="{{ url('/') }}/plugins/table/datatable/button-ext/dataTables.buttons.min.js"></script>    
-  <script src="{{ url('/') }}/plugins/table/datatable/button-ext/buttons.html5.min.js"></script>
+
+  <script src="{{ url('/') }}/assets/js/apps/notes.js"></script>
   @yield('js-table')
 @endsection

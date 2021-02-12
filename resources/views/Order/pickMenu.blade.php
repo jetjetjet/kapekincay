@@ -122,7 +122,9 @@
                       <th width="40%">Menu</th>
                       <th>Harga</th>
                       <th style="width:50px">Jumlah</th>
+                      <th>Total</th>
                       <th></th>
+                      <th>sam</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -132,6 +134,12 @@
                   </tbody>
                 </table>
               </div>
+              <div class="float-left">
+                <h2>Total =</h2>
+                </div>
+              <div class="float-right">
+                <h2 id="idTotal">0</h2>
+                </div>
               <div class="float-right">
                 <button type="button" id="addToTableMenu" class="btn btn-sm btn-success d-none add-row" >
                   <span class="fa fa-plus fa-fw"></span>
@@ -255,7 +263,7 @@
   </div>
 </div>
 
-<table class="row-template d-none">
+<table id="tabel" class="row-template d-none">
     @include('Order.subOrder')
 </table>
 @endsection
@@ -341,7 +349,8 @@
         $('#addToTableMenu').trigger('click');
       });
     });
-    caclculatedOrder();
+
+    caclculatedOrder()
   });
 
   function setupTableGrid($targetContainer)
@@ -353,19 +362,21 @@
         rowMenuPrice = $("#addToTableMenu").attr('data-pMenuPrice'),
         rowId = $("#addToTableMenu").attr('data-pId'),
         qty = $('#uiModalInstance').find('#menuPopupQty').val(),
-        remark = $('#uiModalInstance').find('#menuRemark').val();
-
+        remark = $('#uiModalInstance').find('#menuRemark').val(),
+        tprice = qty*rowMenuPrice;
       $row.find('[id^=dtl][id$="[odmenutext]"]').html(rowMenuText);
       $row.find('[id^=dtl][id$="[odprice]"]').html(rowMenuPrice);
+      $row.find('[id^=dtl][id$="[odtotalprice]"]').html(tprice);
       $row.find('[id^=dtl][id$="[odremark]"]').html(remark);
       $row.find('[name^=dtl][name$="[odmenuid]"]').val(rowId);
       $row.find('[name^=dtl][name$="[odmenutext]"]').val(rowMenuText);
       $row.find('[name^=dtl][name$="[odqty]"]').val(qty);
       $row.find('[name^=dtl][name$="[odprice]"]').val(rowMenuPrice);
       $row.find('[name^=dtl][name$="[odremark]"]').val(remark);
+      caclculatedOrder()
     })
     .on('row-removing', function (e, $row){
-      
+      caclculatedOrder()
     });
   }
 
@@ -398,15 +409,14 @@
 
   function caclculatedOrder(){
     let gridRow = $('#detailOrder').find('[id^=dtl][id$="[odmenutext]"]').closest('tr');
-
+    
     let totalPrice = 0;
 
     gridRow.each(function(){
-      let price = $(this).find('[name^=dtl][name$="[odprice]"]').val();
+      let price = $(this).find('[id^=dtl][id$="[odtotalprice]"]').html();
       totalPrice += Number(price);
     });
-
-    // $('#idTotal').val(totalPrice);
+    $('#idTotal').html(totalPrice);
     console.log(totalPrice);
   }
 </script>

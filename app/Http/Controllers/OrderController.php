@@ -46,4 +46,28 @@ class OrderController extends Controller
     return view('Order.detail')->with('data', $results);
     
   }
+
+  public function getDetail(Request $request, $idOrder)
+	{
+		$results = OrderRepository::GetSubOrder($idOrder);
+		
+		return response()->json($results);
+	}
+
+  public function deliver(Request $request, $id){
+    $respon = Helpers::$responses;
+		$rules = array(
+			'idsub' => 'required'
+		);
+
+		$inputs = $request->all();
+		
+		$validator = validator::make($inputs, $rules);
+
+		if ($validator->fails()){
+			return response()->json($results);
+		}
+		$results = OrderRepository::deliver($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
+		return response()->json($results);
+  }
 }
