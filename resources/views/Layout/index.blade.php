@@ -59,19 +59,36 @@
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
               @if(session()->has('error'))
                 <div class="alert alert-light-danger mb-4" role="alert">
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><svg> ... </svg></button>
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="alert"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                  <b>Kesalahan!</b>
+                  <ul>
                   @foreach (session('error') as $error)
-                    <p>{{ $error }}</p>
+                    <li>{{ $error }}</li>
                   @endforeach
+                  </ul>
                 </div> 
               @endif
               @if(session()->has('success'))
                 <div class="alert alert-light-success mb-4" role="alert">
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><svg> ... </svg></button>
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="alert"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                  <!-- <b>Kesalahan!</b> -->
+                  <ul>
                   @foreach (session('success') as $successMessage)
-                    <p>{{ $successMessage }}</p>
+                    <li>{{ $successMessage }}</li>
                   @endforeach
+                  <ul>
                 </div> 
+              @endif
+              @if($errors->any())
+                <div class="alert alert-light-danger mb-4" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="alert"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                  <b>Kesalahan!</b>
+                  <ul>
+                  @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                  @endforeach
+                  </ul>
+                </div>
               @endif
               @yield('content-body')
             </div>

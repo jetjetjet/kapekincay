@@ -49,6 +49,7 @@ class DapurController extends Controller
         $subs = OrderDetail::join('menus', 'menus.id', 'odmenuid')
           ->where('odactive', '1')
           ->where('odorderid', $d->id)
+          ->where('oddelivered', '0')
           ->orderBy('odindex')
           ->select(
             DB::raw('menuname as odmenutext'),

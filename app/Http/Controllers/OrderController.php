@@ -7,6 +7,7 @@ use Illuminate\Http\Request;use Validator;
 use App\Libs\Helpers;
 use App\Repositories\OrderRepository;
 use App\Repositories\MenuRepository;
+use App\Events\OrderProceed;
 use Auth;
 
 class OrderController extends Controller
@@ -34,6 +35,10 @@ class OrderController extends Controller
     }
     
     $results = OrderRepository::save($respon, $id, $inputs, Auth::user()->getAuthIdentifier());
+
+    if($results['status'] == "success")
+      event(new OrderProceed('ok'));
+
     $request->session()->flash($results['status'], $results['messages']);
 
 		return redirect()->action([OrderController::class, 'detail'], ['id' => $results['id']]);
@@ -44,7 +49,6 @@ class OrderController extends Controller
     $respon = Helpers::$responses;
     $results = OrderRepository::getOrder($respon, $id);
     return view('Order.detail')->with('data', $results);
-    
   }
 
   public function getDetail(Request $request, $idOrder)
@@ -61,13 +65,14 @@ class OrderController extends Controller
 		);
 
 		$inputs = $request->all();
-		
 		$validator = validator::make($inputs, $rules);
 
 		if ($validator->fails()){
-			return response()->json($results);
+			return response()->json($respon);
 		}
 		$results = OrderRepository::deliver($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
+    event(new OrderProceed('ok'));
+
 		return response()->json($results);
   }
 }

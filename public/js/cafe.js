@@ -4,6 +4,8 @@ $.ajaxSetup({
   }
 });
 
+let formatter = new Intl.NumberFormat();
+
 function cloneModal($idModal){
   $('#uiModalInstance').remove();
   $('.modal-backdrop').remove();

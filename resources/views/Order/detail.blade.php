@@ -14,8 +14,8 @@
 <div class="widget-content widget-content-area br-6">
   <div class="row">
     <div id="flStackForm" class="col-lg-12 layout-spacing layout-top-spacing">
-      <div class="statbox widget box box-shadow">
-        <div class="widget-content widget-content-area">
+      <div class="statbox">
+        <div class="widget-content">
           <form class="needs-validation" method="post" novalidate>
             <div class="form-row">
               <div class="col-md-12 mb-2">
@@ -64,13 +64,13 @@
               </div>
             </div>
           </form>
-          <div class="float-right">
-          <button id="deliver" disabled class="btn btn-info mt-2">menu selesai</button>
+          <div class="float-right" style="padding-bottom:10px">
+            <button id="deliver" disabled class="btn btn-info mt-2">menu selesai</button>
           </div>
         </div>
         <div class="row fixed-bottom">
           <div class="col-sm-12 ">
-            <div class="widget-content widget-content-area">
+            <div class="widget-content widget-content-area" style="padding:10px">
               <div class="float-right">
                 <a href="{{ url('/order').'/'.$data->id }}" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Pesanan</a>
                 <a type="button" id="prosesOrder" class="btn btn-primary mt-2">Pembayaran</a>
@@ -187,7 +187,7 @@
         $.ajax({
           url: "{{ url('order/delivered') . '/'}}" + '{{$data -> id}}',
           type: "post",
-          data: { idsub: idSub},
+          data: { idsub: idSub },
           success: function(result){
             console.log(result);
             var msg = result.messages[0];

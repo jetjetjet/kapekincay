@@ -18,16 +18,19 @@
   <td>
     <p width="40%" id="dtl[{{ $rowIndex }}][odprice]">{{$menuPrice}}</p>
     <input type="hidden" name="dtl[{{ $rowIndex }}][odprice]" value="{{$menuPrice}}" class=" text-right"/>
-  </td>
-  <td>
     <input type="hidden" name="dtl[{{ $rowIndex }}][id]" value="{{ isset($rowIndex) && isset($sub->id) ? $sub->id : null }}" class=" text-right"/>
     <input type="hidden" name="dtl[{{ $rowIndex }}][odmenuid]" value="{{$menuid}}" class=" text-right"/>
-    @if(isset($data->id))
-      <input type="text" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}" style="width: 35px;" class="tPrice" {{ !empty($sub->oddelivered) ? 'readonly' : '' }}/>
-    @else
-      <input type="text" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}" style="width: 35px;" class="tPrice"/>
-    @endif
   </td>
+  @if(isset($rowIndex) && $sub->oddelivered)
+    <td>
+      <input type="hidden" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}">
+      <p class="text-center">{{$menuQty}}</p>
+    </td>
+  @else
+    <td>
+      <input type="text" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}" style="width: 35px;" class="tPrice"/>
+    </td>
+  @endif
   <td>
     <div id="Totalp">
     <p width="40%" id="dtl[{{ $rowIndex }}][odtotalprice]" >{{$menuTotalprice}}</p>

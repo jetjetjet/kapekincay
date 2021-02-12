@@ -2,11 +2,14 @@
 
 @section('breadcumb')
 <style>
-.overlay { 
-  background: rgba(77, 77, 77, .9);
-  color: #393839;
-  opacity: 1;
-}
+  .overlay { 
+    background: rgba(77, 77, 77, .9);
+    color: #393839;
+    opacity: 1;
+  }
+  .dtl-order td, .dtl-order th {
+      padding: 0;
+  }
 </style>
   <div class="title">
     <h3>User</h3>
@@ -19,12 +22,12 @@
 @endsection
 
 @section('content-form')
-<div class="widget-content widget-content-area br-6">
+<div class="widget-content widget-content-area br-4">
   <div class="col-xl-12 col-lg-12 col-md-12">
-    <div class="statbox widget box box-shadow">
+    <div class="statbox box box-shadow">
       <div class="row">
         <div class="col-md-8 col-sm-12">
-          <div class="widget-content widget-content-area pill-justify-right">
+          <div class="widget-content pill-justify-right">
             <ul class="nav nav-pills mb-3 mt-3 justify-content-end" id="justify-right-pills-tab" role="tablist">
               <li class="nav-item">
                 <a class="nav-link active" id="justify-right-pills-home-tab" data-toggle="pill" href="#justify-right-pills-home" role="tab" aria-controls="justify-right-pills-home" aria-selected="true">Makanan</a>
@@ -83,13 +86,15 @@
           </div>
         </div>
         <div class="col-md-4 col-sm-12">
-          <div class="widget-content widget-content-area">
+          <div class="widget-content widget-content-area" style="margin-bottom:25px">
             <form id="orderMenuForm" method="post" novalidate action="{{url('/order/save')}}">
               <div class="orderCust" style="padding-bottom:5px">
                 <table>
-                  <tr>
-                    <th colspan="2"><u>Pesanan {{ $data->orderinvoice }}</u></th>
-                  </tr>
+                  @if($data->id)
+                    <tr>
+                      <th colspan="2"><u>Pesanan {{ $data->orderinvoice }}</u></th>
+                    </tr>
+                  @endif
                   <tr>
                     <th style="width: 40%"> Nama Pelanggan </th>
                     <td id="lblCustName">
@@ -116,15 +121,15 @@
                 </table>
               </div>
               <div class="form-row">
-                <table id="detailOrder" class="table table-hover">
+                <table id="detailOrder" class="table table-hover dtl-order">
                   <thead>
                     <tr>
                       <th width="40%">Menu</th>
                       <th>Harga</th>
-                      <th style="width:50px">Jumlah</th>
+                      <th style="width:50px">qty</th>
                       <th>Total</th>
+                      <th>Cttn</th>
                       <th></th>
-                      <th>sam</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -136,10 +141,11 @@
               </div>
               <div class="float-left">
                 <h2>Total =</h2>
-                </div>
+              </div>
               <div class="float-right">
                 <h2 id="idTotal">0</h2>
-                </div>
+                <input type="hidden" name="orderprice" value="{{ old('orderprice', $data->orderprice) }}" required>
+              </div>
               <div class="float-right">
                 <button type="button" id="addToTableMenu" class="btn btn-sm btn-success d-none add-row" >
                   <span class="fa fa-plus fa-fw"></span>
@@ -151,7 +157,7 @@
       </div>
       <div class="row fixed-bottom">
         <div class="col-sm-12 ">
-          <div class="widget-content widget-content-area">
+          <div class="widget-content widget-content-area" style="padding:10px">
             <div class="float-left">
               <a href="" type="button" class="btn btn-danger mt-2" type="submit">Batal</a>
             </div>
@@ -179,7 +185,7 @@
         <div class="form-row">
           <table class="table mb-4">
             <tbody>
-              <div class="widget-content widget-content-area">
+              <div class="widget-content">
                 <form id="custForm">
                   <div class="form-row">
                     <div class="col-md-12 mb-2">
@@ -416,8 +422,8 @@
       let price = $(this).find('[id^=dtl][id$="[odtotalprice]"]').html();
       totalPrice += Number(price);
     });
-    $('#idTotal').html(totalPrice);
-    console.log(totalPrice);
+    $('#idTotal').html(formatter.format(totalPrice));
+    $('[name="orderprice"]').val(totalPrice);
   }
 </script>
 @endsection

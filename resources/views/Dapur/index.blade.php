@@ -95,8 +95,12 @@
 
       var channel = pusher.subscribe('dapur');
       channel.bind('ch-dapur', function(data) {
-        if(JSON.stringify(data) == "ok")
-          table.ajax.reload();;
+        let msg = data
+        console.log(msg)
+        if(msg.message == "ok"){
+          alert(1)
+          table.ajax.reload();
+        }
       });
 
       var table = $('#example').DataTable({

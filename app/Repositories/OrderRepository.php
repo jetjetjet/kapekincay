@@ -284,19 +284,32 @@ class OrderRepository
   public static function deliver($respon, $id, $loginid, $inputs)
   {
     try{
+      DB::beginTransaction();
       $data = OrderDetail::whereIn('id', $inputs['idsub'])
       ->where('oddelivered', '0')
-      ->where('odactive', '1')
-      ->update([
+      ->where('odactive', '1');
+
+      $upd = $data->update([
         'oddelivered' => '1',
         'odmodifiedby' => $loginid,
         'odmodifiedat' => now()->toDateTimeString()
       ]);
 
+      $cekDelivered = $data->first();
+      if($cekDelivered == null){
+        $upd = Order::where('orderactive', '1')
+          ->where('id', $id)
+          ->select('id')->first();
+        if($upd != null){
+          $upd->update(['orderstatus', 'DELIVERED']);
+        }
+      }
+
+      DB::commit();
       $respon['status'] = 'success';
       array_push($respon['messages'], 'Menu sudah diantar');
-      
     }catch(\Exception $e){
+      DB::rollback();
       $respon['status'] = 'error';
       array_push($respon['messages'], 'Kesalahan');
     }
