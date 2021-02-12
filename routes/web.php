@@ -25,6 +25,8 @@ use App\Http\Controllers\OrderController;
 Route::get('login', [LoginController::class, 'index']);
 Route::get('logout', [LoginController::class, 'getLogoff']);
 Route::post('login', [LoginController::class, 'postLogin']);
+Route::get('/dapur', [App\Http\Controllers\DapurController::class, 'index']);
+Route::get('/dapur/lists', [App\Http\Controllers\DapurController::class, 'getLists']);
 
 Route::group(array('middleware' => 'auth'), function ()
 {

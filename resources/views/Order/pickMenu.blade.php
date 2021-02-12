@@ -341,6 +341,7 @@
         $('#addToTableMenu').trigger('click');
       });
     });
+    caclculatedOrder();
   });
 
   function setupTableGrid($targetContainer)
@@ -393,6 +394,20 @@
         id: item.id
       }
     });
+  }
+
+  function caclculatedOrder(){
+    let gridRow = $('#detailOrder').find('[id^=dtl][id$="[odmenutext]"]').closest('tr');
+
+    let totalPrice = 0;
+
+    gridRow.each(function(){
+      let price = $(this).find('[name^=dtl][name$="[odprice]"]').val();
+      totalPrice += Number(price);
+    });
+
+    // $('#idTotal').val(totalPrice);
+    console.log(totalPrice);
   }
 </script>
 @endsection
