@@ -303,8 +303,6 @@
       $.fn.modal.Constructor.prototype._enforceFocus = function() {};
       let $modal = cloneModal($('#custModal'));
 
-      
-
       $modal.on('show.bs.modal', function (){
         let oType = $('[name="ordertype"]').val(),
           idBoard = $('[name="orderboardid"]').val();
@@ -331,7 +329,6 @@
           $('[name="orderboardid"]').val(idMeja);
           $('#noMeja').html(textMeja);
         }
-        
         
         $modal.modal('hide');
       })
