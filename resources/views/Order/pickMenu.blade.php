@@ -12,12 +12,11 @@
   }
 </style>
   <div class="title">
-    <h3>User</h3>
+    <h3>Pesanan</h3>
   </div>
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data</a></li>
-    <li class="breadcrumb-item"><a href="{{ url('/user') }}">User</a></li>
-    <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">{{ empty($data->id) ? 'Tambah' : 'Ubah'}} User</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);">Pesanan</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);">Proses Pesanan</a></li>
   </ol>
 @endsection
 
@@ -277,6 +276,17 @@
 @section('js-form')
 <script>
   $(document).ready(function (){
+    const query = window.location.search.substring(1);
+    const urlParams = new URLSearchParams(query);
+    const urlMeja = urlParams.get('idMeja');
+    const urlMejaTeks = urlParams.get('mejaTeks');
+
+    if(urlMeja && urlMejaTeks)
+    {
+      $('[name="orderboardid"]').val(urlMeja);
+      $('#noMeja').html(urlMejaTeks);
+    }
+
     let $targetContainer = $('#detailOrder');
     setupTableGrid($targetContainer);
 
@@ -382,7 +392,9 @@
       caclculatedOrder()
     })
     .on('row-removing', function (e, $row){
-      caclculatedOrder()
+      window.setTimeout(() => {
+        caclculatedOrder();
+      }, );
     });
   }
 
@@ -419,9 +431,10 @@
     let totalPrice = 0;
 
     gridRow.each(function(){
-      let price = $(this).find('[id^=dtl][id$="[odtotalprice]"]').html();
+      let price = $(this).find('[name^=dtl][name$="[odtotalprice]"]').val();
       totalPrice += Number(price);
     });
+    console.log(totalPrice);
     $('#idTotal').html(formatter.format(totalPrice));
     $('[name="orderprice"]').val(totalPrice);
   }

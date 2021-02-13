@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;use Validator;
 
 use App\Libs\Helpers;
+use App\Http\Controllers\ShiftController;
 use App\Repositories\OrderRepository;
 use App\Repositories\MenuRepository;
+use App\Repositories\ShiftRepository;
 use App\Events\OrderProceed;
 use Auth;
 
@@ -19,6 +21,33 @@ class OrderController extends Controller
     $data = OrderRepository::getOrder($respon, $id);
     return view('Order.pickMenu')->with('menu', $menu)->with('data', $data);
   }
+
+  public function detail(Request $request, $id)
+  {
+    
+    $kasir = Auth::user()->can(['order_pembayaran'],[]);
+    if($kasir){
+      $cekShift = ShiftRepository::cekShiftStatus();
+      if (!$cekShift){
+        $request->session()->flash('warning', ['Shift belum diisi. Mohon diisi terlebih dahulu']);
+        return redirect()->action([ShiftController::class, 'getById']);
+      }
+    }
+    $respon = Helpers::$responses;
+    $results = OrderRepository::getOrder($respon, $id);
+    return view('Order.detail')->with('data', $results);
+  }
+
+	public function orderView()
+	{
+		return view('Order.boardView');
+	}
+
+	public function orderViewLists()
+	{
+		$data = OrderRepository::orderGrid();
+		return response()->json($data);
+	}
 
   public function save(Request $request, $id = null)
   {
@@ -42,13 +71,6 @@ class OrderController extends Controller
     $request->session()->flash($results['status'], $results['messages']);
 
 		return redirect()->action([OrderController::class, 'detail'], ['id' => $results['id']]);
-  }
-
-  public function detail(Request $request, $id)
-  {
-    $respon = Helpers::$responses;
-    $results = OrderRepository::getOrder($respon, $id);
-    return view('Order.detail')->with('data', $results);
   }
 
   public function getDetail(Request $request, $idOrder)

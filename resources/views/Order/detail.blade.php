@@ -60,6 +60,10 @@
                     </thead>
                     <tbody>
                     </tbody>
+                    <tfoot>
+                      <th colspan="6" class="text-lg-right"><h3>Total :</h3></th>
+                      <th colspan="2" class="text-lg-right"><h3> {{ number_format($data->orderprice,0) }}</h3></th>
+                    <tfoot>
                 </table>
               </div>
             </div>
@@ -112,10 +116,16 @@
             data: 'odqty',
           },
           { 
-            data: 'odprice',
+            data: null,
+            render: function(data, type, full, meta){
+              return formatter.format(data.odprice);
+            }
           },
           { 
-            data: 'odtotalprice',
+            data: null,
+            render: function(data, type, full, meta){
+              return formatter.format(data.odtotalprice);
+            }
           },
           { 
             data: 'odremark',

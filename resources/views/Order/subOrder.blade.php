@@ -16,7 +16,7 @@
     <p id="dtl[{{ $rowIndex }}][odmenutext]">{{$menuText}}</p>
   </td>
   <td>
-    <p width="40%" id="dtl[{{ $rowIndex }}][odprice]">{{$menuPrice}}</p>
+    <p width="40%" id="dtl[{{ $rowIndex }}][odprice]">{{ number_format($menuPrice,0) }}</p>
     <input type="hidden" name="dtl[{{ $rowIndex }}][odprice]" value="{{$menuPrice}}" class=" text-right"/>
     <input type="hidden" name="dtl[{{ $rowIndex }}][id]" value="{{ isset($rowIndex) && isset($sub->id) ? $sub->id : null }}" class=" text-right"/>
     <input type="hidden" name="dtl[{{ $rowIndex }}][odmenuid]" value="{{$menuid}}" class=" text-right"/>
@@ -33,7 +33,8 @@
   @endif
   <td>
     <div id="Totalp">
-    <p width="40%" id="dtl[{{ $rowIndex }}][odtotalprice]" >{{$menuTotalprice}}</p>
+    <input type="hidden" name="dtl[{{ $rowIndex }}][odtotalprice]" value="{{$menuTotalprice}}" />
+    <p id="dtl[{{ $rowIndex }}][odtotalprice]" >{{ number_format($menuTotalprice,0) }}</p>
     </div>
   </td>
   <td>
