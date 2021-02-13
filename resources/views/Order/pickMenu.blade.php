@@ -382,7 +382,9 @@
       caclculatedOrder()
     })
     .on('row-removing', function (e, $row){
-      caclculatedOrder()
+      window.setTimeout(() => {
+        caclculatedOrder()        
+      }, 0);
     });
   }
 
