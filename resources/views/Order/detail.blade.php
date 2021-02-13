@@ -20,14 +20,14 @@
             <div class="form-row">
               <div class="col-md-12 mb-2">
                 <label for="ordercustnametext">Nomor Pesanan</label>
-                <input type="text" class="form-control" name="orderinvoice" value="{{ old('orderinvoice', $data->orderinvoice) }}" readonly>
+                <input type="text" id='oi' class="form-control" name="orderinvoice" value="{{ old('orderinvoice', $data->orderinvoice) }}" readonly>
               </div>
             </div>
             <div class="form-row">
               <div class="col-md-12 mb-2">
                 <label for="ordercustnametext">Nama Pelanggan</label>
                 <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
-                <input type="text" class="form-control" name="ordercustnametext" value="{{ old('order', $data->ordercustnametext) }}" placeholder="Nama Pelanggan" {{ !empty($data->id) ? 'readonly' : '' }} required>
+                <input type="text" class="form-control" name="ordercustnametext" value="{{ old('ordercustname', $data->ordercustname) }}" placeholder="Nama Pelanggan" {{ !empty($data->id) ? 'readonly' : '' }} required>
               </div>
             </div>
             <div class="form-row">
@@ -72,9 +72,15 @@
             <button id="deliver" disabled class="btn btn-info mt-2">menu selesai</button>
           </div>
         </div>
+        @if($data->orderstatus == 'VOIDED')
+        @elseif($data->orderstatus == 'PAID')
+        @else
         <div class="row fixed-bottom">
           <div class="col-sm-12 ">
             <div class="widget-content widget-content-area" style="padding:10px">
+              <div class="float-left">
+              <a type="button" id="void" class="btn btn-danger mt-2">Batalkan</a>
+              </div>
               <div class="float-right">
                 <a href="{{ url('/order').'/'.$data->id }}" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Pesanan</a>
                 <a type="button" id="prosesOrder" class="btn btn-primary mt-2">Pembayaran</a>
@@ -82,12 +88,13 @@
             </div>
           </div>
         </div>
+        @endif
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="bayarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="bayarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" >
   <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -97,34 +104,55 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
+        <form class="needs-validation" method="post" novalidate action="{{ url('/order/bayar').'/'}}{{$data->id}}">
           <div class="form-row">
-            <div class="form-group">
+            <div class="form-group col-md-12">
+            <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
               <label for="inputAddress">Nomor Invoice</label>
-              <input type="text" class="form-control" id="inputAddress" readonly>
+              <input type="text" class="form-control" name="orderinvoice" value="{{ old('orderinvoice', $data->orderinvoice) }}" id="inputAddress" readonly>
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-12">
               <label for="inputEmail4">Nama Pelanggan</label>
-              <input type="email" class="form-control" id="inputEmail4" readonly>
+              <input type="text" class="form-control" name="ordercustname" value="{{ old('order', $data->ordercustname) }}" id="inputEmail4" readonly>
             </div>
             <div class="form-group col-md-6">
-              <label for="inputPassword4">Password</label>
-              <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
+              <label for="inputPassword4">Tipe Pesanan</label>
+              <input type="text" class="form-control" readonly value="{{ old('ordertype', $data->ordertype) }}" id="inputPassword4" placeholder="Password">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputAddress">Nomor Meja</label>
+              <input type="text" class="form-control" readonly value="{{ old('orderboardtext', $data->orderboardtext) }}" id="inputAddress" placeholder="1234 Main St">
+            </div>
+            <div class="form-group col-md-12">
+              <label for="inputAddress2">Total Transaksi</label>
+              <input type="text" class="form-control" readonly  value="{{ old('orderprice', $data->orderprice) }}" id="total" placeholder="Apartment, studio, or floor">
             </div>
           </div>
-          <div class="form-group">
-            <label for="inputAddress">Address</label>
-            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+          <div class="form-group col-md-12">
+              <label for="inputAddress2">Jenis Pembayaran</label>
+              <select class="form-control" id="type" name="orderpaymentmethod">
+                    <option value="Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Tunai' ? ' selected' : '' }}> Tunai</option>
+                    <option value="Debit" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Debit' ? ' selected' : '' }}> Debit</option>
+                  </select>
+            </div>
+          <div class="form-group col-md-12">
+            <label for="inputAddress2">Bayar</label>
+            <input type="number" class="form-control" required name="orderpaidprice" id="bayar" value="{{ old('orderpaidprice', $data->orderpaidprice) }}" placeholder="Jumlah Uang Yang Dibayar">
           </div>
-          <div class="form-group">
-            <label for="inputAddress2">Address 2</label>
-            <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+          <div class="form-group col-md-12">
+            <label for="inputAddress2">Kembalian</label>
+            <input type="text" class="form-control" id="kembalian" readonly value="0" placeholder="Apartment, studio, or floor">
+          </div>
+          <div class="form-group col-md-12">
+            <label for="inputAddress2">Catatan</label>
+            <br>
+            <textarea rows="5" name="orderpaidremark" id="pRemark" class="form-control">{{ old('orderpaidremark', $data->orderpaidremark) }}</textarea>
           </div>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="flaticon-cancel-12"></i>Batal</button>
-        <button type="button" id="custButton" style="min-width: 75px;" class="btn btn-success btn-sm font-bold modal-add-row">Tambah</button>
+        <button type="button" disabled id="modal-submit" style="min-width: 75px;" class="btn btn-success btn-sm font-bold modal-add-row">Tambah</button>
       </div>
     </div>
   </div>
@@ -133,7 +161,71 @@
 
 @section('js-form')
 <script>
+  var payAndchange = function()
+    {
+      var price = $('#uiModalInstance').find("#total").val();
+      var pay = $('#uiModalInstance').find('#bayar').val();
+      var change = Number(pay) - Number(price)
+      if(Number(pay) >= Number(price)){
+        $('#uiModalInstance').find("#kembalian").val(change);
+        $('#uiModalInstance').find('#modal-submit').removeAttr('disabled');
+      } else {
+        $('#uiModalInstance').find('#kembalian').val('Uang Tidak Mencukupi');
+        $('#uiModalInstance').find('#modal-submit').attr('disabled', true);
+      }
+      console.log(price, pay, change )
+    }
   $(document).ready(function (){
+    $('body').on('keyup','#bayar',function(){
+      payAndchange();
+    });
+
+    $('body').on('click','#modal-submit',function(){
+      alert('1')
+      var id =$("#id").val();
+      var paid = $('#uiModalInstance').find('#bayar').val();
+      var remark = $('#uiModalInstance').find('#pRemark').val();
+      var method = $('#uiModalInstance').find('#type').val();
+      $.ajax({
+        url: "{{ url('/order/bayar') . '/' }}"+ '{{$data->id}}',
+        type: "post",
+        data: { id: id, orderpaidprice: paid, orderpaidremark: remark, orderpaymentmethod: method },
+        success: function(result){
+          console.log(result);
+          var msg = result.messages[0];
+          if(result.status == 'success'){
+            toast({
+            type: 'success',
+            title: msg,
+            padding: '2em',
+            })
+            $('#uiModalInstance').modal('hide')
+            $('#uiModalInstance').find('#modal-submit').attr('disabled', true);
+          }else{
+            toast({
+            type: 'error',
+            title: msg,
+            padding: '2em',
+            })
+          }
+        },
+        error:function(error){
+
+        }
+      });
+    })
+
+    $('#void').on('click', function (e) {
+        e.preventDefault();
+        
+        const rowData = grid.row($(this).closest('tr')).data();
+        const url = "{{ url('order/batal') . '/' }}" + '{{$data->id}}';
+        const title = 'Batalkan Pesanan';
+        const pesan = 'Alasan batal?'
+        console.log(rowData, url)
+        gridDeleteInputvoid(url, title, pesan, grid);
+      });
+
     let grid = $('#grid').DataTable({
       ajax: {
         url: "{{ url('order/detail/grid').'/' }}" + '{{$data->id}}',
@@ -297,7 +389,7 @@
         $('#divMeja').removeClass('d-none')
       }
     });
-    
+
     // Loop over them and prevent submission
     let validation = Array.prototype.filter.call(forms, function(form) {
       form.addEventListener('submit', function(event) {

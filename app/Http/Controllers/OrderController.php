@@ -122,7 +122,19 @@ class OrderController extends Controller
 	{
 		$respon = Helpers::$responses;
 
+    $inputs = $request->all();
+
 		$results = OrderRepository::void($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
+		return response()->json($results);
+	}
+  
+  public function paidById(Request $request, $id)
+	{
+		$respon = Helpers::$responses;
+
+    $inputs = $request->all();
+
+		$results = OrderRepository::paid($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
 		return response()->json($results);
 	}
 }
