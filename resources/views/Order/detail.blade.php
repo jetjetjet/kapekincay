@@ -68,18 +68,19 @@
               </div>
             </div>
           </form>
-          <div class="float-right" style="padding-bottom:10px">
-            <button id="deliver" disabled class="btn btn-info mt-2">menu selesai</button>
-          </div>
+          @if($data->orderstatus == 'PROCEED' || $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED')
+            <div class="float-right" style="padding-bottom:10px">
+              <button id="deliver" disabled class="btn btn-info mt-2">Pesanan Diantar</button>
+            </div>
+          @endif
         </div>
-        @if($data->orderstatus == 'VOIDED')
-        @elseif($data->orderstatus == 'PAID')
+        @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
         @else
         <div class="row fixed-bottom">
           <div class="col-sm-12 ">
             <div class="widget-content widget-content-area" style="padding:10px">
               <div class="float-left">
-              <a type="button" id="void" class="btn btn-danger mt-2">Batalkan</a>
+                <a type="button" id="void" class="btn btn-danger mt-2">Batalkan</a>
               </div>
               <div class="float-right">
                 <a href="{{ url('/order').'/'.$data->id }}" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Pesanan</a>
@@ -106,47 +107,49 @@
       <div class="modal-body">
         <form class="needs-validation" method="post" novalidate action="{{ url('/order/bayar').'/'}}{{$data->id}}">
           <div class="form-row">
-            <div class="form-group col-md-12">
+            <div class="form-group col-md-6">
             <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
               <label for="inputAddress">Nomor Invoice</label>
               <input type="text" class="form-control" name="orderinvoice" value="{{ old('orderinvoice', $data->orderinvoice) }}" id="inputAddress" readonly>
             </div>
-            <div class="form-group col-md-12">
+            <div class="form-group col-md-6">
               <label for="inputEmail4">Nama Pelanggan</label>
               <input type="text" class="form-control" name="ordercustname" value="{{ old('order', $data->ordercustname) }}" id="inputEmail4" readonly>
             </div>
-            <div class="form-group col-md-6">
+            <!-- <div class="form-group col-md-6">
               <label for="inputPassword4">Tipe Pesanan</label>
               <input type="text" class="form-control" readonly value="{{ old('ordertype', $data->ordertype) }}" id="inputPassword4" placeholder="Password">
             </div>
             <div class="form-group col-md-6">
               <label for="inputAddress">Nomor Meja</label>
               <input type="text" class="form-control" readonly value="{{ old('orderboardtext', $data->orderboardtext) }}" id="inputAddress" placeholder="1234 Main St">
-            </div>
-            <div class="form-group col-md-12">
-              <label for="inputAddress2">Total Transaksi</label>
-              <input type="text" class="form-control" readonly  value="{{ old('orderprice', $data->orderprice) }}" id="total" placeholder="Apartment, studio, or floor">
-            </div>
+            </div> -->
           </div>
-          <div class="form-group col-md-12">
+          <div class="form-row">
+            <div class="form-group col-md-6">
               <label for="inputAddress2">Jenis Pembayaran</label>
               <select class="form-control" id="type" name="orderpaymentmethod">
-                    <option value="Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Tunai' ? ' selected' : '' }}> Tunai</option>
-                    <option value="Debit" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Debit' ? ' selected' : '' }}> Debit</option>
-                  </select>
+                <option value="Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Tunai' ? ' selected' : '' }}> Tunai</option>
+                <option value="Debit" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Debit' ? ' selected' : '' }}> Debit</option>
+              </select>
             </div>
-          <div class="form-group col-md-12">
-            <label for="inputAddress2">Bayar</label>
-            <input type="number" class="form-control" required name="orderpaidprice" id="bayar" value="{{ old('orderpaidprice', $data->orderpaidprice) }}" placeholder="Jumlah Uang Yang Dibayar">
-          </div>
-          <div class="form-group col-md-12">
-            <label for="inputAddress2">Kembalian</label>
-            <input type="text" class="form-control" id="kembalian" readonly value="0" placeholder="Apartment, studio, or floor">
-          </div>
-          <div class="form-group col-md-12">
-            <label for="inputAddress2">Catatan</label>
-            <br>
-            <textarea rows="5" name="orderpaidremark" id="pRemark" class="form-control">{{ old('orderpaidremark', $data->orderpaidremark) }}</textarea>
+            <div class="form-group col-md-6">
+              <label for="inputAddress2">Bayar</label>
+              <input type="number" class="form-control" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang Yang Dibayar">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputAddress2">Total Transaksi</label>
+              <input type="text" class="form-control" readonly  value="{{ old('orderprice', $data->orderprice) }}" id="total">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputAddress2">Kembalian</label>
+              <input type="text" class="form-control" id="kembalian" readonly value="0">
+            </div>
+            <div class="form-group col-md-12">
+              <label for="inputAddress2">Catatan</label>
+              <br>
+              <textarea rows="5" name="orderpaidremark" id="pRemark" class="form-control">{{ old('orderpaidremark', $data->orderpaidremark) }}</textarea>
+            </div>
           </div>
         </form>
       </div>
@@ -181,7 +184,6 @@
     });
 
     $('body').on('click','#modal-submit',function(){
-      alert('1')
       var id =$("#id").val();
       var paid = $('#uiModalInstance').find('#bayar').val();
       var remark = $('#uiModalInstance').find('#pRemark').val();
@@ -201,6 +203,9 @@
             })
             $('#uiModalInstance').modal('hide')
             $('#uiModalInstance').find('#modal-submit').attr('disabled', true);
+            setTimeout(() => {
+              location.reload()
+            }, 500);
           }else{
             toast({
             type: 'error',
@@ -222,7 +227,6 @@
         const url = "{{ url('order/batal') . '/' }}" + '{{$data->id}}';
         const title = 'Batalkan Pesanan';
         const pesan = 'Alasan batal?'
-        console.log(rowData, url)
         gridDeleteInputvoid(url, title, pesan, grid);
       });
 

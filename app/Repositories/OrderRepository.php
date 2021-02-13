@@ -11,36 +11,6 @@ class OrderRepository
 {
   public static function orderGrid($filters)
   {
-    // $order = Order::where('orderactive', '1')
-    //   ->groupBy('orderboardid')
-    //   ->orderBy('orderboardid')
-    //   // ->orderBy('ordercreatedat', 'DESC')
-    //   ->select(
-    //     'orderboardid'
-    //   );
-    // if($filters){
-    //   foreach($filters as $f)
-    //   {
-    //     $order = $order->whereRaw($f[0]);
-    //   }
-    // }
-    // dd($order->get());
-    // $data = DB::table('boards')
-    //   ->joinSub($order, 'o', function ($join) {
-    //     $join->on('boards.id', '=', 'o.orderboardid');})
-    //   ->where('boardactive', '1')
-    //   ->orderBy('boardnumber', 'ASC')
-    //   ->orderBy('boards.id')
-    //   ->select(
-    //     'orderstatus',
-    //     DB::raw("case when orderstatus = 'PAID' then true
-    //     when orderstatus is null then true else false end as boardstatus"),
-    //     'orders.id as orderid',
-    //     'boards.id as boardid',
-    //     'boardfloor',
-    //     'orderinvoice',
-    //     'boardnumber')->get();
-    //     dd($data);
     $data = Order::rightJoin('boards', 'boards.id', 'orderboardid')
       // ->where('orderactive', '1')
       ->where('boardactive', '1')
@@ -69,6 +39,7 @@ class OrderRepository
   public static function orderChart($filter, $range, $month)
   {
     $transaction = Order::select(DB::raw('ordercreatedat::date as date,sum(orderprice) as total'))
+      ->where('orderstatus', 'PAID')
       ->whereRaw($filter)
       ->groupBy(DB::raw('ordercreatedat::date'))->get();
       
@@ -143,6 +114,7 @@ class OrderRepository
     $data = Order::where('orderactive', '1')
       ->leftJoin('boards', 'boards.id', 'orderboardid')
       ->where('orderstatus', 'PROCEED')
+      ->orWhere('orderstatus', 'ADDITIONAL')
       ->orderBy('ordercreatedat')
       ->select(
         'orders.id',
@@ -259,7 +231,7 @@ class OrderRepository
             'orderboardid' => $inputs['orderboardid'] ?? null,
             'ordertype' => $inputs['ordertype'],
             'orderprice' => $inputs['orderprice'] ?? 1,
-            //'orderstatus' => 'PROCEED',
+            'orderstatus' => 'ADDITIONAL',
             'orderdetail' => $inputs['orderdetail'] ?? "",
             'ordermodifiedat' => now()->toDateTimeString(),
             'ordermodifiedby' => $loginid,
@@ -430,7 +402,7 @@ class OrderRepository
         'odmodifiedat' => now()->toDateTimeString()
       ]);
 
-      $cekDelivered = $data->first();
+      $cekDelivered = OrderDetail::where('oddelivered', '0')->where('odorderid', $id)->first();
       if($cekDelivered == null){
         $updH = Order::where('orderactive', '1')
           ->where('id', $id)->first();
@@ -495,57 +467,63 @@ class OrderRepository
 
   public static function void($respon, $id, $loginid, $inputs)
   {
+    $data = Order::where('orderactive', '1')
+      ->where('id', $id)
+      ->first();
+    $sub = OrderDetail::where('odactive', '1')->where('odorderid', $id)->first();
 
-      $data = Order::where('orderactive', '1')
-        ->where('id', $id)
-        ->first();
-
-      $cekDelete = false;
-      if ($data != null){
-        $data->update([
-          'ordervoidreason' => $inputs['ordervoidreason'] ,
-          'orderstatus' => 'VOIDED',
-          'ordervoid' => '1',
-          'ordermodifiedby' => $loginid,
-          'ordermodifiedat' => now()->toDateTimeString(),
-          'ordervoidedby' => $loginid,
-          'ordervoidedat' => now()->toDateTimeString()
-        ]);       
-        $cekDelete = true;
-        $respon['status'] = 'success';
-        array_push($respon['messages'], 'Pesanan Dibatalkan');
-      }else{
+    if($sub != null){
       $respon['status'] = 'error';
-      array_push($respon['messages'], 'Kesalahan');
-      }
+      array_push($respon['messages'], 'Tidak dapat membatalkan pesanan yang sudah diantarkan!');
+      return $respon;
+    }
+
+    $cekDelete = false;
+    if ($data != null){
+      $data->update([
+        'ordervoidreason' => $inputs['ordervoidreason'] ,
+        'orderstatus' => 'VOIDED',
+        'ordervoid' => '1',
+        'ordermodifiedby' => $loginid,
+        'ordermodifiedat' => now()->toDateTimeString(),
+        'ordervoidedby' => $loginid,
+        'ordervoidedat' => now()->toDateTimeString()
+      ]);       
+      $cekDelete = true;
+      $respon['status'] = 'success';
+      array_push($respon['messages'], 'Pesanan Dibatalkan');
+    }else{
+    $respon['status'] = 'error';
+    array_push($respon['messages'], 'Kesalahan');
+    }
     
     return $respon;
   }
 
   public static function paid($respon, $id, $loginid, $inputs)
   {
-      $data = Order::where('orderactive', '1')
-        ->where('id', $id)
-        ->first();
+    $data = Order::where('orderactive', '1')
+      ->where('id', $id)
+      ->first();
 
-      $cekDelete = false;
-      if ($data != null){
-        $data->update([
-          'orderpaymentmethod' => $inputs['orderpaymentmethod'],
-          'orderpaidprice' => $inputs['orderpaidprice'],
-          'orderpaidremark' => $inputs['orderpaidremark'],
-          'orderstatus' => 'PAID',
-          'orderpaid' => '1',
-          'ordermodifiedby' => $loginid,
-          'ordermodifiedat' => now()->toDateTimeString()
-        ]);       
-        $cekDelete = true;
-        $respon['status'] = 'success';
-        array_push($respon['messages'], 'Pesanan Dibayar');
-      }else{
-      $respon['status'] = 'error';
-      array_push($respon['messages'], 'Kesalahan');
-      }
+    $cekDelete = false;
+    if ($data != null){
+      $data->update([
+        'orderpaymentmethod' => $inputs['orderpaymentmethod'],
+        'orderpaidprice' => $inputs['orderpaidprice'],
+        'orderpaidremark' => $inputs['orderpaidremark'],
+        'orderstatus' => 'PAID',
+        'orderpaid' => '1',
+        'ordermodifiedby' => $loginid,
+        'ordermodifiedat' => now()->toDateTimeString()
+      ]);       
+      $cekDelete = true;
+      $respon['status'] = 'success';
+      array_push($respon['messages'], 'Pesanan Dibayar');
+    }else{
+    $respon['status'] = 'error';
+    array_push($respon['messages'], 'Kesalahan');
+    }
     return $respon;
   }
 }

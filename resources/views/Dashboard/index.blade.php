@@ -131,45 +131,95 @@
 					</div>
 				</a>
 			</div>
-			<div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12 layout-spacing">
-				<div class="widget widget-card-four">
-					<div class="widget-content">
-						<div class="w-content">
-							<div class="w-info">
-								<h6 class="value">$ 45,141</h6>
-								<p class="">Expenses</p>
-							</div>
-							<div class="">
-								<div class="w-icon">
-									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+			<div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-12 layout-spacing">
+				<a href="{{url('/order')}}">
+					<div class="widget widget-card-four">
+						<div class="widget-content">
+							<div class="w-content">
+								<div class="w-info">
+									<h6 class="value">Buat Baru</h6>
+									<p class="">Transaksi</p>
+								</div>
+								<div class="">
+									<div class="w-icon">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div class="progress">
-							<div class="progress-bar bg-gradient-secondary" role="progressbar" style="width: 57%" aria-valuenow="57" aria-valuemin="0" aria-valuemax="100"></div>
+							<div class="progress">
+								<!-- <div class="progress-bar bg-gradient-secondary" role="progressbar" style="width: 57%" aria-valuenow="57" aria-valuemin="0" aria-valuemax="100"></div> -->
+							</div>
 						</div>
 					</div>
-				</div>
+				</a>
 			</div>
-			<div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12 layout-spacing">
-				<div class="widget widget-card-four">
-					<div class="widget-content">
-						<div class="w-content">
-							<div class="w-info">
-								<h6 class="value">$ 45,141</h6>
-								<p class="">Expenses</p>
-							</div>
-							<div class="">
-								<div class="w-icon">
-									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+			<div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-12 layout-spacing">
+				<a href="{{url('/dapur')}}">
+					<div class="widget widget-card-four">
+						<div class="widget-content">
+							<div class="w-content">
+								<div class="w-info">
+									<h6 class="value">Dapur</h6>
+									<p class="">Daftar Pesanan</p>
+								</div>
+								<div class="">
+									<div class="w-icon">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div class="progress">
-							<div class="progress-bar bg-gradient-secondary" role="progressbar" style="width: 57%" aria-valuenow="57" aria-valuemin="0" aria-valuemax="100"></div>
+							<div class="progress">
+								<div class="progress-bar bg-gradient-secondary" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>
 						</div>
 					</div>
-				</div>
+				</a>
+			</div>
+			@if(Perm::can(['shift_simpan']))
+			<div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-12 layout-spacing">
+				<a href="{{url('/shift')}}">
+					<div class="widget widget-card-four">
+						<div class="widget-content">
+							<div class="w-content">
+								<div class="w-info">
+									<h6 class="value">Shift</h6>
+									<p class="">_</p>
+								</div>
+								<div class="">
+									<div class="w-icon">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+									</div>
+								</div>
+							</div>
+							<div class="progress">
+								<div class="progress-bar bg-gradient-secondary" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			@endif
+			<div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-12 layout-spacing">
+				<a href="{{url('order/index')}}">
+					<div class="widget widget-card-four">
+						<div class="widget-content">
+							<div class="w-content">
+								<div class="w-info">
+									<h6 class="value">Pesanan</h6>
+									<p class="">Tabel</p>
+								</div>
+								<div class="">
+									<div class="w-icon">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+									</div>
+								</div>
+							</div>
+							<div class="progress">
+								<div class="progress-bar bg-gradient-secondary" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+							</div>
+						</div>
+					</div>
+				</a>
 			</div>
 		<!-- </div> -->
 		<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12 layout-spacing">
@@ -205,13 +255,13 @@
 								</tr>
 							</thead>
 								<tbody>
-									<tr>
-										@foreach($data->topMenu as $menu)
+									@foreach($data->topMenu as $menu)
+										<tr>
 											<td><div class="td-content product-name">{{$menu->menuname}}</div></td>
 											<td><div class="td-content"><span class="pricing">{{number_format($menu->menuprice,0)}}</span></div></td>
 											<td><div class="td-content">{{$menu->totalorder}}</div></td>
-										@endforeach
-									</tr>
+										</tr>
+									@endforeach
 								</tbody>
 						</table>
 					</div>

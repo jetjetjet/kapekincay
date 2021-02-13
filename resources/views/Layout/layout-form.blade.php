@@ -86,15 +86,10 @@
   <script src="{{ url('/') }}/plugins/file-upload/file-upload-with-preview.min.js"></script>
 
   <script src="{{ url('/') }}/assets/js/ie11fix/fn.fix-padStart.js"></script>
-    <script src="{{ url('/') }}/plugins/editors/quill/quill.js"></script>
-    <script src="{{ url('/') }}/assets/js/apps/todoList.js"></script>
+  <script src="{{ url('/') }}/plugins/editors/quill/quill.js"></script>
+  <script src="{{ url('/') }}/assets/js/apps/todoList.js"></script>
   <script>
-    $(".rupiah").inputmask({alias: 'currency', 
-      allowMinus: false,
-      prefix: '',
-      digits: 0,
-      removeMaskOnSubmit: true
-    });
+    numberMask();
   </script>
   @yield('js-form')
 @endsection

@@ -291,3 +291,12 @@ function changeOptSelect2($select, url)
       $select.append(option).trigger('change');
   });
 }
+
+function numberMask(){
+  $(".rupiah").inputmask({alias: 'currency', 
+    allowMinus: false,
+    prefix: '',
+    digits: 0,
+    removeMaskOnSubmit: true
+  });
+}

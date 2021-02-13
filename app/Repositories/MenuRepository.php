@@ -133,7 +133,8 @@ class MenuRepository
           'menuname',
           'menuprice',
           'od.totalorder'
-        )->limit(10)->get();
+        )
+        ->orderBy('od.totalorder', 'DESC')->limit(10)->get();
 
       return $data;
     }

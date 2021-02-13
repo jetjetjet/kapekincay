@@ -154,6 +154,7 @@
           </div>
         </div>
       </div>
+      @if($data->orderstatus == 'PROCEED' || $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED')
       <div class="row fixed-bottom">
         <div class="col-sm-12 ">
           <div class="widget-content widget-content-area" style="padding:10px">
@@ -167,6 +168,7 @@
           </div>
         </div>
       </div>
+      @endif
     </div>
   </div>
 </div>
@@ -344,24 +346,26 @@
       });
     })
 
-    $('.menuCard').on('click', function(){
-      let menuPrice = $(this).attr('data-price'),
-          menuText = $(this).attr('data-menutext'),
-          menuId = $(this).attr('data-id');
+    @if($data->orderstatus == 'PROCEED' || $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED')
+      $('.menuCard').on('click', function(){
+        let menuPrice = $(this).attr('data-price'),
+            menuText = $(this).attr('data-menutext'),
+            menuId = $(this).attr('data-id');
 
-      let bodyPopup = {
-        'text' : menuText,
-        'price' : menuPrice
-      };
-      
-      showPopupOrder(bodyPopup, function(){
-        $("#addToTableMenu").attr("data-pMenuText",menuText);
-        $("#addToTableMenu").attr("data-pMenuPrice",menuPrice);
-        $("#addToTableMenu").attr("data-pId",menuId);
+        let bodyPopup = {
+          'text' : menuText,
+          'price' : menuPrice
+        };
+        
+        showPopupOrder(bodyPopup, function(){
+          $("#addToTableMenu").attr("data-pMenuText",menuText);
+          $("#addToTableMenu").attr("data-pMenuPrice",menuPrice);
+          $("#addToTableMenu").attr("data-pId",menuId);
 
-        $('#addToTableMenu').trigger('click');
+          $('#addToTableMenu').trigger('click');
+        });
       });
-    });
+    @endif
 
     caclculatedOrder()
   });
@@ -380,13 +384,16 @@
       $row.find('[id^=dtl][id$="[odmenutext]"]').html(rowMenuText);
       $row.find('[id^=dtl][id$="[odprice]"]').html(rowMenuPrice);
       $row.find('[id^=dtl][id$="[odtotalprice]"]').html(tprice);
+      $row.find('[name^=dtl][name$="[odtotalprice]"]').val(tprice);
       $row.find('[id^=dtl][id$="[odremark]"]').html(remark);
       $row.find('[name^=dtl][name$="[odmenuid]"]').val(rowId);
       $row.find('[name^=dtl][name$="[odmenutext]"]').val(rowMenuText);
       $row.find('[name^=dtl][name$="[odqty]"]').val(qty);
       $row.find('[name^=dtl][name$="[odprice]"]').val(rowMenuPrice);
       $row.find('[name^=dtl][name$="[odremark]"]').val(remark);
-      caclculatedOrder()
+      window.setTimeout(() => {
+        caclculatedOrder()        
+      }, 0);
     })
     .on('row-removing', function (e, $row){
       window.setTimeout(() => {
