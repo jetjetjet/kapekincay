@@ -61,6 +61,43 @@ function gridDeleteInput(url, title, message, grid){
   });
 }
 
+function gridDeleteInputvoid(url, title, message, grid){
+  const swalWithBootstrapButtons = swal.mixin({
+    input: 'textarea',
+    confirmButtonClass: 'btn btn-success btn-rounded',
+    cancelButtonClass: 'btn btn-danger btn-rounded mr-3',
+    buttonsStyling: false,
+  })
+  
+  swalWithBootstrapButtons({
+    title: title,
+    text: message,
+    type: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Hapus',
+    cancelButtonText: 'Batal',
+    reverseButtons: true,
+    padding: '2em'
+  }).then(function(result) {
+    if (result.value) {
+      $.post(url,{'ordervoidreason':result.value}, function (data){
+        if (data.status == 'success'){
+          sweetAlert('Pesanan dibatalkan', data.messages[0], 'success')
+        } else {
+          sweetAlert('Kesalahan!', data.messages[0], 'error')
+        }
+        grid.ajax.reload();
+      });
+    } else if (
+      result.dismiss === swal.DismissReason.cancel
+    ) {
+      sweetAlert('Batal','Pesanan tidak dibatalkan','error')
+    } else {
+      sweetAlert('Kesalahan!','Alasan membatalkan harus di isi','error')
+    }
+  });
+}
+
 function gridDeleteRow(url, title, message, grid){
   const swalWithBootstrapButtons = swal.mixin({
     confirmButtonClass: 'btn btn-success btn-rounded',

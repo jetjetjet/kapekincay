@@ -137,30 +137,6 @@
         console.log(rowData, url)
         gridDeleteInput(url, title, pesan, grid);
       });
-      $('#grid').on('click', 'a.gridnoDelete', function (e) {
-        e.preventDefault();
-        
-        const title = 'Shift Sudah Ditutup';
-        const pesan = '';
-        const type = 'error';
-        sweetAlert(title, pesan, type);
-      });
-      $('#grid').on('click', 'a.gridnoEdit', function (e) {
-        e.preventDefault();
-        
-        const title = 'Shift Sudah Ditutup';
-        const pesan = '';
-        const type = 'error';
-        sweetAlert(title, pesan, type);
-      });
-      $('#grid').on('click', 'a.gridnoClose', function (e) {
-        e.preventDefault();
-        
-        const title = 'Shift Sudah Ditutup';
-        const pesan = '';
-        const status = 'error';
-        sweetAlert(title, pesan, status);
-      });
     });
 
   </script>

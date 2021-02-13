@@ -88,6 +88,22 @@ class OrderRepository
     return $data;
   }
 
+  public static function grid()
+  {
+    return Order::where('orderactive', '1')
+    ->select(
+      'id',
+      'orderinvoice', 
+      'orderboardid', 
+      'ordercustname', 
+      DB::raw("CASE WHEN orders.ordertype = 'DINEIN' THEN 'Makan ditempat' ELSE 'Bungkus' END as ordertypetext"), 
+      'orderdate',
+      DB::raw("to_char(orders.orderprice, '999G999G999G999D99')as orderprice"), 
+      DB::raw("CASE WHEN orders.orderstatus = 'PROCEED' THEN 'Diproses' WHEN orders.orderstatus = 'COMPLETED' THEN 'Selesai' WHEN orders.orderstatus = 'PAID' THEN 'Lunas' WHEN orders.orderstatus = 'VOIDED' THEN 'Batal' WHEN orders.orderstatus = 'ADDITIONAL' THEN 'Proses Tambah' END as orderstatuscase")
+      ) 
+    ->get();
+  }
+
   public static function getOrder($respon, $id)
   {
     $data = new \StdClass();
@@ -432,6 +448,104 @@ class OrderRepository
       array_push($respon['messages'], 'Kesalahan');
     }
     
+    return $respon;
+  }
+
+  public static function delete($respon, $id, $loginid)
+  {
+    try{
+      DB::beginTransaction();
+      $data = Order::where('orderactive', '1')
+        ->where('id', $id)
+        ->first();
+      $datasub = OrderDetail::where('odactive', '1')
+        ->where('odorderid', $id);
+      
+      $ceksub = $datasub->where('oddelivered', '1')->first;
+      if($ceksub != null)
+        throw new Exception('rollback');
+
+      $upd = $datasub->update([
+        'odactive' => '0',
+        'odmodifiedby' => $loginid,
+        'odmodifiedat' => now()->toDateTimeString()
+      ]);
+      $cekDelete = false;
+      if ($data != null){
+        $data->update([
+          'orderactive' => '0',
+          'orderstatus' => 'DELETED',
+          'ordermodifiedby' => $loginid,
+          'ordermodifiedat' => now()->toDateTimeString()
+        ]);       
+        $cekDelete = true;
+      }
+
+      DB::commit();
+      $respon['status'] = 'success';
+      array_push($respon['messages'], 'Pesanan berhasil dihapus');
+    }catch(\Exception $e){
+      DB::rollback();
+      $respon['status'] = 'error';
+      array_push($respon['messages'], 'Kesalahan');
+    }
+ 
+    return $respon;
+  }
+
+  public static function void($respon, $id, $loginid, $inputs)
+  {
+
+      $data = Order::where('orderactive', '1')
+        ->where('id', $id)
+        ->first();
+
+      $cekDelete = false;
+      if ($data != null){
+        $data->update([
+          'ordervoidreason' => $inputs['ordervoidreason'] ,
+          'orderstatus' => 'VOIDED',
+          'ordervoid' => '1',
+          'ordermodifiedby' => $loginid,
+          'ordermodifiedat' => now()->toDateTimeString(),
+          'ordervoidedby' => $loginid,
+          'ordervoidedat' => now()->toDateTimeString()
+        ]);       
+        $cekDelete = true;
+        $respon['status'] = 'success';
+        array_push($respon['messages'], 'Pesanan Dibatalkan');
+      }else{
+      $respon['status'] = 'error';
+      array_push($respon['messages'], 'Kesalahan');
+      }
+    
+    return $respon;
+  }
+
+  public static function paid($respon, $id, $loginid, $inputs)
+  {
+      $data = Order::where('orderactive', '1')
+        ->where('id', $id)
+        ->first();
+
+      $cekDelete = false;
+      if ($data != null){
+        $data->update([
+          'orderpaymentmethod' => $inputs['orderpaymentmethod'],
+          'orderpaidprice' => $inputs['orderpaidprice'],
+          'orderpaidremark' => $inputs['orderpaidremark'],
+          'orderstatus' => 'PAID',
+          'orderpaid' => '1',
+          'ordermodifiedby' => $loginid,
+          'ordermodifiedat' => now()->toDateTimeString()
+        ]);       
+        $cekDelete = true;
+        $respon['status'] = 'success';
+        array_push($respon['messages'], 'Pesanan Dibayar');
+      }else{
+      $respon['status'] = 'error';
+      array_push($respon['messages'], 'Kesalahan');
+      }
     return $respon;
   }
 }

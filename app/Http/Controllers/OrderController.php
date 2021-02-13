@@ -14,6 +14,18 @@ use Auth;
 
 class OrderController extends Controller
 {
+  public function index()
+	{
+		return view('Order.index');
+	}
+
+  public function getGrid(Request $request)
+	{
+		$results = OrderRepository::grid();
+		
+		return response()->json($results);
+	}
+
   public function order(Request $request, $id = null)
   {
     $respon = Helpers::$responses;
@@ -97,4 +109,32 @@ class OrderController extends Controller
 
 		return response()->json($results);
   }
+
+  public function deleteById(Request $request, $id)
+	{
+		$respon = Helpers::$responses;
+
+		$results = OrderRepository::delete($respon, $id, Auth::user()->getAuthIdentifier());
+		return response()->json($results);
+	}
+
+  public function voidById(Request $request, $id)
+	{
+		$respon = Helpers::$responses;
+
+    $inputs = $request->all();
+
+		$results = OrderRepository::void($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
+		return response()->json($results);
+	}
+  
+  public function paidById(Request $request, $id)
+	{
+		$respon = Helpers::$responses;
+
+    $inputs = $request->all();
+
+		$results = OrderRepository::paid($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
+		return response()->json($results);
+	}
 }

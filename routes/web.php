@@ -65,12 +65,17 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('/setting/detail/{id?}', [SettingController::class, 'getById']);
   Route::post('/setting/simpan', [SettingController::class, 'save']);
   
+  Route::get('/order/index', [OrderController::class, 'index']);
+  Route::get('/order/index/grid', [OrderController::class, 'getGrid']);
   Route::get('/order/{id?}', [OrderController::class, 'order']);
   Route::get('/order/detail/{id?}', [ OrderController::class, 'detail' ]);
   Route::get('/order/detail/grid/{idOrder}', [ OrderController::class, 'getDetail' ]);
   Route::get('/order/meja/view', [OrderController::class, 'orderView']);
   Route::get('/order/meja/lists', [OrderController::class, 'orderViewLists']);
   Route::post('/order/save/{id?}', [OrderController::class, 'save']);
+  Route::post('/order/hapus/{id}', [OrderController::class, 'deleteById']);
+  Route::post('/order/batal/{id}', [OrderController::class, 'voidById']);
+  Route::post('/order/bayar/{id}', [OrderController::class, 'paidById']);
   Route::post('/order/delivered/{id?}', [OrderController::class, 'deliver']);
 
   Route::get('/shift', [ShiftController::class, 'index']);

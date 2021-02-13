@@ -390,8 +390,8 @@
     })
     .on('row-removing', function (e, $row){
       window.setTimeout(() => {
-        caclculatedOrder();
-      }, );
+        caclculatedOrder()        
+      }, 0);
     });
   }
 

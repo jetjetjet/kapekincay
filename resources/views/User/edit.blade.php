@@ -115,6 +115,7 @@
     {
       var passOne = $("#pass1").val();
       var passTwo = $("#pass2").val();
+      console.log(passOne, passTwo)
       if(passOne == passTwo){
         $('#passbutt').removeAttr('disabled');
       } else {
