@@ -9,8 +9,38 @@ use Exception;
 
 class OrderRepository
 {
-  public static function orderGrid()
+  public static function orderGrid($filters)
   {
+    // $order = Order::where('orderactive', '1')
+    //   ->groupBy('orderboardid')
+    //   ->orderBy('orderboardid')
+    //   // ->orderBy('ordercreatedat', 'DESC')
+    //   ->select(
+    //     'orderboardid'
+    //   );
+    // if($filters){
+    //   foreach($filters as $f)
+    //   {
+    //     $order = $order->whereRaw($f[0]);
+    //   }
+    // }
+    // dd($order->get());
+    // $data = DB::table('boards')
+    //   ->joinSub($order, 'o', function ($join) {
+    //     $join->on('boards.id', '=', 'o.orderboardid');})
+    //   ->where('boardactive', '1')
+    //   ->orderBy('boardnumber', 'ASC')
+    //   ->orderBy('boards.id')
+    //   ->select(
+    //     'orderstatus',
+    //     DB::raw("case when orderstatus = 'PAID' then true
+    //     when orderstatus is null then true else false end as boardstatus"),
+    //     'orders.id as orderid',
+    //     'boards.id as boardid',
+    //     'boardfloor',
+    //     'orderinvoice',
+    //     'boardnumber')->get();
+    //     dd($data);
     $data = Order::rightJoin('boards', 'boards.id', 'orderboardid')
       // ->where('orderactive', '1')
       ->where('boardactive', '1')
@@ -26,8 +56,34 @@ class OrderRepository
         'boards.id as boardid',
         'boardfloor',
         'orderinvoice',
-        'boardnumber')
-      ->get();
+        'boardnumber');
+    if($filters){
+      foreach($filters as $f)
+      {
+        $data = $data->whereRaw($f[0]);
+      }
+    }
+    return $data;
+  }
+
+  public static function orderChart($filter, $range, $month)
+  {
+    $transaction = Order::select(DB::raw('ordercreatedat::date as date,sum(orderprice) as total'))
+      ->whereRaw($filter)
+      ->groupBy(DB::raw('ordercreatedat::date'))->get();
+      
+    $data = new \StdClass();
+    $nom = [];
+    foreach ($range as $row) {
+      $f_date = strlen($row) == 1 ? 0 . $row:$row;
+      $date = $month . "-".  $f_date;
+      $total = $transaction->firstWhere('date', $date);
+      
+      array_push($nom,$total ? $total->total:0);
+    }
+    
+    $data->chartTotal = implode("','", $nom);
+    $data->chartTgl = implode("','", $range);
     
     return $data;
   }

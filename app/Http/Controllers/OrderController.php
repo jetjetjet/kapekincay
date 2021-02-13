@@ -45,7 +45,7 @@ class OrderController extends Controller
 
 	public function orderViewLists()
 	{
-		$data = OrderRepository::orderGrid();
+		$data = OrderRepository::orderGrid(null)->get();
 		return response()->json($data);
 	}
 

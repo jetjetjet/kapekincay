@@ -28,15 +28,15 @@
             <div class="form-row">
               <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
               <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
-              <div class="col-md-12 mb-5">
+              <div class="col-md-12 mb-2">
                 <label for="rolename">Nama Jabatan</label>
                 <input type="text" name="rolename" value="{{ old('rolename', $data->rolename) }}" class="form-control" id="rolename" placeholder="Nama Jabatan" required>
               </div>
-              <div class="col-md-12 mb-5">
+              <div class="col-md-12 mb-2">
                 <label for="roledetail">Detail Jabatan</label>
                 <textarea class="form-control" name="roledetail" >{{ old('roledetail', $data->roledetail) }}</textarea>
               </div>
-              <div class="col-md-12 mb-5">
+              <div class="col-md-12 mb-2">
                 <label for="user">User</label>
                 <select class="form-control select2" name="userid[]" multiple="multiple">
                   @foreach( $user as $key=>$u)
@@ -54,7 +54,7 @@
                 <legend>Hak Akses</legend>
                 <div class="row row-sm mg-b-10">
                 @foreach (Perm::all() as $key=>$group)
-                <div class="col-sm-4">
+                <div class="col-sm-2">
                   <label><b>{{ $group->module}}</b></label>
                   @foreach($group->actions as $act)
                     <?php

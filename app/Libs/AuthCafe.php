@@ -10,22 +10,36 @@ use DB;
 class AuthCafe
 {
   public static $all = array(
-    'meja_simpan',
-    'meja_tabel',
-    'meja_hapus',
-    'meja_lihat',
-
-    'user_simpan',
-    'user_tabel',
-    'user_hapus',
-    'user_lihat',
-
     'jabatan_simpan',
-    'jabatan_tabel',
     'jabatan_hapus',
     'jabatan_lihat',
 
-    'order_pembayaran'
+    'meja_simpan',
+    'meja_hapus',
+    'meja_lihat',
+
+    'menu_simpan',
+    'menu_hapus',
+    'menu_lihat',
+
+    'order_lihat',
+    'order_hapus',
+    'order_simpan',
+    'order_batal',
+    'order_pembayaran',
+
+    'pelanggan_simpan',
+    'pelanggan_hapus',
+    'pelanggan_lihat',
+
+    'shift_simpan',
+    'shift_tutup',
+    'shift_hapus',
+    'shift_lihat',
+
+    'user_simpan',
+    'user_hapus',
+    'user_lihat',
   );
 
   public static function all(){

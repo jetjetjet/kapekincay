@@ -2,7 +2,7 @@
 	<header class="header navbar navbar-expand-sm">
 		<a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></a>
 		<div class="nav-logo align-self-center">
-			<a class="navbar-brand" href="index.html"><img alt="logo" src="{{ url('/') }}/assets/img/90x90.jpg"> <span class="navbar-brand-name">CAFE</span></a>
+			<a class="navbar-brand" href="{{url('/')}}"><img alt="logo" src="{{ url('/') }}/assets/img/90x90.jpg"> <span class="navbar-brand-name">CAFE</span></a>
 		</div>
 
 		<ul class="navbar-item topbar-navigation">
@@ -21,7 +21,7 @@
 					</ul>
 					<ul class="list-unstyled menu-categories" id="topAccordion">
 						<li class="menu active">
-							<a href="#dashboard" data-toggle="collapse" aria-expanded="true" class="dropdown-toggle autodroprown">
+							<a href="{{url('/')}}" class="dropdown-toggle">
 								<div class="">
 									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
 									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home shadow-icons"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
@@ -30,7 +30,6 @@
 								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
 							</a>
 						</li>
-
 						<li class="menu single-menu">
 							<a href="#app" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
 								<div class="">

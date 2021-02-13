@@ -13,7 +13,7 @@
 <style>
   .cards tbody tr {
     float: left;
-    width: 19rem;
+    width: 18rem;
     margin: 0.5rem;
     border: 0.0625rem solid rgba(0, 0, 0, .125);
     border-radius: .25rem;

@@ -111,6 +111,33 @@ class MenuRepository
       return $respon;
     }
 
+    public static function topMenu($filters)
+    {
+      $detailOrder = DB::table('orderdetail')
+        ->where('odactive', '1')
+        ->groupBy('odmenuid')
+        ->select(
+          DB::raw(" sum(odqty) as totalorder"),
+          'odmenuid'
+        );
+        
+        if($filters){
+          foreach($filters as $f)
+          {
+            $detailOrder = $detailOrder->whereRaw($f[0]);
+          }
+        }
+      $data = Menu::joinSub($detailOrder, 'od', function ($join) {
+          $join->on('menus.id', '=', 'od.odmenuid');})
+        ->select(
+          'menuname',
+          'menuprice',
+          'od.totalorder'
+        )->limit(10)->get();
+
+      return $data;
+    }
+
     public static function menuapi($respon)
     {
       $tempdata = Array('Makanan'=>Array(), 'Minuman'=>Array(), 'Paket'=>Array());
