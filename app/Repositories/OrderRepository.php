@@ -9,6 +9,28 @@ use Exception;
 
 class OrderRepository
 {
+  public static function orderGrid()
+  {
+    $data = Order::rightJoin('boards', 'boards.id', 'orderboardid')
+      // ->where('orderactive', '1')
+      ->where('boardactive', '1')
+      ->orderBy('boardnumber', 'ASC')
+      ->orderBy('boards.id')
+      ->orderBy('ordercreatedat', 'DESC')
+      ->select(
+        DB::raw("distinct on(boardnumber, boards.id) boardspace"),
+        'orderstatus',
+        DB::raw("case when orderstatus = 'PAID' then true
+        when orderstatus is null then true else false end as boardstatus"),
+        'orders.id as orderid',
+        'boards.id as boardid',
+        'boardfloor',
+        'orderinvoice',
+        'boardnumber')
+      ->get();
+    
+    return $data;
+  }
 
   public static function grid()
   {
@@ -57,6 +79,44 @@ class OrderRepository
       $data = self::dbOrderHeader($data);
     }
     return $data;
+  }
+
+  public static function getDataDapur()
+  {
+    $temp = Array();
+    $data = Order::where('orderactive', '1')
+      ->leftJoin('boards', 'boards.id', 'orderboardid')
+      ->where('orderstatus', 'PROCEED')
+      ->orderBy('ordercreatedat')
+      ->select(
+        'orders.id',
+        'ordercustname', 
+        'orderinvoice',
+        DB::raw("concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor) as orderboardtext"),
+        DB::raw("case when ordertype = 'DINEIN' then 'Makan Ditempat' else 'Bungkus' end as ordertype"),
+        'orderdate')
+      ->get();
+
+      foreach($data as $d){
+        $orderHeader = self::dbOrderHeader($d);
+        $subs = OrderDetail::join('menus', 'menus.id', 'odmenuid')
+          ->where('odactive', '1')
+          ->where('odorderid', $d->id)
+          ->where('oddelivered', '0')
+          ->orderBy('odindex')
+          ->select(
+            DB::raw('menuname as odmenutext'),
+            'odqty',
+            'odremark'
+          )->get();
+
+          foreach($subs as $s){
+            $dataSub = self::dbOrderDetail($s);
+            array_push($orderHeader->subOrder, $dataSub);
+          }
+        array_push($temp, $orderHeader);
+      }
+    return $temp;
   }
 
   public static function getSubOrder($idOrder)
@@ -230,6 +290,8 @@ class OrderRepository
     
     $ui->id = $db->id ?? null;
     $ui->odorderid = $db->odorderid ?? null;
+    $ui->odmenuid = $db->odmenuid ?? null;
+    $ui->odmenutext = $db->odmenutext ?? null;
     $ui->odqty = $db->odqty ?? null;
     $ui->odprice = $db->odprice ?? "";
     $ui->odtotalprice = $db->odtotalprice ?? "";
@@ -245,6 +307,7 @@ class OrderRepository
     $ui->id = $db->id ?? null;
     $ui->orderinvoice = $db->orderinvoice ?? null;
     $ui->orderboardid = $db->orderboardid ?? null;
+    $ui->orderboardtext = $db->orderboardtext ?? null;
     $ui->orderboardtext = $db->orderboardtext ?? "";
     $ui->ordertype = $db->ordertype ?? "";
     $ui->ordercustname = $db->ordercustname ?? "";
@@ -313,11 +376,10 @@ class OrderRepository
 
       $cekDelivered = $data->first();
       if($cekDelivered == null){
-        $upd = Order::where('orderactive', '1')
-          ->where('id', $id)
-          ->select('id')->first();
-        if($upd != null){
-          $upd->update(['orderstatus', 'DELIVERED']);
+        $updH = Order::where('orderactive', '1')
+          ->where('id', $id)->first();
+        if($updH != null){
+          $c = $updH->update(['orderstatus' => 'COMPLETED']);
         }
       }
 

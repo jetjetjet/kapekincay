@@ -98,7 +98,6 @@
         let msg = data
         console.log(msg)
         if(msg.message == "ok"){
-          alert(1)
           table.ajax.reload();
         }
       });

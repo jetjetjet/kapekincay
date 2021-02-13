@@ -23,7 +23,9 @@ class AuthCafe
     'jabatan_simpan',
     'jabatan_tabel',
     'jabatan_hapus',
-    'jabatan_lihat'
+    'jabatan_lihat',
+
+    'order_pembayaran'
   );
 
   public static function all(){

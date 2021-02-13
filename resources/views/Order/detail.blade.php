@@ -60,6 +60,10 @@
                     </thead>
                     <tbody>
                     </tbody>
+                    <tfoot>
+                      <th colspan="6" class="text-lg-right"><h3>Total :</h3></th>
+                      <th colspan="2" class="text-lg-right"><h3> {{ number_format($data->orderprice,0) }}</h3></th>
+                    <tfoot>
                 </table>
               </div>
             </div>
@@ -82,67 +86,124 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="bayarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">Pembayaran</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="inputAddress">Nomor Invoice</label>
+              <input type="text" class="form-control" id="inputAddress" readonly>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputEmail4">Nama Pelanggan</label>
+              <input type="email" class="form-control" id="inputEmail4" readonly>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputPassword4">Password</label>
+              <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputAddress">Address</label>
+            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+          </div>
+          <div class="form-group">
+            <label for="inputAddress2">Address 2</label>
+            <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="flaticon-cancel-12"></i>Batal</button>
+        <button type="button" id="custButton" style="min-width: 75px;" class="btn btn-success btn-sm font-bold modal-add-row">Tambah</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @section('js-form')
 <script>
-
-
   $(document).ready(function (){
-
-
     let grid = $('#grid').DataTable({
-        ajax: {
-          url: "{{ url('order/detail/grid').'/' }}" + '{{$data->id}}',
-          dataSrc: ''
-        },
-        dom: '<"row"<"col-md-12"<"row" > ><"col-md-12"rt> <"col-md-12"<"row">> >',
+      ajax: {
+        url: "{{ url('order/detail/grid').'/' }}" + '{{$data->id}}',
+        dataSrc: ''
+      },
+      dom: '<"row"<"col-md-12"<"row" > ><"col-md-12"rt> <"col-md-12"<"row">> >',
 
-        "paging": false,
-        "ordering": false,
-        columns: [
-          { 
-            data: 'id',
-            visible : false
-          },
-          { 
-            data: 'odmenutext',
-          },
-          { 
-            data: 'odqty',
-          },
-          { 
-            data: 'odprice',
-          },
-          { 
-            data: 'odtotalprice',
-          },
-          { 
-            data: 'odremark',
-          },
-          { 
-            data: 'oddelivertext',
-          },
-          { 
-            data:null,
-            render: function(data, type, full, meta){
-              if(data.oddelivertext == 'Sedang Diproses'){
-                return '<input type="checkbox" name="customCheck1" class="customCheck1" value="' + data.id+ '" >';
-              }else{
-                return'<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8dbf42" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-              }
+      "paging": false,
+      "ordering": false,
+      columns: [
+        { 
+          data: 'id',
+          visible : false
+        },
+        { 
+          data: 'odmenutext',
+        },
+        { 
+          data: 'odqty',
+        },
+        { 
+          data: null,
+          render: function(data, type, full, meta){
+            return formatter.format(data.odprice);
+          }
+        },
+        { 
+          data: null,
+          render: function(data, type, full, meta){
+            return formatter.format(data.odtotalprice);
+          }
+        },
+        { 
+          data: 'odremark',
+        },
+        { 
+          data: 'oddelivertext',
+        },
+        { 
+          data:null,
+          render: function(data, type, full, meta){
+            if(data.oddelivertext == 'Sedang Diproses'){
+              return '<input type="checkbox" name="customCheck1" class="customCheck1" value="' + data.id+ '" >';
+            }else{
+              return'<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8dbf42" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg>';
             }
           }
-        ]
-      });
+        }
+      ]
+    });
+
+    $('#prosesOrder').on('click', function(){
+      $(this).attr('data-toggle', 'modal');
+      $(this).attr('data-target', '#uiModalInstance');
+
+      $.fn.modal.Constructor.prototype._enforceFocus = function() {};
+      let $modal = cloneModal($('#bayarModal'));
+
+      $modal.on('show.bs.modal', function (){
+        
+      }).modal('show');
+    })
     
-        const toast = swal.mixin({
-          toast: true,
-          position: 'center',
-          showConfirmButton: false,
-          timer: 3000,
-          padding: '2em'
-        });
+    const toast = swal.mixin({
+      toast: true,
+      position: 'center',
+      showConfirmButton: false,
+      timer: 3000,
+      padding: '2em'
+    });
   
     let idSub = [];
   
@@ -170,7 +231,7 @@
       $('.customCheck1').prop('checked', this.checked);
       if(cek){
         $("input:checkbox[name=customCheck1]:checked").each(function(){
-        idSub.push($(this).val());
+          idSub.push($(this).val());
         });
       }else{
         idSub = [];
@@ -179,7 +240,6 @@
       if(idSub.length >= 1){
         $('#deliver').removeAttr('disabled');
       }
-      console.log(idSub)
     })
 
     $('#deliver').on('click',function(){
@@ -189,7 +249,6 @@
           type: "post",
           data: { idsub: idSub },
           success: function(result){
-            console.log(result);
             var msg = result.messages[0];
             if(result.status == 'success'){
               toast({
@@ -225,6 +284,7 @@
         id: item.id
       }
     });
+
     $('#cariMeja').on('select2:select', function (e) {
       $('#cariMeja').attr('data-has-changed', '1');
     });

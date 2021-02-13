@@ -70,6 +70,8 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('/order/{id?}', [OrderController::class, 'order']);
   Route::get('/order/detail/{id?}', [ OrderController::class, 'detail' ]);
   Route::get('/order/detail/grid/{idOrder}', [ OrderController::class, 'getDetail' ]);
+  Route::get('/order/meja/view', [OrderController::class, 'orderView']);
+  Route::get('/order/meja/lists', [OrderController::class, 'orderViewLists']);
   Route::post('/order/save/{id?}', [OrderController::class, 'save']);
   Route::post('/order/hapus/{id}', [OrderController::class, 'deleteById']);
   Route::post('/order/batal/{id}', [OrderController::class, 'voidById']);

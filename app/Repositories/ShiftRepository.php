@@ -6,7 +6,6 @@ use DB;
 use Illuminate\Support\Facades\Hash;
 
 class ShiftRepository
-
 {
   public static function grid()
   {
@@ -74,7 +73,6 @@ class ShiftRepository
     $respon['data'] = Shift::getFields($data);
     $cekId = Shift::where('id', $id)->select('shiftclose')->first();
     $qClosed = $cekId->shiftclose ?? null;
-
     
     if($qClosed != null){
       $respon['status'] = 'error';
@@ -205,6 +203,19 @@ class ShiftRepository
       : array_push($respon['messages'], 'Shift Sudah Ditutup');
     
     return $respon;
+  }
+
+  public static function cekShiftStatus()
+  {
+    $cekShift = Shift::where('shiftactive',1)
+      ->whereRaw("( shiftstart::date = now()::date and shiftstart is not null )")
+      ->whereNull('shiftclose')
+      ->select('id')
+      ->first();
+    if($cekShift == null)
+      return false;
+    
+    return true;
   }
 
 }
