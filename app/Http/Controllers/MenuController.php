@@ -18,7 +18,11 @@ class MenuController extends Controller
 
 	public function getLists(Request $request)
 	{
-		$results = MenuRepository::grid();
+		$permission = Array(
+			'save' => (Auth::user()->can(['menu_simpan']) == true ? "true" : "false") . " as can_save",
+			'delete' => (Auth::user()->can(['menu_hapus']) == true ? "true" : "false") . " as can_delete"
+		);
+		$results = MenuRepository::grid($permission);
 		
 		return response()->json($results);
 	}

@@ -159,7 +159,7 @@
         <div class="col-sm-12 ">
           <div class="widget-content widget-content-area" style="padding:10px">
             <div class="float-left">
-              <a href="" type="button" class="btn btn-danger mt-2" type="submit">Batal</a>
+              <a href="{{ isset($data->id) ? url('/order/detail/'.$data->id) : url('/order/meja/view') }}" type="button" class="btn btn-danger mt-2" type="submit">Batal</a>
             </div>
             <div class="float-right">
               <a href="" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah {{isset($data->id) ? 'Meja' : 'Pelanggan'}}</a>

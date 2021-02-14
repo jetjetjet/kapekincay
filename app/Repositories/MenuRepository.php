@@ -7,10 +7,16 @@ use DB;
 class MenuRepository
 
 {
-    public static function grid()
+    public static function grid($perms)
     {
       return Menu::where('menuactive', '1')
-      ->select('id','menuname', 'menutype', DB::raw("to_char(menuprice, '999G999G999G999D99')as menuprice"), DB::raw("CASE WHEN menus.menuavaible = true THEN 'Tersedia' ELSE 'Kosong' END as menuavaible"))
+      ->select('id',
+        'menuname', 
+        'menutype', 
+        DB::raw("to_char(menuprice, '999G999G999G999D99')as menuprice"), 
+        DB::raw("CASE WHEN menus.menuavaible = true THEN 'Tersedia' ELSE 'Kosong' END as menuavaible"),
+        DB::raw($perms['save']),
+        DB::raw($perms['delete']))
       ->get();
     }
   

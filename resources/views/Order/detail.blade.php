@@ -84,7 +84,9 @@
               </div>
               <div class="float-right">
                 <a href="{{ url('/order').'/'.$data->id }}" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Pesanan</a>
-                <a type="button" id="prosesOrder" class="btn btn-primary mt-2">Pembayaran</a>
+                @if(Perm::can(['order_pembayaran']))
+                  <a type="button" id="prosesOrder" class="btn btn-primary mt-2">Pembayaran</a>
+                @endif
               </div>
             </div>
           </div>
