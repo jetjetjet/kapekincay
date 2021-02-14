@@ -18,7 +18,11 @@ class BoardController extends Controller
 
 	public function getLists(Request $request)
 	{
-		$results = BoardRepository::grid();
+		$perms = Array(
+			'save' => (Auth::user()->can(['meja_simpan']) == true ? "true" : "false") . " as can_save",
+			'delete' => (Auth::user()->can(['meja_hapus']) == true ? "true" : "false") . " as can_delete"
+		);
+		$results = BoardRepository::grid($perms);
 		
 		return response()->json($results);
 	}

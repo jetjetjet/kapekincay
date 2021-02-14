@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
-    <title>CORK Admin Template - Error 500 Page</title>
+    <title>Pesanan</title>
     <link rel="icon" type="image/x-icon" href="{{ url('/') }}/assets/img/favicon.ico"/>
     <link href="{{ url('/') }}/assets/css/loader.css" rel="stylesheet" type="text/css" />
     <script src="{{ url('/') }}/assets/js/loader.js"></script>
@@ -58,34 +58,44 @@
     <!-- END GLOBAL MANDATORY STYLES -->
 </head>
 <body>
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><h3 class="text-center">Daftar Pesanan</h3></li>
-  </ol>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="widget-content widget-content-area br-6">
-          <div class="table-responsive mb-4 mt-4">
-            <table id="example" class="table table-sm table-hover cards" cellspacing="0" width="100%">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Pelanggan</th>
-                  <th>Jenis Pesanan</th>
-                  <th>Tanggal</th>
-                  <th>Pesanan</th>
-                </tr>
-              </thead>
-          </div>
+  <div class="header-container">
+    <header class="header navbar navbar-expand-sm">
+        <div class="nav-logo align-self-center">
+          <h3 class="text-center">Daftar Pesanan</h3>
+        </div>
+
+        <ul class="navbar-item flex-row ml-auto">
+        </ul>
+
+        <ul class="navbar-item flex-row nav-dropdowns">
+          <a href="{{ url('/')}}" type="button" style="float-right" class="btn btn-info">Kembali Ke Aplikasi</a>
+        </ul>
+    </header>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="widget-content widget-content-area br-6">
+        <div class="table-responsive mb-4 mt-4">
+          <table id="example" class="table table-sm table-hover cards" cellspacing="0" width="100%">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Jenis Pesanan</th>
+                <th>Tanggal</th>
+                <th>Pesanan</th>
+              </tr>
+            </thead>
         </div>
       </div>
     </div>
-    <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
-    <script src="{{ url('/') }}/assets/js/libs/jquery-3.1.1.min.js"></script>
-    <script src="{{ url('/') }}/bootstrap/js/popper.min.js"></script>
-    <script src="{{ url('/') }}/bootstrap/js/bootstrap.min.js"></script>
-    <script src="{{ url('/') }}/plugins/table/datatable/datatables.js"></script>
-    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
-    <!-- END GLOBAL MANDATORY SCRIPTS -->
+  </div>
+  <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+  <script src="{{ url('/') }}/assets/js/libs/jquery-3.1.1.min.js"></script>
+  <script src="{{ url('/') }}/bootstrap/js/popper.min.js"></script>
+  <script src="{{ url('/') }}/bootstrap/js/bootstrap.min.js"></script>
+  <script src="{{ url('/') }}/plugins/table/datatable/datatables.js"></script>
+  <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+  <!-- END GLOBAL MANDATORY SCRIPTS -->
 
   <script>
     $(document).ready(function (){
@@ -140,10 +150,6 @@
               }
             },
             {
-              'data': 'ordercustname',
-              'class': 'text-right'
-            },
-            {
               'data': 'ordertype',
               'class': 'text-right'
             },
@@ -157,7 +163,7 @@
                     order = "<br><ul>",
                     temp;
                   sub.forEach(function(e){
-                    order += "<li> " + e.odqty + " - " + e.odmenutext;
+                    order += "<li> " + e.odqty + " - " + e.odmenutext + " (" + e.odmenutype + ")";
                     if(e.odremark != null){
                       order += "<br>" + e.odremark + "</li>"
                     } else {

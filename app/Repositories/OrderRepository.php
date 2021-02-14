@@ -66,7 +66,7 @@ class OrderRepository
       'id',
       'orderinvoice', 
       'orderboardid', 
-      'ordercustname', 
+      // 'ordercustname', 
       DB::raw("CASE WHEN orders.ordertype = 'DINEIN' THEN 'Makan ditempat' ELSE 'Bungkus' END as ordertypetext"), 
       'orderdate',
       DB::raw("to_char(orders.orderprice, '999G999G999G999D99')as orderprice"), 
@@ -87,10 +87,10 @@ class OrderRepository
         ->select(
           'orders.id',
           'orderinvoice',
-          DB::raw("concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor, ' Kapasitas ', boardspace, ' Orang') as orderboardtext"),
+          DB::raw("concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor) as orderboardtext"),
           'orderboardid',
           'ordertype',
-          'ordercustname',
+          // 'ordercustname',
           'orderdate',
           'orderprice',
           'orderstatus',
@@ -118,9 +118,8 @@ class OrderRepository
       ->orderBy('ordercreatedat')
       ->select(
         'orders.id',
-        'ordercustname', 
         'orderinvoice',
-        DB::raw("concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor) as orderboardtext"),
+        DB::raw("case when ordertype = 'DINEIN' then concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor) else '' end as orderboardtext"),
         DB::raw("case when ordertype = 'DINEIN' then 'Makan Ditempat' else 'Bungkus' end as ordertype"),
         'orderdate')
       ->get();
@@ -134,6 +133,7 @@ class OrderRepository
           ->orderBy('odindex')
           ->select(
             DB::raw('menuname as odmenutext'),
+            'menutype as odmenutype',
             'odqty',
             'odremark'
           )->get();
@@ -207,7 +207,7 @@ class OrderRepository
           'orderinvoiceindex' => $inv['index'],
           'orderboardid' => $inputs['orderboardid'],
           'ordertype' => $inputs['ordertype'],
-          'ordercustname' => $inputs['ordercustname'],
+          // 'ordercustname' => $inputs['ordercustname'],
           'orderdate' => now()->toDateTimeString(),
           'orderprice' => $inputs['orderprice'] ?? 1,
           'orderstatus' => 'PROCEED',
@@ -251,7 +251,7 @@ class OrderRepository
   {
     $ids = Array();
     foreach($details as $dt){
-      array_push($ids,$dt['id']);
+      array_push($ids,$dt['id'] != null ? $dt['id'] :0);
     }
     try{
       $data = OrderDetail::where('odactive', '1')
@@ -320,6 +320,7 @@ class OrderRepository
     $ui->odorderid = $db->odorderid ?? null;
     $ui->odmenuid = $db->odmenuid ?? null;
     $ui->odmenutext = $db->odmenutext ?? null;
+    $ui->odmenutype = $db->odmenutype ?? null;
     $ui->odqty = $db->odqty ?? null;
     $ui->odprice = $db->odprice ?? "";
     $ui->odtotalprice = $db->odtotalprice ?? "";
@@ -338,7 +339,7 @@ class OrderRepository
     $ui->orderboardtext = $db->orderboardtext ?? null;
     $ui->orderboardtext = $db->orderboardtext ?? "";
     $ui->ordertype = $db->ordertype ?? "";
-    $ui->ordercustname = $db->ordercustname ?? "";
+    // $ui->ordercustname = $db->ordercustname ?? "";
     $ui->orderdate = $db->orderdate ?? null;
     $ui->orderprice = $db->orderprice ?? null;
     $ui->orderstatus = $db->orderstatus ?? null;

@@ -257,6 +257,12 @@ $('table,.subitem-container')
   $table.triggerHandler("row-removed", [$tr]);
 
   $table.attr('data-has-changed', '1');
+}).on("keyup keydown change", '[sub-input]', function(e){
+  var $tr = $(this).closest('tr,.panel,.rowpanel'),
+      $table = $tr.closest('table,.subitem-container');
+      console.log($table);
+  $table.triggerHandler("row-updating", [$tr]);
+  $table.attr('data-has-changed', '1');
 });
 
 function inputSearch(inputId, urlSearch, width, callBack)
@@ -298,5 +304,80 @@ function numberMask(){
     prefix: '',
     digits: 0,
     removeMaskOnSubmit: true
+  });
+}
+
+$.fn.setupMask = function (precision){
+  $(this).each(function (){
+    var $input = $(this);
+
+    var html = '<input type="text" class="form-control input-sm text-right masking" />'; 
+    var $mask = $(html).insertAfter($input);
+    
+    $input
+      .blur(function (){
+        if ($input.data('programmaticallyfocus')) return;
+
+        $(this).toggleClass('d-none');
+        $mask.toggleClass('d-none');
+      })
+      .change(function (){
+        inputChange($(this));
+      })
+      .on('requestUpdateMask', function (){
+      inputChange($(this));
+      })
+      .on('disabledMask', function (event, bool){
+        $mask.prop('disabled', bool);
+      })
+      .on('readOnlyMask', function (event, bool){
+        $mask.prop('readOnly', bool);
+      });;
+      
+      $mask
+      .focus(function (){
+        if (!$input.prop('readonly')){
+          $(this).toggleClass('d-none');
+          $input.toggleClass('d-none');
+
+          // Firefox @!&*^@!#^
+          $input.data('programmaticallyfocus', true);
+          $input.focus();
+          $input.select();
+          $input.removeData('programmaticallyfocus');
+        }
+      });
+
+    $mask.attr('required', $input.prop('required'));
+    $mask.prop('disabled', $input.prop('disabled'));
+    $mask.prop('required', $input.prop('required'));
+    if ($input.prop('autofocus')){
+      setTimeout(function (){
+        $mask.focus();
+      });
+    }
+
+    // Initial state to show value.
+    inputChange($input);
+    $input.addClass('d-none');
+
+    function inputChange($self){
+      var valueText = $self.val(),
+        value = valueText ? Number(valueText) : null;
+      value = isNaN(value) ? null : value;
+      $mask.val(value === null ? null : value.toLocaleString(undefined, { minimumFractionDigits: precision === undefined ? (value % 1 === 0 ? 0 : 2) : precision }));
+
+      ['readonly', 'disabled', 'required', 'min', 'max', 'placeholder'].forEach(function (val){
+        copyAttr(val);
+      });
+
+      function copyAttr(attr){
+        if (!!$self.attr(attr)) {
+          $mask.prop(attr, $self.prop(attr));
+        } else {
+          $mask.removeAttr(attr);
+        }
+      }
+    }
   });
 }

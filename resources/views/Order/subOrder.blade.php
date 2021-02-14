@@ -28,7 +28,7 @@
     </td>
   @else
     <td>
-      <input type="text" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}" style="width: 35px;" class="tPrice"/>
+      <input type="number" class="text-right subQty" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}" style="width: 35px;" class="tPrice" sub-input >
     </td>
   @endif
   <td>
@@ -38,20 +38,25 @@
     </div>
   </td>
   <td>
-    <input type="hidden" value="{{$menuRemark}}" name="dtl[{{ $rowIndex }}][odremark]"/>
-    <p id="dtl[{{ $rowIndex }}][odremark]"> {{$menuRemark}}</p>
+    <input type="text" value="{{$menuRemark}}" name="dtl[{{ $rowIndex }}][odremark]" style="width: 60px;">
   </td>
   <td>
-  @if(isset($data->id))
+  <!-- @if(isset($data->id))
     @if($sub->oddelivertext == 'Sedang Diproses')
       <button type="button" title="Hapus" style="border:none; background:transparent" remove-row>
       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
       </button>
     @endif
   @else
-  <button type="button" title="Hapus" style="border:none; background:transparent" remove-row>
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+  @endif -->
+  <button type="button" title="Hapus Pesanan" style="border:none; background:transparent" remove-row>
+    <span class="badge badge-danger">H <i class="far fa-times-circle"></i></span>
+  </button>
+   &nbsp;
+    <button type="button" title="Pesanan Selesai Diantar" style="border:none; background:transparent">
+      <span class="badge badge-info">S <i class="far fa-check-square"></i></span>
     </button>
-  @endif
+  <!-- @if(isset($data->id)) -->
+  <!-- @endif -->
   </td>
 </tr>

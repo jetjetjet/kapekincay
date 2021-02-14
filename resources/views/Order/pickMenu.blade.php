@@ -1,16 +1,18 @@
 @extends('Layout.layout-form')
 
 @section('breadcumb')
-<style>
-  .overlay { 
-    background: rgba(77, 77, 77, .9);
-    color: #393839;
-    opacity: 1;
-  }
-  .dtl-order td, .dtl-order th {
-      padding: 0;
-  }
-</style>
+  <link rel="stylesheet" href="{{ url('/') }}/plugins/font-icons/fontawesome/css/regular.css">
+  <link rel="stylesheet" href="{{ url('/') }}/plugins/font-icons/fontawesome/css/fontawesome.css">
+  <style>
+    .overlay { 
+      background: rgba(77, 77, 77, .9);
+      color: #393839;
+      opacity: 1;
+    }
+    .dtl-order td, .dtl-order th {
+        padding: 0;
+    }
+  </style>
   <div class="title">
     <h3>Pesanan</h3>
   </div>
@@ -25,7 +27,7 @@
   <div class="col-xl-12 col-lg-12 col-md-12">
     <div class="statbox box box-shadow">
       <div class="row">
-        <div class="col-md-8 col-sm-12">
+        <div class="col-md-7 col-sm-12">
           <div class="widget-content pill-justify-right">
             <ul class="nav nav-pills mb-3 mt-3 justify-content-end" id="justify-right-pills-tab" role="tablist">
               <li class="nav-item">
@@ -84,40 +86,29 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4 col-sm-12">
+        <div class="col-md-5 col-sm-12">
           <div class="widget-content widget-content-area" style="margin-bottom:25px">
             <form id="orderMenuForm" method="post" novalidate action="{{url('/order/save')}}">
               <div class="orderCust" style="padding-bottom:5px">
-                <table>
-                  @if($data->id)
-                    <tr>
-                      <th colspan="2"><u>Pesanan {{ $data->orderinvoice }}</u></th>
-                    </tr>
-                  @endif
-                  <tr>
-                    <th style="width: 40%"> Nama Pelanggan </th>
-                    <td id="lblCustName">
-                      <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
-                      <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
-                      <input type="hidden" name="ordercustname" value="{{ old('ordercustname', $data->ordercustname) }}" required>
-                      <p id="custname">{{ old('ordercustname', $data->ordercustname) }}</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th> Jenis Pesanan </th>
-                    <td id="lblTypeOrder">
-                      <input type="hidden" name="ordertype" value="{{ old('ordertype', $data->ordertype) }}" required>
-                      <p id="jnsPesanan">{{ old('ordertype', $data->ordertype) }}</p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Nomor Meja</th>
-                    <td id="lblTableNo">
-                      <input type="hidden" name="orderboardid" value="{{ old('orderboardid', $data->orderboardid) }}" required>
-                      <p id="noMeja">{{ old('orderboardtext', $data->orderboardtext) }}</p>
-                    </td>
-                  </tr>
-                </table>
+              <!-- No. Pesanan {{ isset($data->orderinvoice) ? $data->orderinvoice : "" }} -->
+                <div class="form-group row">
+                  <label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Jenis Pesanan</label>
+                  <div class="col-sm-8">
+                    <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
+                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
+                    <select id="orderType" class="custom-select custom-select-sm" name="ordertype">
+                      <option value="DINEIN">Makan Ditempat</option>
+                      <option value="TAKEAWAY">Bungkus</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group row divMeja">
+                  <label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">No. Meja</label>
+                  <div class="col-sm-8">
+                    <input type="hidden" id="boardId" value="{{ old('orderboardid', $data->orderboardid) }}" name="orderboardid" id="colFormLabelSm">
+                    <input type="text" id="boardText" value="{{ old('orderboardtext', $data->orderboardtext) }}" name="orderboardtext" class="form-control form-control-sm" readonly>
+                  </div>
+                </div>
               </div>
               <div class="form-row">
                 <table id="detailOrder" class="table table-hover dtl-order">
@@ -162,7 +153,7 @@
               <a href="{{ isset($data->id) ? url('/order/detail/'.$data->id) : url('/order/meja/view') }}" type="button" class="btn btn-danger mt-2" type="submit">Batal</a>
             </div>
             <div class="float-right">
-              <a href="" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah {{isset($data->id) ? 'Meja' : 'Pelanggan'}}</a>
+              <a href="" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Meja</a>
               <a type="button" id="prosesOrder" class="btn btn-primary mt-2">Simpan</a>
             </div>
           </div>
@@ -173,53 +164,27 @@
   </div>
 </div>
 
-<div class="modal fade" id="custModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="mejaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalTitle">Ubah Detail Pesanan</h5>
+        <h5 class="modal-title" id="modalTitle">Ubah Meja</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
       <div class="modal-body">
         <div class="form-row">
-          <table class="table mb-4">
-            <tbody>
-              <div class="widget-content">
-                <form id="custForm">
-                  <div class="form-row">
-                    <div class="col-md-12 mb-2">
-                      <label for="ordercustname">Nama Pelanggan</label>
-                      <input type="text" class="form-control" name="ordercustname" value="{{ old('ordercustname', $data->ordercustname) }}" placeholder="Nama Pelanggan" {{ !empty($data->id) ? 'readonly' : '' }}>
-                    </div>
-                    <div class="col-md-12 mb-2">
-                      <label for="ordertype">Tipe Pesanan</label>
-                      @if(!isset($data->id))
-                        <select id="orderType" class="form-control orderType" name="ordertype">
-                          <option value="DINEIN">Makan Ditempat</option>
-                          <option value="TAKEAWAY">Bungkus</option>
-                        </select>
-                      @else
-                        <input type="hidden" id="orderType" name="ordertype" class="form-control" value="{{ old('ordertype', $data->ordertype) }}" readonly>
-                        <input type="text" class="form-control" value="{{ $data->ordertype == 'DINEIN' ? 'Makan Ditempat' : 'Bungkus' }}" readonly>
-                      @endif
-                    </div>
-                    <div class="col-md-12 mb-4 divMeja">
-                      <label for="orderboardid">Nomor Meja</label>
-                      <select class="form-control form-control-sm cariMeja" id="cariMeja" name="orderboardid">
-                      </select>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </tbody>
-          </table>
+          <div class="col-md-12">
+            <label for="orderboardid">Nomor Meja</label>
+            <select class="form-control form-control-sm cariMeja" id="cariMeja" name="orderboardid">
+            </select>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="flaticon-cancel-12"></i>Batal</button>
-        <button type="button" id="custButton" style="min-width: 75px;" class="btn btn-success btn-sm font-bold modal-add-row">Tambah</button>
+        <button type="button" id="custButton" style="min-width: 75px;" class="btn btn-success btn-sm font-bold modal-add-row">Ubah</button>
       </div>
     </div>
   </div>
@@ -249,7 +214,7 @@
               <tr>
                 <td class="text-left">Jumlah</td>
                 <td class="text-primary" >
-                  <input type="text" id="menuPopupQty" name="menuPopupQty" class="menuPopupQty text-right"/>
+                  <input type="number" class="form-control form-control-sm text-right" id="menuPopupQty" name="menuPopupQty" class="menuPopupQty text-right"/>
                 </td>
               </tr>
               <tr>
@@ -286,7 +251,7 @@
     if(urlMeja && urlMejaTeks)
     {
       $('[name="orderboardid"]').val(urlMeja);
-      $('#noMeja').html(urlMejaTeks);
+      $('[name="orderboardtext"]').val(urlMejaTeks);
     }
 
     let $targetContainer = $('#detailOrder');
@@ -296,6 +261,16 @@
       $('#prosesOrder').attr('dissabled');
       $('#orderMenuForm').submit();
     })
+    
+    $('#orderType').on('change',function(){
+      let val = $(this).val();
+      if(val == "TAKEAWAY"){
+        $('.divMeja').addClass('d-none');
+        $modal.find('.cariMeja').select2().val(null).trigger('change');
+      } else {
+        $('.divMeja').removeClass('d-none')
+      }
+    });
 
     $('#headerOrder').on('click', function(){
       let idMeja, textMeja;
@@ -303,33 +278,29 @@
       $(this).attr('data-target', '#uiModalInstance');
 
       $.fn.modal.Constructor.prototype._enforceFocus = function() {};
-      let $modal = cloneModal($('#custModal'));
+      let $modal = cloneModal($('#mejaModal'));
 
       $modal.on('show.bs.modal', function (){
-        let oType = $('[name="ordertype"]').val(),
-          idBoard = $('[name="orderboardid"]').val();
+        let idBoard = $('[name="orderboardid"]').val();
 
-        $modal.find('[name="ordertype"]').val(oType);
-        showTypeO($modal, oType);
         if(idBoard){
           changeOptSelect2($('.cariMeja'), "{{ Url('/meja/cariTersedia') }}" + "/" + idBoard)
         }
+
+        inputSearch('.cariMeja', "{{ Url('/meja/cariTersedia') }}", 'resolve', function(item) {
+          return {
+            text: item.text,
+            id: item.id
+          }
+        });
         
       }).modal('show');
 
       $modal.find('#custButton').on('click',function(){
-        let custNameP = $modal.find('[name="ordercustname"]').val(),
-          orderTypeP = $modal.find('[name="ordertype"]').val();
-
-        $('[name="ordercustname"]').val(custNameP);
-        $('#custname').html(custNameP);
-
-        $('#jnsPesanan').html(lblOrderType(orderTypeP));
-        $('[name="ordertype"]').val(orderTypeP);
 
         if (idMeja != null){
           $('[name="orderboardid"]').val(idMeja);
-          $('#noMeja').html(textMeja);
+          $('[name="orderboardtext"]').val(textMeja);
         }
         
         $modal.modal('hide');
@@ -338,11 +309,6 @@
       $('.cariMeja').on('select2:select', function (e) {
         textMeja = e.params.data.text;
         idMeja = e.params.data.id;
-      });
-
-      $modal.find('.orderType').on('change',function(){
-        let val = $(this).val();
-        showTypeO($modal, val);
       });
     })
 
@@ -382,8 +348,8 @@
         remark = $('#uiModalInstance').find('#menuRemark').val(),
         tprice = qty*rowMenuPrice;
       $row.find('[id^=dtl][id$="[odmenutext]"]').html(rowMenuText);
-      $row.find('[id^=dtl][id$="[odprice]"]').html(rowMenuPrice);
-      $row.find('[id^=dtl][id$="[odtotalprice]"]').html(tprice);
+      $row.find('[id^=dtl][id$="[odprice]"]').html(formatter.format(rowMenuPrice));
+      $row.find('[id^=dtl][id$="[odtotalprice]"]').html(formatter.format(tprice));
       $row.find('[name^=dtl][name$="[odtotalprice]"]').val(tprice);
       $row.find('[id^=dtl][id$="[odremark]"]').html(remark);
       $row.find('[name^=dtl][name$="[odmenuid]"]').val(rowId);
@@ -399,33 +365,15 @@
       window.setTimeout(() => {
         caclculatedOrder()        
       }, 0);
-    });
-  }
+    })
+    .on('row-updating', function (e, $row){
+      let newQty = $row.find('[name^=dtl][name$="[odqty]"]').val(),
+        price = $row.find('[name^=dtl][name$="[odprice]"]').val();
+      const newTotalPrice = Number(newQty) * Number(price);
+      $row.find('[id^=dtl][id$="[odtotalprice]"]').html(formatter.format(newTotalPrice));
+      $row.find('[name^=dtl][name$="[odtotalprice]"]').val(newTotalPrice);
 
-  function lblOrderType(val){
-    let lbl = "";
-    if(val == 'DINEIN'){
-      lbl = 'Makan Di Tempat';
-    } else {
-      lbl = 'Bungkus';
-        $('[name="orderboardid"]').val("");
-        $('#noMeja').html("");
-    }
-    return lbl;
-  }
-
-  function showTypeO($modal, val){
-    if(val == "TAKEAWAY"){
-      $('.divMeja').addClass('d-none');
-      $modal.find('.cariMeja').select2().val(null).trigger('change');
-    } else {
-      $('.divMeja').removeClass('d-none')
-    }
-    inputSearch('.cariMeja', "{{ Url('/meja/cariTersedia') }}", 'resolve', function(item) {
-      return {
-        text: item.text,
-        id: item.id
-      }
+      caclculatedOrder()    
     });
   }
 
@@ -438,7 +386,6 @@
       let price = $(this).find('[name^=dtl][name$="[odtotalprice]"]').val();
       totalPrice += Number(price);
     });
-    console.log(totalPrice);
     $('#idTotal').html(formatter.format(totalPrice));
     $('[name="orderprice"]').val(totalPrice);
   }

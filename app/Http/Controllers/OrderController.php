@@ -66,14 +66,14 @@ class OrderController extends Controller
     $respon = Helpers::$responses;
     
     $inputs = $request->all();
-    $rules = array(
-			'ordercustname' => 'required'
-    );
+    // $rules = array(
+		// 	'ordercustname' => 'required'
+    // );
 
-    $validator = validator::make($inputs, $rules);
-		if ($validator->fails()){
-			return redirect()->back()->withErrors($validator)->withInput($inputs);
-    }
+    // $validator = validator::make($inputs, $rules);
+		// if ($validator->fails()){
+		// 	return redirect()->back()->withErrors($validator)->withInput($inputs);
+    // }
     
     $results = OrderRepository::save($respon, $id, $inputs, Auth::user()->getAuthIdentifier());
 
@@ -82,7 +82,7 @@ class OrderController extends Controller
 
     $request->session()->flash($results['status'], $results['messages']);
 
-		return redirect()->action([OrderController::class, 'detail'], ['id' => $results['id']]);
+		return redirect()->action([OrderController::class, 'order'], ['id' => $results['id']]);
   }
 
   public function getDetail(Request $request, $idOrder)
