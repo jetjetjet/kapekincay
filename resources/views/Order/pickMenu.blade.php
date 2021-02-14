@@ -154,7 +154,7 @@
           </div>
         </div>
       </div>
-      @if($data->orderstatus == 'PROCEED' || $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED')
+      @if(!isset($data->id) ||  $data->orderstatus == 'PROCEED' || $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED')
       <div class="row fixed-bottom">
         <div class="col-sm-12 ">
           <div class="widget-content widget-content-area" style="padding:10px">
@@ -346,7 +346,7 @@
       });
     })
 
-    @if($data->orderstatus == 'PROCEED' || $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED')
+    @if(!isset($data->id) || $data->orderstatus == 'PROCEED' || $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED')
       $('.menuCard').on('click', function(){
         let menuPrice = $(this).attr('data-price'),
             menuText = $(this).attr('data-menutext'),
