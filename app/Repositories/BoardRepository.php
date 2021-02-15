@@ -6,9 +6,16 @@ use DB;
 
 class BoardRepository
 {
-  public static function grid()
+  public static function grid($perms)
   {
-    return Board::where('boardactive', '1')->get();
+    return Board::where('boardactive', '1')
+      ->select(
+        'id',
+        'boardnumber',
+        'boardfloor',
+        DB::raw($perms['save']),
+        DB::raw($perms['delete']))
+      ->get();
   }
 
   public static function get($respon, $id)
@@ -19,7 +26,7 @@ class BoardRepository
     if($id){
       $respon['data'] = Board::where('boardactive', '1')
       ->where('id', $id)
-      ->select('id', 'boardnumber', 'boardfloor', 'boardspace')
+      ->select('id', 'boardnumber', 'boardfloor')
       ->first();
 
       if($respon['data'] == null){
@@ -44,7 +51,7 @@ class BoardRepository
         $data = $data->where('boards.id', $id);
 
       return $data->select('boards.id', 
-        DB::raw("concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor, ' Kapasitas ', boardspace, ' Orang') as text"))
+        DB::raw("concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor) as text"))
     // Board::whereRaw('UPPER(customer_name) LIKE UPPER(\'%'. $cari .'%\')')
       ->get();
   }
@@ -63,26 +70,26 @@ class BoardRepository
       if ($data != null){
         $data = $data->update([
           'boardfloor' => $inputs['boardfloor'],
-          'boardspace' => $inputs['boardspace'],
+          // 'boardspace' => $inputs['boardspace'],
           'boardmodifiedat' => now()->toDateTimeString(),
           'boardmodifiedby' => $loginid
         ]);
 
         $respon['status'] = 'success';
-        array_push($respon['messages'], 'pesan sukses update');
+        array_push($respon['messages'], 'Data Meja berhasil diubah.');
         
       } else {
         $data = Board::create([
           'boardnumber' => $inputs['boardnumber'],
           'boardfloor' => $inputs['boardfloor'],
-          'boardspace' => $inputs['boardspace'],
+          // 'boardspace' => $inputs['boardspace'],
           'boardactive' => '1',
           'boardcreatedat' => now()->toDateTimeString(),
           'boardcreatedby' => $loginid
         ]);
 
         $respon['status'] = 'success';
-        array_push($respon['messages'], 'pesan sukses tambah');
+        array_push($respon['messages'], 'Data Meja baru berhasil ditambahkan.');
       }
     } catch(\Exception $e){
       dd($e);
