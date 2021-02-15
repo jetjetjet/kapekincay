@@ -26,6 +26,7 @@
     </style>
   	<!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/table/datatable/datatables.css">
+<link href="{{ url('/') }}/plugins/rowgroup/rowGroup.dataTables.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/table/datatable/custom_dt_html5.css">
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/table/datatable/dt-global_style.css">
     @yield('css-body')
@@ -150,6 +151,7 @@
     <script src="{{ url('/') }}/assets/js/custom.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <script src="{{ url('/') }}/plugins/table/datatable/datatables.js"></script>
+<script src="{{ url('/') }}/plugins/rowgroup/dataTables.rowGroup.min.js"></script>
     <script src="{{ url('/') }}/plugins/table/datatable/button-ext/dataTables.buttons.min.js"></script>    
     <script src="{{ url('/') }}/plugins/table/datatable/button-ext/buttons.html5.min.js"></script>
 		@yield('js-body')

@@ -61,7 +61,7 @@ function gridDeleteInput(url, title, message, grid){
   });
 }
 
-function gridDeleteInputvoid(url, title, message, grid){
+function gridDeleteInput2(url, title, message){
   const swalWithBootstrapButtons = swal.mixin({
     input: 'textarea',
     confirmButtonClass: 'btn btn-success btn-rounded',
@@ -74,8 +74,8 @@ function gridDeleteInputvoid(url, title, message, grid){
     text: message,
     type: 'question',
     showCancelButton: true,
-    confirmButtonText: 'Hapus',
-    cancelButtonText: 'Batal',
+    confirmButtonText: 'Proses',
+    cancelButtonText: 'Tutup',
     reverseButtons: true,
     padding: '2em'
   }).then(function(result) {
@@ -83,17 +83,52 @@ function gridDeleteInputvoid(url, title, message, grid){
       $.post(url,{'ordervoidreason':result.value}, function (data){
         if (data.status == 'success'){
           sweetAlert('Pesanan dibatalkan', data.messages[0], 'success')
+          location.reload();
         } else {
           sweetAlert('Kesalahan!', data.messages[0], 'error')
         }
-        grid.ajax.reload();
       });
     } else if (
       result.dismiss === swal.DismissReason.cancel
     ) {
-      sweetAlert('Batal','Pesanan tidak dibatalkan','error')
+      // sweetAlert('Batal','Pesanan tidak dibatalkan','error')
     } else {
-      sweetAlert('Kesalahan!','Alasan membatalkan harus di isi','error')
+      sweetAlert('Kesalahan!','Catatan pembatalan harus di isi','error')
+    }
+  });
+}
+
+function gridDeleteInput3(url, title, message, callbackfn){
+  const swalWithBootstrapButtons = swal.mixin({
+    confirmButtonClass: 'btn btn-success btn-rounded',
+    cancelButtonClass: 'btn btn-danger btn-rounded mr-3',
+    buttonsStyling: false,
+  })
+  
+  swalWithBootstrapButtons({
+    title: title,
+    text: message,
+    type: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Hapus',
+    cancelButtonText: 'Tutup',
+    reverseButtons: true,
+    padding: '2em'
+  }).then(function(result) {
+    if (result.value) {
+      $.post(url,{'ordervoidreason':result.value}, function (data){
+        if (data.status == 'success'){
+          sweetAlert('Pesanan', data.messages[0], 'success')
+          if(callbackfn)
+            callbackfn(null)
+        } else {
+          sweetAlert('Kesalahan!', data.messages[0], 'error')
+        }
+      });
+    } else if (
+      result.dismiss === swal.DismissReason.cancel
+    ) {
+      // sweetAlert('Batal','Pesanan tidak dibatalkan','error')
     }
   });
 }
@@ -257,10 +292,15 @@ $('table,.subitem-container')
   $table.triggerHandler("row-removed", [$tr]);
 
   $table.attr('data-has-changed', '1');
+}).on('click', '[deliver-row]', function(e){
+  var $tr = $(this).closest('tr,.panel,.rowpanel'),
+      $table = $tr.closest('table,.subitem-container');
+  
+  $table.triggerHandler("row-delivering", [$tr]);
+  $table.attr('data-has-changed', '1');
 }).on("keyup keydown change", '[sub-input]', function(e){
   var $tr = $(this).closest('tr,.panel,.rowpanel'),
       $table = $tr.closest('table,.subitem-container');
-      console.log($table);
   $table.triggerHandler("row-updating", [$tr]);
   $table.attr('data-has-changed', '1');
 });

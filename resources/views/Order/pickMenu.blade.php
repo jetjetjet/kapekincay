@@ -26,6 +26,16 @@
 <div class="widget-content widget-content-area br-4">
   <div class="col-xl-12 col-lg-12 col-md-12">
     <div class="statbox box box-shadow">
+      @if(isset($data->ordervoidedat))
+        <div class="alert alert-warning" role="alert">
+          <strong>Pesanan Dibatalkan!</strong>
+            <ul>
+              <li>Dibatalkan Oleh: </li>
+              <li>Dibatalkan Pada: {{$data->ordervoidedat}}</li>
+              <li>Alasan: {{$data->ordervoidedreason}}</li>
+            </ul>
+        </div>
+      @endif
       <div class="row">
         <div class="col-md-7 col-sm-12">
           <div class="widget-content pill-justify-right">
@@ -96,10 +106,14 @@
                   <div class="col-sm-8">
                     <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
                     <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
-                    <select id="orderType" class="custom-select custom-select-sm" name="ordertype">
-                      <option value="DINEIN">Makan Ditempat</option>
-                      <option value="TAKEAWAY">Bungkus</option>
-                    </select>
+                    @if(!$data->id)
+                      <select id="orderType" class="custom-select custom-select-sm" name="ordertype">
+                        <option value="DINEIN" >Makan Ditempat</option>
+                        <option value="TAKEAWAY" "{{ $data->ordertype == 'TAKEAWAY' ?'selected':'' }}">Bungkus</option>
+                      </select>
+                    @else
+                      <input type="text" id="boardText" value="{{ $data->ordertypetext }}" name="ordertype" class="form-control form-control-sm" readonly>
+                    @endif
                   </div>
                 </div>
                 <div class="form-group row divMeja">
@@ -145,16 +159,24 @@
           </div>
         </div>
       </div>
-      @if(!isset($data->id) ||  $data->orderstatus == 'PROCEED' || $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED')
+      @if(!isset($data->ordervoidedat))
       <div class="row fixed-bottom">
         <div class="col-sm-12 ">
           <div class="widget-content widget-content-area" style="padding:10px">
             <div class="float-left">
-              <a href="{{ isset($data->id) ? url('/order/detail/'.$data->id) : url('/order/meja/view') }}" type="button" class="btn btn-danger mt-2" type="submit">Batal</a>
+              @if(Perm::can(['order_hapus']) && ($data->orderstatus == 'PROCEED' || $data->orderstatus == 'ADDITIONAL'))
+                <a href="" id="deleteOrder" type="button" class="btn btn-danger mt-2">Hapus</a>
+              @endif
+              @if(Perm::can(['order_void']) && isset($data->id))
+                <a href="" id="void" type="button" class="btn btn-danger mt-2">Batalkan Pesanan</a>
+              @endif
             </div>
             <div class="float-right">
-              <a href="" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Meja</a>
-              <a type="button" id="prosesOrder" class="btn btn-primary mt-2">Simpan</a>
+              <a href="{{url('/order/meja/view')}}" type="button" class="btn btn-warning mt-2">Kembali</a>
+              @if(Perm::can(['order_simpan']))
+                <a href="" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Meja</a>
+                <a type="button" id="prosesOrder" class="btn btn-primary mt-2">Simpan</a>
+              @endif
             </div>
           </div>
         </div>
@@ -254,6 +276,29 @@
       $('[name="orderboardtext"]').val(urlMejaTeks);
     }
 
+    //VOID
+    $('#void').on('click', function (e) {
+      e.preventDefault();
+      
+      const url = "{{ url('order/batal') . '/' }}" + '{{$data->id}}';
+      const title = 'Batalkan Pesanan';
+      const pesan = 'Alasan batal?'
+      gridDeleteInput2(url, title, pesan, null);
+    });
+
+    //Delete deleteOrder
+    $('#deleteOrder').on('click', function (e) {
+      e.preventDefault();
+      
+      const url = "{{ url('order/hapus') . '/' }}" + '{{$data->id}}';
+      const title = 'Hapus Pesanan';
+      gridDeleteInput3(url, title, null, function(callb){
+        setTimeout(() => {
+          window.location = "{{ url('/order/meja/view') }}";
+        }, 2000);
+      });
+    });
+
     let $targetContainer = $('#detailOrder');
     setupTableGrid($targetContainer);
 
@@ -312,7 +357,8 @@
       });
     })
 
-    @if(!isset($data->id) || $data->orderstatus == 'PROCEED' || $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED')
+    
+    @if(!isset($data->ordervoidedat) && empty($data->orderpaid))
       $('.menuCard').on('click', function(){
         let menuPrice = $(this).attr('data-price'),
             menuText = $(this).attr('data-menutext'),
@@ -366,6 +412,24 @@
         caclculatedOrder()        
       }, 0);
     })
+    .on('row-delivering', function (e, $row){
+      let idSub = $row.find('[name^=dtl][name$="[id]"]').val(),
+        url = "{{ url('order/delivered') . '/'}}" + '{{$data -> id}}' + "/" + idSub;
+      $.post(url, function (data){
+        var msg = data.messages[0]
+          toast({
+            type: data.status,
+            title: msg,
+            padding: '2em',
+          });
+          // location.reload();
+          if(data.status == 'success'){
+            location.reload();
+            // $row.find('[id^=dtl][id$="[delivRow]"]').addClass('d-none');
+            // $row.find('[id^=dtl][id$="[deleteRow]"]').addClass('d-none');
+          }
+      });
+    })
     .on('row-updating', function (e, $row){
       let newQty = $row.find('[name^=dtl][name$="[odqty]"]').val(),
         price = $row.find('[name^=dtl][name$="[odprice]"]').val();
@@ -389,5 +453,13 @@
     $('#idTotal').html(formatter.format(totalPrice));
     $('[name="orderprice"]').val(totalPrice);
   }
+
+  const toast = swal.mixin({
+    toast: true,
+    position: 'center',
+    showConfirmButton: false,
+    timer: 3000,
+    padding: '2em'
+  });
 </script>
 @endsection

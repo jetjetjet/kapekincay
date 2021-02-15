@@ -31,7 +31,13 @@ class OrderController extends Controller
     $respon = Helpers::$responses;
     $menu = MenuRepository::getMenu();
     $data = OrderRepository::getOrder($respon, $id);
-    return view('Order.pickMenu')->with('menu', $menu)->with('data', $data);
+
+		if($data['status'] == 'error'){
+			$request->session()->flash($data['status'], $data['messages']);
+			return redirect()->action([OrderController::class, 'orderView']);
+		}
+
+    return view('Order.pickMenu')->with('menu', $menu)->with('data', $data['data']);
   }
 
   public function detail(Request $request, $id)
@@ -47,7 +53,13 @@ class OrderController extends Controller
     }
     $respon = Helpers::$responses;
     $results = OrderRepository::getOrder($respon, $id);
-    return view('Order.detail')->with('data', $results);
+
+		if($results['status'] == 'error'){
+			$request->session()->flash($results['status'], $results['messages']);
+			return redirect()->action([OrderController::class, 'orderView']);
+		}
+
+    return view('Order.detail')->with('data', $results['data']);
   }
 
 	public function orderView()
@@ -57,7 +69,7 @@ class OrderController extends Controller
 
 	public function orderViewLists()
 	{
-		$data = OrderRepository::orderGrid(null)->get();
+		$data = OrderRepository::orderGrid(null);
 		return response()->json($data);
 	}
 
@@ -66,15 +78,6 @@ class OrderController extends Controller
     $respon = Helpers::$responses;
     
     $inputs = $request->all();
-    // $rules = array(
-		// 	'ordercustname' => 'required'
-    // );
-
-    // $validator = validator::make($inputs, $rules);
-		// if ($validator->fails()){
-		// 	return redirect()->back()->withErrors($validator)->withInput($inputs);
-    // }
-    
     $results = OrderRepository::save($respon, $id, $inputs, Auth::user()->getAuthIdentifier());
 
     if($results['status'] == "success")
@@ -92,19 +95,9 @@ class OrderController extends Controller
 		return response()->json($results);
 	}
 
-  public function deliver(Request $request, $id){
+  public function deliver(Request $request, $id, $idSub){
     $respon = Helpers::$responses;
-		$rules = array(
-			'idsub' => 'required'
-		);
-
-		$inputs = $request->all();
-		$validator = validator::make($inputs, $rules);
-
-		if ($validator->fails()){
-			return response()->json($respon);
-		}
-		$results = OrderRepository::deliver($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
+		$results = OrderRepository::deliver($respon, $id, $idSub, Auth::user()->getAuthIdentifier());
     event(new OrderProceed('ok'));
 
 		return response()->json($results);

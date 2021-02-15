@@ -69,7 +69,7 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/order/hapus/{id}', [OrderController::class, 'deleteById']);
   Route::post('/order/batal/{id}', [OrderController::class, 'voidById']);
   Route::post('/order/bayar/{id}', [OrderController::class, 'paidById']);
-  Route::post('/order/delivered/{id?}', [OrderController::class, 'deliver']);
+  Route::post('/order/delivered/{id}/{idSub}', [OrderController::class, 'deliver']);
 
   Route::get('/shift', [ShiftController::class, 'index'])->middleware('can:shift_lihat');
   Route::get('/shift/grid', [ShiftController::class, 'getLists'])->middleware('can:shift_lihat');
