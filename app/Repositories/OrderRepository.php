@@ -9,31 +9,49 @@ use Exception;
 
 class OrderRepository
 {
-  public static function orderGrid($filters)
+  private static function orderBoard()
   {
-    $data = Order::rightJoin('boards', 'boards.id', 'orderboardid')
-      // ->where('orderactive', '1')
-      ->where('boardactive', '1')
-      ->orderBy('boardnumber', 'ASC')
-      ->orderBy('boards.id')
+    $qOrder = Order::where('orderactive', '1')
+      ->whereNotNull('orderboardid')
+      ->whereNull('ordervoid')
       ->orderBy('ordercreatedat', 'DESC')
+      ->select('id', 'orderstatus', 'orderboardid', 'orderinvoice');
+    
+    $order = DB::table(DB::raw("({$qOrder->toSql()}) a"))
       ->select(
-        DB::raw("distinct on(boardnumber, boards.id) boardspace"),
-        'orderstatus',
-        DB::raw("case when orderstatus = 'PAID' then true
-        when orderstatus is null then true else false end as boardstatus"),
-        'orders.id as orderid',
+        DB::raw("distinct on(a.orderboardid) a.id"),
+        'a.orderstatus', 'a.orderboardid', 'a.orderinvoice'
+      )->mergeBindings($qOrder->getQuery());
+    
+    $board = DB::table('boards')
+      ->leftJoinSub($order, 'o', function ($join) {
+        $join->on('boards.id', '=', 'o.orderboardid');
+      })
+      ->where('boardactive', '1')
+      ->select(
+        'o.orderstatus',
+        DB::raw("case when o.orderstatus = 'PAID' then true
+        when o.orderstatus is null then true else false end as boardstatus"),
+        'o.id as orderid',
         'boards.id as boardid',
         'boardfloor',
-        'orderinvoice',
+        'o.orderinvoice',
         'boardnumber');
-    if($filters){
-      foreach($filters as $f)
-      {
-        $data = $data->whereRaw($f[0]);
-      }
-    }
-    return $data;
+    return $board;
+  }
+  public static function orderGrid($filters)
+  {
+    $qFloor = DB::table('boards')->where('boardactive', '1')->select(DB::raw("max(boardfloor) as maxfloor"))->first();
+    $floorMax = $qFloor->maxfloor ?? 0;
+    $board = self::orderBoard()->orderBy('boardfloor', 'ASC')->get();
+    // $tampungan = Array();
+
+    // for($i = 1 ; $i <= $floorMax; $i++){
+    //   $temp = $board->where('boardfloor', (string)$i);
+    //   array_push($tampungan, $temp);
+    // }
+
+    return $board;
   }
 
   public static function orderChart($filter, $range, $month)
@@ -102,14 +120,21 @@ class OrderRepository
           'ordervoidedby'
         )->first();
       if($data == null){
-
+        $respon['status'] = 'error';
+        array_push($respon['messages'],'Pesanan tidak ditemukan!');
       } else {
         $data->subOrder = self::getSubOrder($id);
+        $cekDelivered = OrderDetail::where('oddelivered', '0')->where('odorderid', $id)->select(DB::raw("CASE WHEN oddelivered = false THEN '1' else '0' END as odstat"))->first();
+        $dId = $cekDelivered->odstat??null;
+        $data->getstat = $dId;
+      
+        $respon['status'] = 'success';
+        $respon['data'] = $data;
       }
     } else {
-      $data = self::dbOrderHeader($data);
+      $respon['data'] = self::dbOrderHeader($data);
     }
-    return $data;
+    return $respon;
   }
 
   public static function getDataDapur()
@@ -511,7 +536,6 @@ class OrderRepository
       $data->update([
         'orderpaymentmethod' => $inputs['orderpaymentmethod'],
         'orderpaidprice' => $inputs['orderpaidprice'],
-        'orderpaidremark' => $inputs['orderpaidremark'],
         'orderstatus' => 'PAID',
         'orderpaid' => '1',
         'ordermodifiedby' => $loginid,

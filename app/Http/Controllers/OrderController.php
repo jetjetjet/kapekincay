@@ -31,7 +31,13 @@ class OrderController extends Controller
     $respon = Helpers::$responses;
     $menu = MenuRepository::getMenu();
     $data = OrderRepository::getOrder($respon, $id);
-    return view('Order.pickMenu')->with('menu', $menu)->with('data', $data);
+
+		if($data['status'] == 'error'){
+			$request->session()->flash($data['status'], $data['messages']);
+			return redirect()->action([OrderController::class, 'orderView']);
+		}
+
+    return view('Order.pickMenu')->with('menu', $menu)->with('data', $data['data']);
   }
 
   public function detail(Request $request, $id)
@@ -47,7 +53,13 @@ class OrderController extends Controller
     }
     $respon = Helpers::$responses;
     $results = OrderRepository::getOrder($respon, $id);
-    return view('Order.detail')->with('data', $results);
+
+		if($results['status'] == 'error'){
+			$request->session()->flash($results['status'], $results['messages']);
+			return redirect()->action([OrderController::class, 'orderView']);
+		}
+
+    return view('Order.detail')->with('data', $results['data']);
   }
 
 	public function orderView()
@@ -57,7 +69,7 @@ class OrderController extends Controller
 
 	public function orderViewLists()
 	{
-		$data = OrderRepository::orderGrid(null)->get();
+		$data = OrderRepository::orderGrid(null);
 		return response()->json($data);
 	}
 

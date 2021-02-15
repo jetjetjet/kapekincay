@@ -292,8 +292,11 @@
       
       const url = "{{ url('order/hapus') . '/' }}" + '{{$data->id}}';
       const title = 'Hapus Pesanan';
-      gridDeleteInput3(url, title, null, null);
-      window.location = "{{ url('/order/meja/view') }}";
+      gridDeleteInput3(url, title, null, function(callb){
+        setTimeout(() => {
+          window.location = "{{ url('/order/meja/view') }}";
+        }, 2000);
+      });
     });
 
     let $targetContainer = $('#detailOrder');

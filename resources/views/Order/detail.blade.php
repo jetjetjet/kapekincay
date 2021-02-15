@@ -225,11 +225,10 @@
     $('#void').on('click', function (e) {
         e.preventDefault();
         
-        const rowData = grid.row($(this).closest('tr')).data();
         const url = "{{ url('order/batal') . '/' }}" + '{{$data->id}}';
         const title = 'Batalkan Pesanan';
         const pesan = 'Alasan batal?'
-        gridDeleteInputvoid(url, title, pesan, grid);
+        gridDeleteInput2(url, title, pesan, grid);
       });
 
     let grid = $('#grid').DataTable({

@@ -11,6 +11,11 @@
 
 @section('content-table')
 <style>
+  .dtrg-group {
+    width: 100% !important;
+    margin: 0.5rem !important;
+  }
+
   .cards tbody tr {
     float: left;
     width: 18rem;
@@ -19,6 +24,7 @@
     border-radius: .25rem;
     box-shadow: 0.25rem 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
   }
+
 
   .cards tbody td {
     display: block;
@@ -41,15 +47,6 @@
   tr.selected td:before {
     color: #CCC;
   }
-
-  .table .avatar {
-    width: 50px;
-  }
-
-  .cards .avatar {
-    width: 150px;
-    margin: 15px;
-  }
 </style>
   <div class="widget-content widget-content-area br-6">
   <div class="alert alert-arrow-left alert-icon-left alert-light-primary mb-4" role="alert">
@@ -61,6 +58,7 @@
         <thead>
           <tr>
             <th></th>
+            <th>Lantai</th>
             <th>Status</th>
             <th class="no-content"></th>
           </tr>
@@ -102,11 +100,15 @@
             'data': null,
             'className': 'text-center',
             'render': function(data, type, full, meta){
-              data = "<h4><b> Meja No." + data.boardnumber+ "</b> - Lantai "+data.boardfloor + "</h4>";
+              data = "<h4><b> Meja No." + data.boardnumber+ "</b></h4>";
               return data;
             }
-          },
-          { 
+          }, {
+            data: null,
+            render: function(data, type, full, meta){
+              return "Lantai " + data.boardfloor
+            }
+          }, { 
             data: null,
             searchText: false,
             'render': function(data, type, full, meta){
@@ -130,12 +132,15 @@
             }
           }
         ],
+        rowGroup: {
+            // Group by office
+            dataSrc: 'boardfloor'
+        },
         'drawCallback': function (settings) {
           var api = this.api();
           var $table = $(api.table().node());
           
           if ($table.hasClass('cards')) {
-
             // Create an array of labels containing all table headers
             var labels = [];
             $('thead th', $table).each(function () {

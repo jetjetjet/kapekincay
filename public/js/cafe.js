@@ -98,7 +98,7 @@ function gridDeleteInput2(url, title, message){
   });
 }
 
-function gridDeleteInput3(url, title, message){
+function gridDeleteInput3(url, title, message, callbackfn){
   const swalWithBootstrapButtons = swal.mixin({
     confirmButtonClass: 'btn btn-success btn-rounded',
     cancelButtonClass: 'btn btn-danger btn-rounded mr-3',
@@ -118,7 +118,9 @@ function gridDeleteInput3(url, title, message){
     if (result.value) {
       $.post(url,{'ordervoidreason':result.value}, function (data){
         if (data.status == 'success'){
-          sweetAlert('Pesanan dibatalkan', data.messages[0], 'success')
+          sweetAlert('Pesanan', data.messages[0], 'success')
+          if(callbackfn)
+            callbackfn(null)
         } else {
           sweetAlert('Kesalahan!', data.messages[0], 'error')
         }
@@ -336,12 +338,78 @@ function changeOptSelect2($select, url)
   });
 }
 
-function numberMask(){
-  $(".rupiah").inputmask({alias: 'currency', 
-    allowMinus: false,
-    prefix: '',
-    digits: 0,
-    removeMaskOnSubmit: true
+$.fn.setupMask = function (precision){
+  $(this).each(function (){
+    var $input = $(this);
+
+    var html = '<input type="text" class="form-control input-sm text-right masking" />'; 
+    var $mask = $(html).insertAfter($input);
+    
+    $input
+      .blur(function (){
+        if ($input.data('programmaticallyfocus')) return;
+
+        $(this).toggleClass('d-none');
+        $mask.toggleClass('d-none');
+      })
+      .change(function (){
+        inputChange($(this));
+      })
+      .on('requestUpdateMask', function (){
+      inputChange($(this));
+      })
+      .on('disabledMask', function (event, bool){
+        $mask.prop('disabled', bool);
+      })
+      .on('readOnlyMask', function (event, bool){
+        $mask.prop('readOnly', bool);
+      });;
+      
+      $mask
+      .focus(function (){
+        if (!$input.prop('readonly')){
+          $(this).toggleClass('d-none');
+          $input.toggleClass('d-none');
+
+          // Firefox @!&*^@!#^
+          $input.data('programmaticallyfocus', true);
+          $input.focus();
+          $input.select();
+          $input.removeData('programmaticallyfocus');
+        }
+      });
+
+    $mask.attr('required', $input.prop('required'));
+    $mask.prop('disabled', $input.prop('disabled'));
+    $mask.prop('required', $input.prop('required'));
+    if ($input.prop('autofocus')){
+      setTimeout(function (){
+        $mask.focus();
+      });
+    }
+
+    // Initial state to show value.
+    inputChange($input);
+    $input.addClass('d-none');
+
+    function inputChange($self){
+      var valueText = $self.val(),
+        value = valueText ? Number(valueText) : null;
+      value = isNaN(value) ? null : value;
+      $mask.val(value === null ? null : value.toLocaleString(undefined, { minimumFractionDigits: precision === undefined ? (value % 1 === 0 ? 0 : 2) : precision }));
+
+      ['readonly', 'disabled', 'required', 'min', 'max', 'placeholder'].forEach(function (val){
+        copyAttr(val);
+      });
+
+      function copyAttr(attr){
+        if (!!$self.attr(attr)) {
+          $mask.prop(attr, $self.prop(attr));
+        } else {
+          $mask.removeAttr(attr);
+        }
+      }
+    }
   });
 }
 
