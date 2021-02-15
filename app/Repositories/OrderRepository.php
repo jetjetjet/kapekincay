@@ -105,6 +105,9 @@ class OrderRepository
     } else {
       $data = self::dbOrderHeader($data);
     }
+    $cekDelivered = OrderDetail::where('oddelivered', '0')->where('odorderid', $id)->select(DB::raw("CASE WHEN oddelivered = false THEN '1' else '0' END as odstat"))->first();
+    $dId = $cekDelivered->odstat??null;
+    $data->getstat = $dId;
     return $data;
   }
 
@@ -470,7 +473,7 @@ class OrderRepository
     $data = Order::where('orderactive', '1')
       ->where('id', $id)
       ->first();
-    $sub = OrderDetail::where('odactive', '1')->where('odorderid', $id)->first();
+    $sub = OrderDetail::where('odactive', '1')->where('odorderid', $id)->where('oddelivered','1' )->first();
 
     if($sub != null){
       $respon['status'] = 'error';
@@ -511,7 +514,6 @@ class OrderRepository
       $data->update([
         'orderpaymentmethod' => $inputs['orderpaymentmethod'],
         'orderpaidprice' => $inputs['orderpaidprice'],
-        'orderpaidremark' => $inputs['orderpaidremark'],
         'orderstatus' => 'PAID',
         'orderpaid' => '1',
         'ordermodifiedby' => $loginid,
