@@ -7,7 +7,7 @@ use App\Models\User;
 
 class UserRepository
 {
-  public static function grid()
+  public static function grid($perms)
   {
     $sub = DB::table('userroles as ur')
       ->join('roles as r', 'r.id', 'urroleid')
@@ -25,7 +25,9 @@ class UserRepository
         'userfullname',
         'username',
         'usercontact',
-        'sub.roles')
+        'sub.roles',
+        DB::raw($perms['save']),
+        DB::raw($perms['delete']))
       ->get();
   }
 

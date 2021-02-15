@@ -19,7 +19,11 @@ class RoleController extends Controller
 
 	public function getLists(Request $request)
 	{
-		$results = RoleRepository::grid();
+		$perms = Array(
+			'save' => (Auth::user()->can(['jabatan_simpan']) == true ? "true" : "false") . " as can_save",
+			'delete' => (Auth::user()->can(['jabatan_hapus']) == true ? "true" : "false") . " as can_delete"
+		);
+		$results = RoleRepository::grid($perms);
 		
 		return response()->json($results);
 	}

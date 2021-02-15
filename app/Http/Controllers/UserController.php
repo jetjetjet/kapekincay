@@ -18,7 +18,11 @@ class UserController extends Controller
 
 	public function getLists(Request $request)
 	{
-		$results = UserRepository::grid();
+		$perms = Array(
+			'save' => (Auth::user()->can(['user_simpan']) == true ? "true" : "false") . " as can_save",
+			'delete' => (Auth::user()->can(['user_hapus']) == true ? "true" : "false") . " as can_delete"
+		);
+		$results = UserRepository::grid($perms);
 		
 		return response()->json($results);
 	}

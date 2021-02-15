@@ -7,9 +7,9 @@ use DB;
 class SettingRepository
 
 {
-    public static function grid()
+    public static function grid($perms)
     {
-      return Setting::where('settingactive', '1')->select('id','settingcategory','settingkey', DB::raw('left(settings.settingvalue, 30) as settingvalue'))->get();
+      return Setting::where('settingactive', '1')->select('id','settingcategory','settingkey', DB::raw('left(settings.settingvalue, 30) as settingvalue'),DB::raw($perms['save']))->get();
     }
   
     public static function get($respon, $id)

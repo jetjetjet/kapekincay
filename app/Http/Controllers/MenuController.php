@@ -8,6 +8,8 @@ use Validator;
 use App\Libs\Helpers;
 use App\Repositories\MenuRepository;
 use Auth;
+use Illuminate\Support\Facades\File;
+use Image;
 
 class MenuController extends Controller
 {
@@ -73,10 +75,17 @@ class MenuController extends Controller
 	
 		if($request['menuimg'] == !null){
 			$imageName = $idimg.'.'.$request['menuimg']->extension();
-			$inputs['menuimg']->move(public_path('images'), $imageName);
+			$img = Image::make($request->file('menuimg')->getRealPath());
+			$img->resize(400, 400, function ($constraint) {
+					$constraint->aspectRatio();
+			})->save(public_path('images').'/'.$imageName);
 		  $inputs['menuimgpath'] = '/images/'.$imageName;
 		} elseif($request['delimg'] == '1'){
 			$inputs['menuimgpath'] = null ;
+			$delimgpath = public_path().$request['hidimg'];
+			if(File::exists($delimgpath)) {
+				File::delete($delimgpath);
+			}
 		} elseif($request['menuimg'] == null){
 			$inputs['menuimgpath'] = $request['hidimg'];
 		}

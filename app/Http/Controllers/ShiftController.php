@@ -17,7 +17,13 @@ class ShiftController extends Controller
 
 	public function getLists(Request $request)
 	{
-		$results = ShiftRepository::grid();
+		$perms = Array(
+			'save' => (Auth::user()->can(['shift_simpan']) == true ? "true" : "false") . " as can_save",
+			'delete' => (Auth::user()->can(['shift_hapus']) == true ? "true" : "false") . " as can_delete",
+			'close' => (Auth::user()->can(['shift_tutup'])  == true ? "true" : "false") . " as can_close",
+			'view' => (Auth::user()->can(['shift_detail'])  == true ? "true" : "false") . " as can_view"
+		);
+		$results = ShiftRepository::grid($perms);
 		
 		return response()->json($results);
 	}

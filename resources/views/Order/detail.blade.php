@@ -74,7 +74,7 @@
           <div class="col-sm-12 ">
             <div class="widget-content widget-content-area" style="padding:10px">
               <div class="float-left">
-                <a type="button" id="void" class="btn btn-danger mt-2">Batalkan</a>
+                <a type="button" id="void" class="btn btn-danger mt-2">Batalkan Pesanan</a>
               </div>
               <div class="float-right">
                 <a href="{{ url('/order').'/'.$data->id }}" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Pesanan</a>

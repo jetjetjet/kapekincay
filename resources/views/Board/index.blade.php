@@ -44,7 +44,7 @@
           dataSrc: ''
         },
         dom: '<"row"' +
-          @if(Perm::can(['menu_simpan']))
+          @if(Perm::can(['meja_simpan']))
           '<"col-md-12"<"row"<"col-md-6"B><"col-md-6"f> > >' +
           @endif
           '<"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',

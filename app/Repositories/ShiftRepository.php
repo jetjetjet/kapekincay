@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\Hash;
 
 class ShiftRepository
 {
-  public static function grid()
+  public static function grid($perms)
   {
     return Shift::where('shiftactive', '1')
     ->join('users', 'shifts.shiftuserid', '=', 'users.id')
-    ->select('shifts.id','username','shiftindex', 'shiftstart', 'shiftclose', DB::raw('left(shiftenddetail, 15) as shiftenddetail'))
+    ->select('shifts.id','username','shiftindex', 'shiftstart', 'shiftclose', DB::raw('left(shiftenddetail, 15) as shiftenddetail'), DB::raw($perms['save']), DB::raw($perms['delete']), DB::raw($perms['close']), DB::raw($perms['view']))
     ->orderBy('shiftstart', 'DESC')
     ->orderBy('shiftindex', 'ASC')
     ->get();

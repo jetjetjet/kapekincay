@@ -19,7 +19,10 @@ class SettingController extends Controller
 
 	public function getLists(Request $request)
 	{
-		$results = SettingRepository::grid();
+		$perms = Array(
+			'save' => (Auth::user()->can(['pengaturan_simpan']) == true ? "true" : "false") . " as can_save"
+		);
+		$results = SettingRepository::grid($perms);
 		
 		return response()->json($results);
 	}

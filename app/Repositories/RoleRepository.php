@@ -8,13 +8,15 @@ use App\Models\UserRoles;
 
 class RoleRepository
 {
-  public static function grid()
+  public static function grid($perms)
   {
     return Role::where('roleactive', '1')
       ->select(
         'id',
         'rolename',
-        'roledetail')
+        'roledetail',        
+        DB::raw($perms['save']),
+        DB::raw($perms['delete']))
       ->get();
   }
 
