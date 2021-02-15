@@ -88,20 +88,24 @@ class OrderRepository
           'orders.id',
           'orderinvoice',
           DB::raw("concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor) as orderboardtext"),
+          DB::raw("case when ordertype = 'DINEIN' then 'Makan Ditempat' else 'Bungkus' end as ordertypetext"),
           'orderboardid',
           'ordertype',
-          // 'ordercustname',
           'orderdate',
           'orderprice',
+          'orderpaid',
           'orderstatus',
           'orderdetail',
-          'orderpaymentmethod'
+          'orderpaymentmethod',
+          'ordervoidedat',
+          'ordervoidreason',
+          'ordervoidedby'
         )->first();
-      $data->subOrder = self::getSubOrder($id);
-      // foreach($subs as $sub){
-      //   array_push($ta, self::dbOrderDetail($sub));
-      // }
-      // $data->subOrder = $ta;
+      if($data == null){
+
+      } else {
+        $data->subOrder = self::getSubOrder($id);
+      }
     } else {
       $data = self::dbOrderHeader($data);
     }
@@ -321,6 +325,7 @@ class OrderRepository
     $ui->odmenuid = $db->odmenuid ?? null;
     $ui->odmenutext = $db->odmenutext ?? null;
     $ui->odmenutype = $db->odmenutype ?? null;
+    $ui->oddelivered = $db->oddelivered ?? false;
     $ui->odqty = $db->odqty ?? null;
     $ui->odprice = $db->odprice ?? "";
     $ui->odtotalprice = $db->odtotalprice ?? "";
@@ -337,8 +342,8 @@ class OrderRepository
     $ui->orderinvoice = $db->orderinvoice ?? null;
     $ui->orderboardid = $db->orderboardid ?? null;
     $ui->orderboardtext = $db->orderboardtext ?? null;
-    $ui->orderboardtext = $db->orderboardtext ?? "";
     $ui->ordertype = $db->ordertype ?? "";
+    $ui->ordertypetext = $db->ordertypetext ?? null;
     // $ui->ordercustname = $db->ordercustname ?? "";
     $ui->orderdate = $db->orderdate ?? null;
     $ui->orderprice = $db->orderprice ?? null;
@@ -389,13 +394,14 @@ class OrderRepository
     return $invoice;
   }
 
-  public static function deliver($respon, $id, $loginid, $inputs)
+  public static function deliver($respon, $id, $idSub, $loginid)
   {
     try{
       DB::beginTransaction();
-      $data = OrderDetail::whereIn('id', $inputs['idsub'])
-      ->where('oddelivered', '0')
-      ->where('odactive', '1');
+      $data = OrderDetail::where('id', $idSub)
+        ->where('odorderid', $id)
+        ->where('oddelivered', '0')
+        ->where('odactive', '1');
 
       $upd = $data->update([
         'oddelivered' => '1',
@@ -403,22 +409,20 @@ class OrderRepository
         'odmodifiedat' => now()->toDateTimeString()
       ]);
 
-      $cekDelivered = OrderDetail::where('oddelivered', '0')->where('odorderid', $id)->first();
+      $cekDelivered = OrderDetail::where('oddelivered', '0')->where('odactive', '1')->where('odorderid', $id)->first();
       if($cekDelivered == null){
         $updH = Order::where('orderactive', '1')
           ->where('id', $id)->first();
-        if($updH != null){
-          $c = $updH->update(['orderstatus' => 'COMPLETED']);
-        }
+        $headerUpdated = $updH->update(['orderstatus' => 'COMPLETED']);
       }
 
       DB::commit();
       $respon['status'] = 'success';
       array_push($respon['messages'], 'Menu sudah diantar');
     }catch(\Exception $e){
-      DB::rollback();
+      // DB::rollback();
       $respon['status'] = 'error';
-      array_push($respon['messages'], 'Kesalahan');
+      array_push($respon['messages'], 'Kesalahan! Tidak dapat memproses.');
     }
     
     return $respon;
@@ -434,33 +438,35 @@ class OrderRepository
       $datasub = OrderDetail::where('odactive', '1')
         ->where('odorderid', $id);
       
-      $ceksub = $datasub->where('oddelivered', '1')->first;
+      $ceksub = $datasub->where('oddelivered', '1')->first();
       if($ceksub != null)
-        throw new Exception('rollback');
+        throw new Exception('subDelivered');
 
       $upd = $datasub->update([
         'odactive' => '0',
         'odmodifiedby' => $loginid,
         'odmodifiedat' => now()->toDateTimeString()
       ]);
-      $cekDelete = false;
+      
       if ($data != null){
         $data->update([
           'orderactive' => '0',
           'orderstatus' => 'DELETED',
           'ordermodifiedby' => $loginid,
           'ordermodifiedat' => now()->toDateTimeString()
-        ]);       
-        $cekDelete = true;
+        ]);
       }
 
       DB::commit();
       $respon['status'] = 'success';
       array_push($respon['messages'], 'Pesanan berhasil dihapus');
     }catch(\Exception $e){
+      $ext = "";
       DB::rollback();
       $respon['status'] = 'error';
-      array_push($respon['messages'], 'Kesalahan');
+      if ($e->getMessage() === 'subDelivered') 
+        $ext = "Tidak dapat hapus Pesanan yang sudah diantar.";
+      array_push($respon['messages'], 'Kesalahan!' . $ext);
     }
  
     return $respon;
@@ -471,13 +477,6 @@ class OrderRepository
     $data = Order::where('orderactive', '1')
       ->where('id', $id)
       ->first();
-    $sub = OrderDetail::where('odactive', '1')->where('odorderid', $id)->first();
-
-    if($sub != null){
-      $respon['status'] = 'error';
-      array_push($respon['messages'], 'Tidak dapat membatalkan pesanan yang sudah diantarkan!');
-      return $respon;
-    }
 
     $cekDelete = false;
     if ($data != null){

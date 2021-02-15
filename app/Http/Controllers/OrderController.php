@@ -66,15 +66,6 @@ class OrderController extends Controller
     $respon = Helpers::$responses;
     
     $inputs = $request->all();
-    // $rules = array(
-		// 	'ordercustname' => 'required'
-    // );
-
-    // $validator = validator::make($inputs, $rules);
-		// if ($validator->fails()){
-		// 	return redirect()->back()->withErrors($validator)->withInput($inputs);
-    // }
-    
     $results = OrderRepository::save($respon, $id, $inputs, Auth::user()->getAuthIdentifier());
 
     if($results['status'] == "success")
@@ -92,19 +83,9 @@ class OrderController extends Controller
 		return response()->json($results);
 	}
 
-  public function deliver(Request $request, $id){
+  public function deliver(Request $request, $id, $idSub){
     $respon = Helpers::$responses;
-		$rules = array(
-			'idsub' => 'required'
-		);
-
-		$inputs = $request->all();
-		$validator = validator::make($inputs, $rules);
-
-		if ($validator->fails()){
-			return response()->json($respon);
-		}
-		$results = OrderRepository::deliver($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
+		$results = OrderRepository::deliver($respon, $id, $idSub, Auth::user()->getAuthIdentifier());
     event(new OrderProceed('ok'));
 
 		return response()->json($results);
