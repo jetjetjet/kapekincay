@@ -88,9 +88,17 @@
           ordering: true,
           pageLength: 5,
           dom: 
-            // "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'<'float-md-right ml-2'B>f>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-12 col-md-5'><'col-sm-12 col-md-7'p>>",
+            '<"row"<"col-md-12"<"row"<"col-md-6"B><"col-md-6"f> > >' +
+            '<"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+          buttons: {
+            buttons: [{ 
+              text: "Tambah Baru",
+              className: 'btn',
+              action: function ( e, dt, node, config ) {
+                window.location = "{{ url('/order') }}" + "?type=TAKEAWAY";
+              }
+            }]
+          },
           oLanguage: {
             "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
             "sInfo": "Halaman _PAGE_ dari _PAGES_",

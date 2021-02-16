@@ -42,20 +42,20 @@
         ajax: {
           url: "{{ url('jabatan/grid') }}",
           dataSrc: ''
-      },
-      dom: '<"row"' +
-          @if(Perm::can(['jabatan_simpan']))
-          '<"col-md-12"<"row"<"col-md-6"B><"col-md-6"f> > >' +
-          @endif
-          '<"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+        },
+        dom: '<"row"' +
+            @if(Perm::can(['jabatan_simpan']))
+            '<"col-md-12"<"row"<"col-md-6"B><"col-md-6"f> > >' +
+            @endif
+            '<"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
         buttons: {
-            buttons: [{ 
-              text: "Tambah Baru",
-              className: 'btn',
-              action: function ( e, dt, node, config ) {
-                window.location = "{{ url('/jabatan/detail') }}";
-              }
-            }]
+          buttons: [{ 
+            text: "Tambah Baru",
+            className: 'btn',
+            action: function ( e, dt, node, config ) {
+              window.location = "{{ url('/jabatan/detail') }}";
+            }
+          }]
         },
         "processing": false,
         "serverSide": false,
