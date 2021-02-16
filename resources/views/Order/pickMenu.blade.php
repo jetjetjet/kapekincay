@@ -119,7 +119,8 @@
                         <option value="TAKEAWAY" "{{ $data->ordertype == 'TAKEAWAY' ?'selected':'' }}">Bungkus</option>
                       </select>
                     @else
-                      <input type="text" id="boardText" value="{{ $data->ordertypetext }}" name="ordertype" class="form-control form-control-sm" readonly>
+                      <input type="hidden" value="{{ $data->ordertype }}" name="ordertype" readonly>
+                      <input type="text" id="boardText" value="{{ $data->ordertypetext }}" name="ordertypetext" class="form-control form-control-sm" readonly>
                     @endif
                   </div>
                 </div>
