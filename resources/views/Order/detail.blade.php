@@ -18,13 +18,17 @@
         <div class="widget-content">
             <div class="form-row">
               <div class='col-md-12'>
-                <h4>Nomor Pesanan : <b>{{ old('orderinvoice', $data->orderinvoice) }}</b></h4>
+                <h4>Nomor Pesanan : <b>{{$data->orderinvoice}}</b></h4>
               </div>
               <div class='col-md-12'>
-                <h4 style="color:#1b55e2"><b>{{ old('orderboardtext', $data->orderboardtext) }}</b></h4>
+                @if($data->ordertype == 'DINEIN')
+                <h4 style="color:#1b55e2"><b>{{$data->orderboardtext}}</b></h4>
+                @else
+                <h4 style="color:#1b55e2"><b>Bungkus</b></h4>
+                @endif
               </div>
               <div class='col-md-12 mb-2'>
-                <h4>Tipe Pesanan : {{ old('ordertype', $data->ordertype) }}</h4>
+                <h4>Tipe Pesanan : {{ $data->ordertype }}</h4>
               </div>
               <div class="col-md-12">
                   <h6>Detail Pesanan</h6>
@@ -48,7 +52,7 @@
                   <div class="text-right float-right">
                     <input type="hidden" id="total" value="{{$data->orderprice}}">
                       <h3>Total :<b> {{ number_format($data->orderprice,0) }}</b></h3>
-                      @if($data->getstat == '1' && $data->orderstatus == 'COMPLETED')
+                      @if($data->getstat == null && $data->orderstatus == 'COMPLETED')
                         <input type="number" class="form-control text-right" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang">
                         <h3 id="kembalian">Kembalian :</h3>                       
                       @endif                
@@ -56,7 +60,7 @@
                   <div class="form-group col-md-3">
                     @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')                                           
                       <h4>Status Order : <b>{{$data->orderstatus}}</b></h4>                     
-                      @elseif($data->orderstatus == 'COMPLETED' && $data->getstat == '1')
+                      @elseif($data->orderstatus == 'COMPLETED' && $data->getstat == null)
                       <h4>Jenis Pembayaran</h4>
                       <select class="form-control" id="type" name="orderpaymentmethod">
                         <option value="Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Tunai' ? ' selected' : '' }}> Tunai</option>
