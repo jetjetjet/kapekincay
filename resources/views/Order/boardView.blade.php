@@ -125,7 +125,8 @@
               className: 'text-center',
               render: function(data, type, full, meta){
                 let url = "{{url('/order/detail/')}}" + "/" +data.id;
-                return '<a href="' + url + '"><span class="badge badge-success">Bayar</span></a>';
+                let url2 = "{{url('/order/')}}" + "/" +data.id;
+                return '<a href="' + url2 + '"><span class="badge badge-info">Ubah</span></a> &nbsp <a href="' + url + '"><span class="badge badge-success">Bayar</span></a>';
               }
             }
           ]

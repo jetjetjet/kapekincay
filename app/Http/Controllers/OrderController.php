@@ -97,7 +97,7 @@ class OrderController extends Controller
 
     $request->session()->flash($results['status'], $results['messages']);
 
-		return redirect()->action([OrderController::class, 'order'], ['id' => $results['id']]);
+		return redirect('/order/meja/view');
   }
 
   public function getDetail(Request $request, $idOrder)
