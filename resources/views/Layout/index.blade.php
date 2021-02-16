@@ -36,7 +36,7 @@
 <body class="alt-menu sidebar-noneoverflow">
     <!-- BEGIN LOADER -->
     <div id="load_screen"> <div class="loader"> <div class="loader-content">
-        <div class="spinner-grow align-self-center"></div>
+      <div class="spinner-grow align-self-center"></div>
     </div></div></div>
     <!--  END LOADER -->
 
@@ -51,11 +51,7 @@
 			<!--  BEGIN CONTENT PART  -->
 			<div id="content" class="main-content">
         <div class="layout-px-spacing">
-          <div class="page-header">
-            <nav class="breadcrumb-one" aria-label="breadcrumb">
-              @yield('content-breadcumb')
-            </nav>
-          </div>
+          @yield('content-breadcumb')
           <div class="row layout-top-spacing" id="cancel-row">     
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
               @if(session()->has('error'))

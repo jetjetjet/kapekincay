@@ -11,6 +11,7 @@ use App\Repositories\MenuRepository;
 use App\Repositories\ShiftRepository;
 use App\Events\OrderProceed;
 use Auth;
+use Yajra\DataTables\Facades\DataTables;
 
 class OrderController extends Controller
 {
@@ -42,12 +43,14 @@ class OrderController extends Controller
 
   public function detail(Request $request, $id)
   {
-    
+    $url = $request->path();
     $kasir = Auth::user()->can(['order_pembayaran'],[]);
     if($kasir){
       $cekShift = ShiftRepository::cekShiftStatus();
       if (!$cekShift){
+				$request->session()->put('urlintend', (string)$url);
         $request->session()->flash('warning', ['Shift belum diisi. Mohon diisi terlebih dahulu']);
+				
         return redirect()->action([ShiftController::class, 'getById']);
       }
     }
@@ -69,10 +72,19 @@ class OrderController extends Controller
 
 	public function orderViewLists()
 	{
-		$data = OrderRepository::orderGrid(null);
+		$perms = Array(
+			'is_kasir' => (Auth::user()->can(['order_pembayaran']) == true ? "true" : "false") . " as is_kasir",
+			'is_pelayan' => (Auth::user()->can(['order_pelayan']) == true ? "true" : "false") . " as is_pelayan"
+		);
+		$data = OrderRepository::orderGrid($perms);
 		return response()->json($data);
 	}
 
+	public function orderBungkus()
+	{
+		$data = OrderRepository::orderBungkus();
+		return DataTables::of($data)->make(true);
+	}
   public function save(Request $request, $id = null)
   {
     $respon = Helpers::$responses;

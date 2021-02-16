@@ -1,64 +1,70 @@
-@extends('Layout.layout-table')
+@extends('Layout.layout-noframe')
 
-@section('breadcumb')
-  <div class="title">
-    <h3>Pesanan</h3>
-  </div>
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);">Daftar Meja</a></li>
-  </ol>
+@section('css-order')
+  <style>
+    .dtrg-group {
+      width: 100% !important;
+      margin: 0.5rem !important;
+    }
+    .cards tbody tr {
+      float: left;
+      width: 18rem;
+      margin: 0.5rem;
+      border: 0.0625rem solid rgba(0, 0, 0, .125);
+      border-radius: .25rem;
+      box-shadow: 0.25rem 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
+    }
+    .cards tbody td {
+      display: block;
+    }
+    .cards thead {
+      display: none;
+    }
+    .cards td:before {
+      content: attr(data-label);
+      position: relative;
+      float: left;
+      color: #808080;
+      min-width: 4rem;
+      margin-left: 0;
+      margin-right: 1rem;
+      text-align: left;   
+    }
+    tr.selected td:before {
+      color: #CCC;
+    }
+  </style>
 @endsection
 
-@section('content-table')
-<style>
-  .dtrg-group {
-    width: 100% !important;
-    margin: 0.5rem !important;
-  }
-
-  .cards tbody tr {
-    float: left;
-    width: 18rem;
-    margin: 0.5rem;
-    border: 0.0625rem solid rgba(0, 0, 0, .125);
-    border-radius: .25rem;
-    box-shadow: 0.25rem 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
-  }
-
-
-  .cards tbody td {
-    display: block;
-  }
-
-  .cards thead {
-    display: none;
-  }
-  .cards td:before {
-    content: attr(data-label);
-    position: relative;
-    float: left;
-    color: #808080;
-    min-width: 4rem;
-    margin-left: 0;
-    margin-right: 1rem;
-    text-align: left;   
-  }
-
-  tr.selected td:before {
-    color: #CCC;
-  }
-</style>
+@section('content-order')
   <div class="widget-content widget-content-area br-6">
-  <div class="alert alert-arrow-left alert-icon-left alert-light-primary mb-4" role="alert">
+  <!-- <div class="alert alert-arrow-left alert-icon-left alert-light-primary mb-4" role="alert">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
     <strong>Info!</strong> Klik icon berwana Merah untuk membuat pesanan baru dan Biru untuk melihat detail pesanan.
-  </div>
+  </div> -->
+    @if(Perm::can(['order_lihatBungkus']))
+      <div class="table-responsive mb-4 mt-4">
+        <h4>Pesanan Bungkus</h4>
+        <table id="gridBungkus" class="table table-hover" style="width:100%">
+          <thead>
+            <tr>
+              <th>No. Pesanan</th>
+              <th>Tgl.</th>
+              <th>Harga</th>
+              <th class="no-content"></th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    @endif
     <div class="table-responsive mb-4 mt-4">
+      <h4>Daftar Meja</h4>
       <table id="grid" class="table table-hover cards" style="width:100%">
         <thead>
           <tr>
             <th></th>
-            <th>Lantai</th>
             <th>Status</th>
             <th class="no-content"></th>
           </tr>
@@ -70,9 +76,54 @@
   </div>
 @endsection
 
-@section('js-table')
+@section('js-order')
   <script>
     $(document).ready(function (){
+      @if(Perm::can(['order_lihatBungkus']))
+        let gridBungkus = $('#gridBungkus').DataTable({
+          ajax: "{{ url('order-grid/bungkus') }}",
+          processing: true,
+          serverSide: true,
+          paging: true,
+          ordering: true,
+          pageLength: 5,
+          dom: 
+            // "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'<'float-md-right ml-2'B>f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-12 col-md-5'><'col-sm-12 col-md-7'p>>",
+          oLanguage: {
+            "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+            "sInfo": "Halaman _PAGE_ dari _PAGES_",
+            "sSearch": '<i data-feather="search"></i>',
+            "sSearchPlaceholder": "Cari...",
+            "sLengthMenu": "Hasil :  _MENU_",
+          },
+          columns: [
+            { 
+              data: 'orderinvoice',
+              name: 'orderinvoice'
+            }, { 
+              data: 'orderdate',
+              name: 'orderdate'
+            },{
+              data: null,
+              name: 'orderprice',
+              className: 'text-right',
+              render: function(data, type, full, meta){
+                return formatter.format(data.orderprice)
+              }
+            },{
+              data: null,
+              className: 'text-center',
+              render: function(data, type, full, meta){
+                let url = "{{url('/order/detail/')}}" + "/" +data.id;
+                return '<a href="' + url + '"><span class="badge badge-success">Bayar</span></a>';
+              }
+            }
+          ]
+        })
+      @endif
+
       let grid = $('#grid').DataTable({
         ajax: {
           url: "{{ url('order/meja/lists') }}",
@@ -83,7 +134,7 @@
         dom: 
           // "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'<'float-md-right ml-2'B>f>>" +
           "<'row'<'col-sm-12'tr>>" +
-          "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+          "<'row'<'col-sm-12 col-md-7'p>>",
         buttons: {
           buttons: [{ 
             text: "Tambah Baru",
@@ -103,11 +154,6 @@
               data = "<h4><b> Meja No." + data.boardnumber+ "</b></h4>";
               return data;
             }
-          }, {
-            data: null,
-            render: function(data, type, full, meta){
-              return "Lantai " + data.boardfloor
-            }
           }, { 
             data: null,
             searchText: false,
@@ -122,19 +168,26 @@
             'data': null,
             'className': 'text-center',
             'render': function(data, type, full, meta){
+              let url = '#';
               if(!data.boardstatus){
-                let url = "{{url('/order/detail')}}"+"/"+ data.orderid;
+                if(data.is_kasir){
+                  url = "{{url('/order/detail')}}"+"/"+ data.orderid;
+                } else if(data.is_pelayan){
+                  url = "{{url('/order')}}"+"/"+ data.orderid;
+                }
+
                 return '<a href="' + url + '"><span class="badge badge-primary">' +  data.orderinvoice + '</span></a>';
               }
 
-              let url = "{{url('/order')}}" + "?idMeja=" +data.boardid+ "&mejaTeks=Meja No." + data.boardnumber+ " - Lantai "+data.boardfloor;
+              url = "{{url('/order')}}" + "?idMeja=" +data.boardid+ "&mejaTeks=Meja No." + data.boardnumber+ " - Lantai "+data.boardfloor;
               return '<a href="' + url + '"><span class="badge badge-danger">Pesanan Baru</span></a>';
             }
           }
         ],
         rowGroup: {
-            // Group by office
-            dataSrc: 'boardfloor'
+          dataSrc: function (row) {
+            return "Lantai " + row.boardfloor
+          }
         },
         'drawCallback': function (settings) {
           var api = this.api();

@@ -15,7 +15,7 @@
   <div class="widget-content widget-content-area br-6">
     <div class="row">
       <div id="flStackForm" class="col-lg-12 layout-spacing layout-top-spacing">
-        <div class="statbox widget box box-shadow">
+        <div class="statbox">
         <div class="widget-header">                                
           <div class="row">
             <div class="col-xl-12 col-md-12 col-sm-12 col-12">
@@ -23,17 +23,17 @@
             </div>                                                                        
           </div>
         </div>
-        <div class="widget-content widget-content-area">
+        <div class="widget-content">
           <form class="needs-validation" method="post" novalidate action="{{ url('/menu/simpan') }}" enctype="multipart/form-data">
             <div class="form-row">
               <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
               <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
               <input type="hidden" id="idd" name="getid" value="{{ old('getId', $data->getId) }}" />
-              <div class="col-md-12 mb-5">
+              <div class="col-md-12 mb-2">
                 <label for="name">Nama</label>
                 <input type="text" name="menuname" value="{{ old('menuname', $data->menuname) }}" class="form-control" id="name" placeholder="Nama" required>
               </div>
-              <div class="col-md-6 mb-5">
+              <div class="col-md-6 mb-2">
                 <label for="type">Kategori</label>
                   <select class="form-control" id="type" name="menutype">
                     <option value="Makanan" {{ old('menutype', $data->menutype) == 'Makanan' ? ' selected' : '' }}> Makanan</option>
@@ -41,7 +41,7 @@
                     <option value="Paket" {{ old('menutype', $data->menutype) == 'Paket' ? ' selected' : '' }}> Paket</option>
                   </select>
               </div>
-              <div class="col-md-6 mb-5">
+              <div class="col-md-6 mb-2">
                 <label for="price">Harga</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
@@ -50,7 +50,7 @@
                   <input name="menuprice" value="{{ old('menuprice', $data->menuprice) }}" class="form-control rupiah" id="pricing" placeholder="Harga" required>
                 </div>
               </div>
-              <div class="col-md-12 mb-5">
+              <div class="col-md-12 mb-2">
               <label>Status Menu(Kosong, Ada)</label>
               <br>
               @if(isset($data->menuavaible))
@@ -65,11 +65,11 @@
                 </label>
                 @endif
               </div> 
-              <div class="col-md-12 mb-5">
+              <div class="col-md-12 mb-2">
                 <label for="detail">Detail Menu</label>
                 <textarea name="menudetail" rows="3" class="form-control" id="detail" placeholder="Detail Menu" >{{ old('menudetail', $data->menudetail) }}</textarea>
               </div>
-              <div class="col-md-6 mb-5">
+              <div class="col-md-6 mb-2">
                 <div class="custom-file-container" data-upload-id="myFirstImage">
                     <label>Gambar Menu <a href="javascript:void(0)" class="custom-file-container__image-clear" title="Clear Image">x</a></label>
                     <label class="custom-file-container__custom-file" >
@@ -81,7 +81,7 @@
                 </div>
               </div>   
               @if(isset($data->menuimg))
-              <div class="col-md-6 mb-5">                
+              <div class="col-md-6 mb-2">                
                 <label for="img"><b>Gambar Menu Saat Ini</b></label>
                 <br>
                 <div class="n-chk">

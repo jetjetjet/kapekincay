@@ -4,6 +4,8 @@
 	<link href="{{ url('/') }}/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
 	<link href="{{ url('/') }}/assets/css/dashboard/dash_2.css" rel="stylesheet" type="text/css" />
 	<link href="{{ url('/') }}/assets/css/dashboard/dash_1.css" rel="stylesheet" type="text/css" />
+
+	<link href="{{ url('/') }}/assets/css/elements/infobox.css" rel="stylesheet" type="text/css" />
 	<style type="text/css">
     /*
  * Off Canvas at medium breakpoint
@@ -86,6 +88,7 @@
   <div class="row layout-top-spacing">
 	
 		<!-- <div class="form-row"> -->
+
 			<div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
 				<a href="{{url('/order/meja/view')}}">
 					<div class="widget-three">
@@ -175,30 +178,7 @@
 					</div>
 				</a>
 			</div>
-			@if(Perm::can(['shift_simpan']))
-			<div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-12 layout-spacing">
-				<a href="{{url('/shift')}}">
-					<div class="widget widget-card-four">
-						<div class="widget-content">
-							<div class="w-content">
-								<div class="w-info">
-									<h6 class="value">Shift</h6>
-									<p class="">_</p>
-								</div>
-								<div class="">
-									<div class="w-icon">
-										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-									</div>
-								</div>
-							</div>
-							<div class="progress">
-								<div class="progress-bar bg-gradient-secondary" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-							</div>
-						</div>
-					</div>
-				</a>
-			</div>
-			@endif
+			<!-- shift -->
 			<div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-12 layout-spacing">
 				<a href="{{url('order/index')}}">
 					<div class="widget widget-card-four">
@@ -221,53 +201,105 @@
 					</div>
 				</a>
 			</div>
-		<!-- </div> -->
-		<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12 layout-spacing">
-			<div class="widget widget-chart-one">
-					<div class="widget-heading">
-						<h5 class="">Chart Penjualan Bulan {{$data->bulan}}</h5>
-						<ul class="tabs tab-pills">
-								<li><a href="javascript:void(0);" id="tb_1" class="tabmenu">Bulanan</a></li>
-						</ul>
-					</div>
-					<div class="widget-content">
-						<div class="tabs tab-content">
-							<div id="content_1" class="tabcontent"> 
-								<div id="orderBulanan"></div>
+		@if(Perm::can(['shift_simpan']))
+			<div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-12 layout-spacing">
+				<a href="{{url($data->shift->url)}}">
+					<div class="widget widget-card-four">
+						<div class="widget-content">
+							<div class="w-content">
+								<div class="w-info">
+									<h6 class="value">Shift</h6>
+									<p class="">Shift Aktif:</p>
+									<p>{{isset($data->shift->active) ? $data->shift->active->username . " - " . $data->shift->active->shiftstart : " - "}}</p>
+								</div>
+								<div class="">
+									<div class="w-icon">
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
+				</a>
 			</div>
-		</div>
-		<div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12 layout-spacing">
-			<div class="widget widget-table-three">
-				<div class="widget-heading">
-					<h5 class="">Penjualan Terbanyak Bulan {{$data->bulan}}</h5>
+		@endif
+		<!-- </div> -->
+		@if(Perm::can(['laporan_lihat']))
+			<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12 layout-spacing">
+				<div class="widget widget-chart-one">
+						<div class="widget-heading">
+							<h5 class="">Chart Penjualan Bulan {{$data->bulan}}</h5>
+							<ul class="tabs tab-pills">
+									<li><a href="javascript:void(0);" id="tb_1" class="tabmenu">Bulanan</a></li>
+							</ul>
+						</div>
+						<div class="widget-content">
+							<div class="tabs tab-content">
+								<div id="content_1" class="tabcontent"> 
+									<div id="orderBulanan"></div>
+								</div>
+							</div>
+						</div>
 				</div>
+			</div>
+			<div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12 layout-spacing">
+				<div class="widget widget-table-three">
+					<div class="widget-heading">
+						<h5 class="">Penjualan Terbanyak Bulan {{$data->bulan}}</h5>
+					</div>
+					<div class="widget-content">
+						<div class="table-responsive">
+							<table class="table">
+								<thead>
+									<tr>
+										<th><div class="th-content">Menu</div></th>
+										<th><div class="th-content th-heading">Harga</div></th>
+										<th><div class="th-content th-heading">Total</div></th>
+									</tr>
+								</thead>
+									<tbody>
+										@foreach($data->topMenu as $menu)
+											<tr>
+												<td><div class="td-content product-name">{{$menu->menuname}}</div></td>
+												<td><div class="td-content"><span class="pricing">{{number_format($menu->menuprice,0)}}</span></div></td>
+												<td><div class="td-content">{{$menu->totalorder}}</div></td>
+											</tr>
+										@endforeach
+									</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		@endif
+		
+		@if(Perm::can(['shift_lihat']))
+		<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+			<div class="widget widget-activity-three">
 				<div class="widget-content">
-					<div class="table-responsive">
-						<table class="table">
-							<thead>
-								<tr>
-									<th><div class="th-content">Menu</div></th>
-									<th><div class="th-content th-heading">Harga</div></th>
-									<th><div class="th-content th-heading">Total</div></th>
-								</tr>
-							</thead>
-								<tbody>
-									@foreach($data->topMenu as $menu)
-										<tr>
-											<td><div class="td-content product-name">{{$menu->menuname}}</div></td>
-											<td><div class="td-content"><span class="pricing">{{number_format($menu->menuprice,0)}}</span></div></td>
-											<td><div class="td-content">{{$menu->totalorder}}</div></td>
-										</tr>
-									@endforeach
-								</tbody>
-						</table>
+					<div class="w-info">
+						<p class="">Status Shift</p>
+					</div>
+					<div class="mx-auto">
+						<div class="timeline-line">
+							<div class="item-timeline timeline-new">
+								<div class="t-dot">
+										<div class="t-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+								</div>
+								<div class="t-content">
+									<div class="t-uppercontent">
+										<h5>Task Completed</h5>
+										<span class=""></span>
+									</div>
+									<p>01 Mar, 2020</p>
+								</div>
+							</div>                               
+						</div>                                    
 					</div>
 				</div>
 			</div>
 		</div>
+		@endif
 	</div>
 @endsection
 
@@ -276,51 +308,53 @@
 	<script src="{{ url('/') }}/plugins/apex/apexcharts.min.js"></script>
 	<script src="{{ url('/') }}/assets/js/dashboard/dash_2.js"></script>
 	<script>
-		var sLineArea = {
-				chart: {
-						height: 350,
-						type: 'area',
-						toolbar: {
-							show: false,
-						}
-				},
-				dataLabels: {
-						enabled: false
-				},
-				stroke: {
-						curve: 'smooth'
-				},
-				series: [{
-						name: 'Jumlah',
-						data: ['{!! $data->chart->chartTotal !!}']
-				}],
-				xaxis: {
-						categories: ['{!! $data->chart->chartTgl !!}'],                
-				},
-				yaxis: {
-						title: {
-								text: 'Rupiah'
-						}
-				},
-				fill: {
-						opacity: 1
+		@if(Perm::can(['laporan_lihat']))
+			var sLineArea = {
+					chart: {
+							height: 350,
+							type: 'area',
+							toolbar: {
+								show: false,
+							}
+					},
+					dataLabels: {
+							enabled: false
+					},
+					stroke: {
+							curve: 'smooth'
+					},
+					series: [{
+							name: 'Jumlah',
+							data: ['{!! $data->chart->chartTotal !!}']
+					}],
+					xaxis: {
+							categories: ['{!! $data->chart->chartTgl !!}'],                
+					},
+					yaxis: {
+							title: {
+									text: 'Rupiah'
+							}
+					},
+					fill: {
+							opacity: 1
 
-				},
-				tooltip: {
-						y: {
-								formatter: function (val) {
-										return "Rp " + val 
-								}
-						}
-				}
-		}
+					},
+					tooltip: {
+							y: {
+									formatter: function (val) {
+											return "Rp " + val 
+									}
+							}
+					}
+			}
 
-		var chart = new ApexCharts(
-				document.querySelector("#orderBulanan"),
-				sLineArea
-		);
+			var chart = new ApexCharts(
+					document.querySelector("#orderBulanan"),
+					sLineArea
+			);
 
-		chart.render();
+			chart.render();
+		@endif
 	</script>
 @endsection
 

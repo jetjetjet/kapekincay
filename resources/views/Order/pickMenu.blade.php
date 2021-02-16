@@ -101,6 +101,13 @@
             <form id="orderMenuForm" method="post" novalidate action="{{url('/order/save')}}">
               <div class="orderCust" style="padding-bottom:5px">
               <!-- No. Pesanan {{ isset($data->orderinvoice) ? $data->orderinvoice : "" }} -->
+                @if(isset($data->id))
+                <div class="form-group row divMeja">
+                  <div class="col-sm-12">
+                    <p><h4>Nomor Pesanan: <b>{{ old('orderinvoice', $data->orderinvoice) }}</b></h4></p>
+                  </div>
+                </div>
+                @endif
                 <div class="form-group row">
                   <label for="colFormLabelSm" class="col-sm-4 col-form-label col-form-label-sm">Jenis Pesanan</label>
                   <div class="col-sm-8">
@@ -167,7 +174,7 @@
               @if(Perm::can(['order_hapus']) && ($data->orderstatus == 'PROCEED' || $data->orderstatus == 'ADDITIONAL'))
                 <a href="" id="deleteOrder" type="button" class="btn btn-danger mt-2">Hapus</a>
               @endif
-              @if(Perm::can(['order_void']) && isset($data->id))
+              @if(Perm::can(['order_void']) && ($data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED' || $data->orderstatus == 'PAID'))
                 <a href="" id="void" type="button" class="btn btn-danger mt-2">Batalkan Pesanan</a>
               @endif
             </div>
@@ -311,9 +318,11 @@
       let val = $(this).val();
       if(val == "TAKEAWAY"){
         $('.divMeja').addClass('d-none');
+        $('#headerOrder').addClass('d-none');
         $modal.find('.cariMeja').select2().val(null).trigger('change');
       } else {
         $('.divMeja').removeClass('d-none')
+        $('#headerOrder').removeClass('d-none');
       }
     });
 

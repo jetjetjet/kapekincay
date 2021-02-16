@@ -15,7 +15,7 @@
   <div class="widget-content widget-content-area br-6">
     <div class="row">
       <div id="flStackForm" class="col-lg-12 layout-spacing layout-top-spacing">
-        <div class="statbox widget box box-shadow">
+        <div class="statbox">
         <div class="widget-header">                                
           <div class="row">
             <div class="col-xl-12 col-md-12 col-sm-12 col-12">
@@ -23,43 +23,44 @@
             </div>                                                                        
           </div>
         </div>
-        <div class="widget-content widget-content-area">
+        <div class="widget-content">
           <form class="needs-validation" method="post" novalidate action="{{ url('/shift') }}/{{ empty($data->id) ? 'simpan' : 'edit'}}">
             <div class="form-row">
               <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
               <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
-              <div class="col-md-6 mb-5">
+              <div class="col-md-2 mb-3">
                 <label for="name">Shift</label>
                 <input readonly type="text" name="shiftindex" value="{{$data->shiftindex}}" class="form-control" id="name" placeholder="Nama" required>
-              </div><div class="col-md-6 mb-5">
               </div>
-              <div class="col-md-6 mb-5">
-                <label>Tanggal</label>
-                <input id="get"  class="form-control flatpickr flatpickr-input">            
-              </div>
-              <div class="col-md-6 mb-5">
+              <div class="col-md-5 mb-3">
                 <label for="name">Karyawan</label>
                 <input readonly type="text" name="shiftuserid" value="{{ session('username') }}" class="form-control" id="name" placeholder="Nama" required>
               </div>
-              <div class="col-md-6 mb-5">
+              <div class="col-md-5 mb-3">
+                <label>Tanggal</label>
+                <input id="get"  class="form-control flatpickr flatpickr-input">            
+              </div>   
+            </div>
+            <div class="form-row">
+              <div class="col-md-6 mb-3">
                 <label for="price">Uang Kertas</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">Rp </span>
                   </div>
-                  <input name="shiftstartcash" value="{{ old('shiftstartcash', $data->shiftstartcash) }}" class="form-control rupiah" id="pricing" placeholder="Harga" required>
+                  <input type="number" name="shiftstartcash" value="{{ old('shiftstartcash', $data->shiftstartcash) }}" class="form-control text-right" id="pricing" placeholder="Kertas" required>
                 </div>
               </div>
-              <div class="col-md-6 mb-5">
+              <div class="col-md-6 mb-3">
                 <label for="price">Uang Koin</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">Rp </span>
                   </div>
-                  <input name="shiftstartcoin" value="{{ old('shiftstartcoin', $data->shiftstartcoin) }}" class="form-control rupiah" id="pricing" placeholder="Harga">
+                  <input type="number" name="shiftstartcoin" value="{{ old('shiftstartcoin', $data->shiftstartcoin) }}" class="form-control text-right" id="pricing" placeholder="Koin">
                 </div>
-              </div>             
-            </div>  
+              </div>     
+            </div>
               <div class="float-right">
                 <a href="{{ url('/shift') }}" type="button"  class="btn btn-danger mt-2" type="submit">Batal</a>
                 <button class="btn btn-primary mt-2" id="sub" type="submit">Simpan</button>
@@ -72,16 +73,14 @@
 @endsection
 @section('js-form')
 <script>
-  
-  // var dis = $('#sub').attr('disabled', true);
-
-  $(document).ready(function (){   
+  $(document).ready(function (){
+    $('[type=number]').setupMask(0);
     let f1 = flatpickr($('#get'), {
-    altinput: true,
-    altformat: "d-m-Y",
-    noCalendar: true,
-    dateFormat: "d-m-Y",
-    defaultDate: "today"
+      altinput: true,
+      altformat: "d-m-Y",
+      noCalendar: true,
+      dateFormat: "d-m-Y",
+      defaultDate: "today"
     });
     // Fetch all the forms we want to apply custom Bootstrap validation styles to
     let forms = document.getElementsByClassName('needs-validation');

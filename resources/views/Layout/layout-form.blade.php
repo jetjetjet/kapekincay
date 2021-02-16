@@ -67,7 +67,11 @@
 @endsection
 
 @section('content-breadcumb')
-  @yield('breadcumb')
+  <div class="page-header">
+    <nav class="breadcrumb-one" aria-label="breadcrumb">
+      @yield('breadcumb')
+    </nav>
+  </div>
 @endsection
 
 @section('content-body')

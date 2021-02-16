@@ -9,7 +9,7 @@ use Exception;
 
 class OrderRepository
 {
-  private static function orderBoard()
+  private static function orderBoard($filters)
   {
     $qOrder = Order::where('orderactive', '1')
       ->whereNotNull('orderboardid')
@@ -37,21 +37,37 @@ class OrderRepository
         'boardfloor',
         'o.orderinvoice',
         'boardnumber');
+    if($filters){
+      $board = $board->addSelect(
+        DB::raw($filters['is_kasir']),
+        DB::raw($filters['is_pelayan'])
+      );
+    }
     return $board;
   }
   public static function orderGrid($filters)
   {
     $qFloor = DB::table('boards')->where('boardactive', '1')->select(DB::raw("max(boardfloor) as maxfloor"))->first();
     $floorMax = $qFloor->maxfloor ?? 0;
-    $board = self::orderBoard()->orderBy('boardfloor', 'ASC')->get();
-    // $tampungan = Array();
-
-    // for($i = 1 ; $i <= $floorMax; $i++){
-    //   $temp = $board->where('boardfloor', (string)$i);
-    //   array_push($tampungan, $temp);
-    // }
+    $board = self::orderBoard($filters)->orderBy('boardfloor', 'ASC')->orderBy('boardnumber', 'ASC')->get();
 
     return $board;
+  }
+
+  public static function orderBungkus()
+  {
+    $dataOrder = Order::where('orderactive','1')
+      ->where('ordertype', 'TAKEAWAY')
+      ->whereRaw("(orderpaid is null or orderpaid = '0')")
+      ->orderBy('ordercreatedat', 'ASC')
+      ->select(
+        'id',
+        'orderinvoice',
+        'orderdate',
+        'orderprice')
+      ->get();
+
+    return $dataOrder;
   }
 
   public static function orderChart($filter, $range, $month)

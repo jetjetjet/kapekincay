@@ -56,7 +56,7 @@ class ShiftRepository
     if($qIndex != null && $qClose == null){
       // error! data sudah ada dan belum diclose
        $respon['status'] = 'error';
-       array_push($respon['messages'], 'Masih ada shift yang aktif');
+       array_push($respon['messages'], 'Tidak dapat membuat Shift. Masih ada shift yang aktif!');
     } else if( $qIndex == null) {
       $respon['data']->shiftindex = 1;
     } else {
@@ -65,7 +65,6 @@ class ShiftRepository
 // dd($respon);
     return $respon;
   }
-
 
   public static function getclosedit($respon, $id)
   {
@@ -148,7 +147,6 @@ class ShiftRepository
     return $respon;
   }
   
-  
   public static function close($respon, $inputs, $loginid)
   {
     $id = $inputs['id'] ?? 0;
@@ -175,7 +173,6 @@ class ShiftRepository
     $respon['id'] = ($data->id ?? $inputs['id']) ?? null;
     return $respon;
   }
-
 
   public static function delete($respon, $id, $loginid, $inputs)
   {
@@ -216,6 +213,32 @@ class ShiftRepository
       return false;
     
     return true;
+  }
+
+  public static function shiftDashboard($loginid)
+  {
+    $text = Array('status'=> 'NEW', 'data' => null);
+    $cekShift = Shift::where('shiftactive',1)
+      ->whereRaw("( shiftstart::date = now()::date and shiftstart is not null ) and shiftclose is null")
+      ->where('shiftcreatedby', $loginid)
+      ->select('id', 'shiftstart', 'shiftclose')
+      ->first();
+    if($cekShift != null){
+      $text['data'] = $cekShift;
+      $text['status'] = 'AVAILABLE';  
+    }
+    return $text;
+  }
+
+  public static function shiftDashboardActive()
+  {
+    $cekShift = Shift::join('users', 'users.id', 'shiftcreatedby')
+      ->where('shiftactive',1)
+      ->whereRaw("( shiftstart::date = now()::date and shiftstart is not null )")
+      ->whereNull('shiftclose')
+      ->select('shifts.id', 'shiftstart', 'username')
+      ->first();
+    return $cekShift;
   }
 
 }

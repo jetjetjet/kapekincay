@@ -27,6 +27,7 @@ Route::get('logout', [LoginController::class, 'getLogoff']);
 Route::post('login', [LoginController::class, 'postLogin']);
 Route::get('/dapur', [App\Http\Controllers\DapurController::class, 'index']);
 Route::get('/dapur/lists', [App\Http\Controllers\DapurController::class, 'getLists']);
+Route::get('/order-grid/bungkus', [ OrderController::class, 'orderBungkus' ]);
 
 Route::group(array('middleware' => 'auth'), function ()
 {
@@ -60,6 +61,7 @@ Route::group(array('middleware' => 'auth'), function ()
   
   Route::get('/order/index', [OrderController::class, 'index']);
   Route::get('/order/index/grid', [OrderController::class, 'getGrid']);
+  Route::get('/order/grid/bungkus', [ OrderController::class, 'orderBungkus' ]);
   Route::get('/order/{id?}', [OrderController::class, 'order']);
   Route::get('/order/detail/{id?}', [ OrderController::class, 'detail' ]);
   Route::get('/order/detail/grid/{idOrder}', [ OrderController::class, 'getDetail' ]);

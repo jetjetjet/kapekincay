@@ -30,54 +30,50 @@
 								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
 							</a>
 						</li>
-						<li class="menu single-menu">
-							<a href="#app" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-								<div class="">
-									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
-									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu shadow-icons"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
-									<span>Master Data</span>
-								</div>
-								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-							</a>
-							<ul class="collapse submenu list-unstyled animated fadeInUp" id="app" data-parent="#topAccordion">
-								<li><a href="{{ url('/jabatan') }}">Jabatan</a></li>
-								<li><a href="{{ url('/meja') }}">Meja</a></li>
-								<li><a href="{{ url('/menu') }}">Menu</a></li>
-								<li><a href="{{ url('/shift') }}">Shift</a></li>
-								<li><a href="{{ url('/user') }}">User</a></li>
-								<li><a href="{{ url('/setting') }}">Pengaturan</a></li>
-							</ul>
-						</li>
+							
+					@if(Perm::can(['user_lihat']) || Perm::can(['jabatan_lihat']) || Perm::can(['pengaturan_lihat']) ||
+						Perm::can(['meja_lihat']) ||Perm::can(['menu_lihat']) || Perm::can(['shift_lihat']))
+							<li class="menu single-menu">
+								<a href="#app" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+									<div class="">
+										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu shadow-icons"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+										<span>Master Data</span>
+									</div>
+									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+								</a>
+								<ul class="collapse submenu list-unstyled animated fadeInUp" id="app" data-parent="#topAccordion">
+									@if(Perm::can(['jabatan_lihat']))
+										<li><a href="{{ url('/jabatan') }}">Jabatan</a></li>
+									@endif
+									@if(Perm::can(['user_lihat']))
+										<li><a href="{{ url('/user') }}">User</a></li>
+									@endif
+									@if(Perm::can(['user_lihat']) || Perm::can(['jabatan_lihat']))
+										<li class="menu-title"><hr style="margin:0; border-top: solid 1px lightgrey" /> </li>
+									@endif
+									@if(Perm::can(['meja_lihat']))
+										<li><a href="{{ url('/meja') }}">Meja</a></li>
+									@endif
+									@if(Perm::can(['menu_lihat']))
+										<li><a href="{{ url('/menu') }}">Menu</a></li>
+									@endif
+									@if(Perm::can(['shift_lihat']))
+										<li><a href="{{ url('/shift') }}">Shift</a></li>
+									@endif
+									@if(Perm::can(['pengaturan_lihat']))
+										<li class="menu-title"><hr style="margin:0; border-top: solid 1px lightgrey" /> </li>
+										<li><a href="{{ url('/setting') }}">Pengaturan</a></li>
+									@endif
+								</ul>
+							</li>
+						@endif
 					</ul>
 				</nav>
 			</div>
-			<!-- END TOPBAR -->
 		</ul>
 		<ul class="navbar-item flex-row ml-auto"></ul>
 		<ul class="navbar-item flex-row nav-dropdowns">
-			<li class="nav-item dropdown notification-dropdown">
-				<a href="javascript:void(0);" class="nav-link dropdown-toggle" id="notificationDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><span class="badge badge-success"></span>
-				</a>
-				<div class="dropdown-menu position-absolute animated fadeInUp" aria-labelledby="notificationDropdown">
-					<div class="notification-scroll">
-						<div class="dropdown-item">
-							<div class="media server-log">
-								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-server"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6" y2="6"></line><line x1="6" y1="18" x2="6" y2="18"></line></svg>
-								<div class="media-body">
-									<div class="data-info">
-										<h6 class="">Server Rebooted</h6>
-										<p class="">45 min ago</p>
-									</div>
-									<div class="icon-status">
-										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</li>
 
 			<li class="nav-item dropdown user-profile-dropdown order-lg-0 order-1">
 				<a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="user-profile-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -87,7 +83,6 @@
 						</div>
 						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
 						<img src="{{ url('/') }}/assets/img/90x90.jpg" class="img-fluid" alt="admin-profile">
-						
 					</div>
 				</a>
 					<div class="dropdown-menu position-absolute animated fadeInUp" aria-labelledby="userProfileDropdown">

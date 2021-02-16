@@ -14,6 +14,8 @@ class AuthCafe
     'jabatan_simpan',
     'jabatan_hapus',
 
+    'laporan_lihat',
+
     'meja_lihat',
     'meja_simpan',
     'meja_hapus',    
@@ -23,10 +25,12 @@ class AuthCafe
     'menu_hapus',    
 
     'order_lihat',
+    'order_lihatBungkus',
     'order_simpan',
     'order_hapus',
     'order_batal',
     'order_pembayaran',
+    'order_pelayan',
 
     'pengaturan_lihat',
     'pengaturan_edit',

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repositories\OrderRepository;
 use App\Repositories\MenuRepository;
+use App\Repositories\ShiftRepository;
 use Carbon\Carbon;
+use Auth;
 
 class DashboardController extends Controller
 {
@@ -17,13 +19,28 @@ class DashboardController extends Controller
     $akhir = $awal->copy()->endOfMonth();
 
     //Chart
-    $filter = "orderdate::date between '". $awal->toDateString() . "'::date and '" . $akhir->toDateString() . "'::date";
-    $range = range($awal->format('d'), $akhir->format('d'));
-    $yM = $awal->format('Y-m');
-    $data->chart = OrderRepository::orderChart($filter, $range, $yM );
+    if(Auth::user()->can(['laporan_lihat'])){
+      $filter = "orderdate::date between '". $awal->toDateString() . "'::date and '" . $akhir->toDateString() . "'::date";
+      $range = range($awal->format('d'), $akhir->format('d'));
+      $yM = $awal->format('Y-m');
+      $data->chart = OrderRepository::orderChart($filter, $range, $yM );
+    }
+    
+    //Shift
+    if(Auth::user()->can(['shift_simpan'])){
+      $shift = new \StdClass();
+      $getShift = ShiftRepository::shiftDashboard(Auth::user()->getAuthIdentifier());
+      $getShiftActive = ShiftRepository::shiftDashboardActive();
+      
+      $shift->data = $getShift;
+      $shift->url = '/shift' . ($getShift['status'] == 'NEW' ? '/detail' : "/close/".$getShift['data']->id); 
+      $shift->active = $getShiftActive;
+
+      $data->shift = $shift;
+    }
     
     //Meja
-    $meja  = OrderRepository::orderGrid(null)->get();
+    $meja  = OrderRepository::orderGrid(null);
     $sumMeja = new \StdClass();
     $sumMeja->kosong = 0;
     $sumMeja->terisi = 0;

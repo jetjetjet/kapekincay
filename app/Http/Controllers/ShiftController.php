@@ -34,9 +34,9 @@ class ShiftController extends Controller
 		$results = ShiftRepository::get($respon, $id);
 		if($results['status'] == 'error'){
 			$request->session()->flash($results['status'], $results['messages']);
-			return redirect()->action([ShiftController::class, 'index']);
+			return redirect('/');
 		}
-		// dd($respon);
+		
 		return view('Shift.edit')->with('data', $results['data']);
 	}
 
@@ -68,6 +68,7 @@ class ShiftController extends Controller
 
 	public function save(Request $request)
 	{
+		$orderUrl = $request->session()->pull('urlintend');
 		$respon = Helpers::$responses;
 		$rules = array(
 			'shiftuserid' => 'required',
@@ -82,15 +83,13 @@ class ShiftController extends Controller
 		}
 
 		$results = ShiftRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
-	
-    //cek
-
 		$request->session()->flash($results['status'], $results['messages']);
-		$cekRes = $results['status'];
-		if ($cekRes == 'success'){
-			return redirect()->action([ShiftController::class, 'index']);
-		}elseif($cekRes == 'error'){
-			return redirect()->action([ShiftController::class, 'getById'], ['id' => $results['id']]);
+
+    if($orderUrl)
+		{
+			return redirect('/'.$orderUrl);
+		} else {
+			return redirect('/');
 		}
 	}
 
@@ -141,7 +140,7 @@ class ShiftController extends Controller
 		$request->session()->flash($results['status'], $results['messages']);
 		$cekRes = $results['status'];
 		if ($cekRes == 'success'){
-			return redirect()->action([ShiftController::class, 'index']);
+			return redirect('/');
 		}elseif($cekRes == 'error'){
 			return redirect()->action([ShiftController::class, 'getClose'], ['id' => $results['id']]);
 		}
