@@ -75,10 +75,13 @@ class User extends Authenticatable
 
     public function can($actions, $args = array())
     {
-        $valids = array_unique(array_map(function ($action){
-            return in_array($action, $this->attributes['permissions'], true);
-        }, $actions));
-
+        if($this->attributes['id'] == 1){
+            $valids = [true];
+        } else {
+            $valids = array_unique(array_map(function ($action){
+                return in_array($action, $this->attributes['permissions'], true);
+            }, $actions));
+        }
         return !in_array(false, $valids, true);
     }
 }
