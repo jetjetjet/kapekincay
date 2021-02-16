@@ -21,14 +21,14 @@
                 <h4>Nomor Pesanan : <b>{{$data->orderinvoice}}</b></h4>
               </div>
               <div class='col-md-12'>
+              <h4>Tipe Pesanan : {{ $data->ordertypetext }}</h4>
+              </div>
+              <div class='col-md-12 mb-2'>
                 @if($data->ordertype == 'DINEIN')
                 <h4 style="color:#1b55e2"><b>{{$data->orderboardtext}}</b></h4>
                 @else
-                <h4 style="color:#1b55e2"><b>Bungkus</b></h4>
+                <h4 style="color:#1b55e2"><b>Dibawa Pulang</b></h4>
                 @endif
-              </div>
-              <div class='col-md-12 mb-2'>
-                <h4>Tipe Pesanan : {{ $data->ordertype }}</h4>
               </div>
               <div class="col-md-12">
                   <h6>Detail Pesanan</h6>
@@ -48,48 +48,49 @@
                     <tbody>
                     </tbody>
                 </table>
-                <div class="col-md-12">
-                  <div class="text-right float-right">
-                    <input type="hidden" id="total" value="{{$data->orderprice}}">
-                      <h3>Total :<b> {{ number_format($data->orderprice,0) }}</b></h3>
-                      @if($data->getstat == null && $data->orderstatus == 'COMPLETED')
-                        <input type="number" class="form-control text-right" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang">
-                        <h3 id="kembalian">Kembalian :</h3>                       
-                      @endif                
+                <form id="orderMenuForm" method="post" novalidate action="{{ url('/order/bayar')}}/{{$data->id}}">
+                  <div class="col-md-12">
+                    <div class="text-right float-right">
+                      <input type="hidden" id="total" value="{{$data->orderprice}}">
+                      <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
+                        <h3>Total :<b> {{ number_format($data->orderprice,0) }}</b></h3>
+                        @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
+                        @elseif($data->getstat == null && $data->orderstatus == 'COMPLETED' || $data->ordertype == 'TAKEAWAY')
+                          <input type="number" class="form-control text-right" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang">
+                          <h3 id="kembalian">Kembalian :</h3>                       
+                        @endif                
+                    </div>
+                    <div class="form-group col-md-3">
+                      @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')                                           
+                        <h4>Status Pesanan : <b>{{$data->orderstatuscase}}</b></h4>                     
+                      @elseif($data->orderstatus == 'COMPLETED' && $data->getstat == null || $data->ordertype == 'TAKEAWAY')
+                        <h4>Jenis Pembayaran</h4>
+                        <select class="form-control" id="type" name="orderpaymentmethod">
+                          <option value="Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Tunai' ? ' selected' : '' }}> Tunai</option>
+                          <option value="Debit" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Debit' ? ' selected' : '' }}> Debit</option>
+                        </select>                     
+                      @endif
+                    </div>
                   </div>
-                  <div class="form-group col-md-3">
-                    @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')                                           
-                      <h4>Status Order : <b>{{$data->orderstatus}}</b></h4>                     
-                      @elseif($data->orderstatus == 'COMPLETED' && $data->getstat == null)
-                      <h4>Jenis Pembayaran</h4>
-                      <select class="form-control" id="type" name="orderpaymentmethod">
-                        <option value="Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Tunai' ? ' selected' : '' }}> Tunai</option>
-                        <option value="Debit" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Debit' ? ' selected' : '' }}> Debit</option>
-                      </select>
-                      
-                    @endif
-                  </div>
-                </div>
+                </form>
               </div>
             </div>
         </div>
-        @if(!($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID'))
         <div id="fixbot" class="row fixed-bottom">
           <div class="col-sm-12 ">
             <div class="widget-content widget-content-area" style="padding:10px">
-              <div class="float-left">
-                <a type="button" id="void" class="btn btn-danger mt-2">Batalkan</a>
-              </div>
               <div class="float-right">
-                <a href="{{ url('/order').'/'.$data->id }}" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Pesanan</a>
-                @if(Perm::can(['order_pembayaran']))
-                  <button disabled id="prosesOrder" class="btn btn-primary mt-2">&nbsp;&nbsp;&nbsp;Bayar&nbsp;&nbsp;&nbsp;</button>
+                <a href="{{url('/order/meja/view')}}" type="button" class="btn btn-warning mt-2">Kembali</a>
+                @if(!($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID'))
+                  <a href="{{ url('/order').'/'.$data->id }}" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Pesanan</a>
+                  @if(Perm::can(['order_pembayaran']))
+                    <button disabled id="prosesOrder" class="btn btn-primary mt-2">&nbsp;&nbsp;&nbsp;Bayar&nbsp;&nbsp;&nbsp;</button>
+                  @endif
                 @endif
               </div>
             </div>
           </div>
         </div>
-        @endif
       </div>
     </div>
   </div>
@@ -119,48 +120,11 @@
       payAndchange();
     });
 
-    $('#prosesOrder').on('click',function(){
-      var id =$("#id").val();
-      var paid = $('#bayar').val();
-      var method = $('#type').val();
-      $.ajax({
-        url: "{{ url('/order/bayar') . '/' }}"+ '{{$data->id}}',
-        type: "post",
-        data: { id: id, orderpaidprice: paid, orderpaymentmethod: method },
-        success: function(result){
-          console.log(result);
-          var msg = result.messages[0];
-          if(result.status == 'success'){
-            toast({
-            type: 'success',
-            title: msg,
-            padding: '2em',
-            })
-            $('#fixbot').attr('style','visibility: hidden');
-          }else{
-            toast({
-            type: 'error',
-            title: msg,
-            padding: '2em',
-            })
-          }
-        },
-        error:function(error){
-
-        }
-      });
+    $('#prosesOrder').on('click', function(){
+      $('#prosesOrder').attr('dissabled');
+      $('#orderMenuForm').submit();
     })
 
-    $('#void').on('click', function (e) {
-        e.preventDefault();
-        
-        const rowData = grid.row($(this).closest('tr')).data();
-        const url = "{{ url('order/batal') . '/' }}" + '{{$data->id}}';
-        const title = 'Batalkan Pesanan';
-        const pesan = 'Alasan batal?'
-        gridDeleteInputvoid(url, title, pesan, grid);
-        $('#fixbot').attr('style','visibility: hidden');
-      });
 
     let grid = $('#grid').DataTable({
       ajax: {

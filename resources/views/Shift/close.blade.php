@@ -28,33 +28,51 @@
             <div class="form-row">
               <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
               <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
-              <div class="col-md-6 mb-5">
+              <div class="col-md-4 mb-3">
                 <label for="name">Tanggal Buka</label>
                 <input readonly type="text" value="{{ old('shiftstart', $data->shiftstart) }}" class="form-control" id="name" placeholder="Nama" required>
               </div>
-              <div class="col-md-6 mb-5">
+              <div class="col-md-4 mb-3">
+                <label for="price">Uang Kertas (Buka)</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Rp </span>
+                  </div>
+                  <input type="number" readonly name="shiftstartcash" value="{{ old('shiftstartcash', $data->shiftstartcash) }}" class="form-control text-right" id="pricing" placeholder="Kertas" required>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label for="price">Uang Koin (Buka)</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Rp </span>
+                  </div>
+                  <input type="number" readonly name="shiftstartcoin" value="{{ old('shiftstartcoin', $data->shiftstartcoin) }}" class="form-control text-right" id="pricing" placeholder="Koin">
+                </div>
+              </div>  
+              <div class="col-md-4 mb-3">
                 <label>Tanggal Tutup</label>
                 <input  id="get" class="form-control flatpickr flatpickr-input">            
               </div>
-              <div class="col-md-6 mb-5">
+              <div class="col-md-4 mb-3">
                 <label for="price">Uang Kertas</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">Rp </span>
                   </div>
-                  <input name="shiftendcash" value="{{ old('shiftendcash', $data->shiftendcash) }}" class="form-control rupiah" id="pricing" placeholder="Harga" required>
+                  <input type="number" name="shiftendcash" value="{{ old('shiftendcash', $data->shiftendcash) }}" class="form-control text-right" id="pricing" placeholder="Harga" required>
                 </div>
               </div>
-              <div class="col-md-6 mb-5">
+              <div class="col-md-4 mb-3">
                 <label for="price">Uang Koin</label>
                 <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">Rp </span>
                   </div>
-                  <input name="shiftendcoin" value="{{ old('shiftendcoin', $data->shiftendcoin) }}" class="form-control rupiah" id="pricing" placeholder="Harga">
+                  <input type="number" name="shiftendcoin" value="{{ old('shiftendcoin', $data->shiftendcoin) }}" class="form-control text-right" id="pricing" placeholder="Harga">
                 </div>
               </div> 
-              <div class="col-md-6 mb-5">
+              <div class="col-md-12 mb-3">
                 <label for="detail">Catatan</label>
                 <textarea name="shiftenddetail" rows="3" class="form-control" id="detail" placeholder="Catatan" >{{ old('shiftenddetail', $data->shiftenddetail) }}</textarea>
               </div>            
@@ -73,6 +91,7 @@
 <script>
   
   $(document).ready(function (){
+    $('[type=number]').setupMask(0);
     let f1 = flatpickr($('#get'), {
     altinput: true,
     altformat: "Y-m-d",

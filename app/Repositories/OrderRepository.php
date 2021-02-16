@@ -133,7 +133,8 @@ class OrderRepository
           'orderpaymentmethod',
           'ordervoidedat',
           'ordervoidreason',
-          'ordervoidedby'
+          'ordervoidedby',
+          DB::raw("CASE WHEN orders.orderstatus = 'PROCEED' THEN 'Diproses' WHEN orders.orderstatus = 'COMPLETED' THEN 'Selesai' WHEN orders.orderstatus = 'PAID' THEN 'Lunas' WHEN orders.orderstatus = 'VOIDED' THEN 'Batal' WHEN orders.orderstatus = 'ADDITIONAL' THEN 'Proses Tambah' END as orderstatuscase")
         )->first();
       if($data == null){
         $respon['status'] = 'error';
@@ -547,6 +548,10 @@ class OrderRepository
       ->where('id', $id)
       ->first();
 
+    $datasub = OrderDetail::where('odactive', '1')->where('odorderid', $id);
+
+    $otype = Order::where('orderactive', '1')->where('id', $id)->where('ordertype', 'TAKEAWAY')->first();
+
     $cekDelete = false;
     if ($data != null){
       $data->update([
@@ -554,9 +559,18 @@ class OrderRepository
         'orderpaidprice' => $inputs['orderpaidprice'],
         'orderstatus' => 'PAID',
         'orderpaid' => '1',
+        'orderpaidby' => $loginid,
+        'orderpaidat' => now()->toDateTimeString(),
         'ordermodifiedby' => $loginid,
         'ordermodifiedat' => now()->toDateTimeString()
-      ]);       
+      ]);
+      if ($otype != null){
+        $datasub->update([
+          'oddelivered' => '1',
+          'odmodifiedat' => now()->toDateTimeString(),
+          'odmodifiedby' => $loginid
+        ]);
+      }       
       $cekDelete = true;
       $respon['status'] = 'success';
       array_push($respon['messages'], 'Pesanan Dibayar');

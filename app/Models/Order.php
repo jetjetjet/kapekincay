@@ -24,6 +24,8 @@ class Order extends Model
 		'orderpaid',
 		'orderpaidprice',
 		'orderpaidremark',
+		'orderpaidby',
+		'orderpaidat',
 		'orderactive',
 		'ordervoid',
 		'ordervoidedby',

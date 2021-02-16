@@ -28,7 +28,8 @@ class CreateOrdersTable extends Migration
             $table->boolean('orderpaid')->nullable();
             $table->decimal('orderpaidprice',16,0)->nullable();
             $table->string('orderpaidremark')->nullable();
-
+            $table->bigInteger('orderpaidby')->nullable();
+            $table->dateTime('orderpaidat')->nullable();
             $table->boolean('orderactive');
             $table->boolean('ordervoid')->nullable();
             $table->integer('ordervoidedby')->nullable();

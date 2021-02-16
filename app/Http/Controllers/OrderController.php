@@ -140,6 +140,9 @@ class OrderController extends Controller
     $inputs = $request->all();
 
 		$results = OrderRepository::paid($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
-		return response()->json($results);
+
+		$request->session()->flash($results['status'], $results['messages']);
+
+		return redirect('/order/meja/view');
 	}
 }
