@@ -8,7 +8,7 @@
     }
     .cards tbody tr {
       float: left;
-      width: 18rem;
+      width: 14rem;
       margin: 0.5rem;
       border: 0.0625rem solid rgba(0, 0, 0, .125);
       border-radius: .25rem;
@@ -88,7 +88,7 @@
           ordering: true,
           pageLength: 5,
           dom: 
-            '<"row"<"col-md-12"<"row"<"col-md-6"B><"col-md-6"f> > >' +
+            '<"row"<"col-md-12"<"row"<"col-md-6"B> > >' +
             '<"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
           buttons: {
             buttons: [{ 

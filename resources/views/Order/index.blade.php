@@ -18,7 +18,6 @@
           <tr>
             <th>No.Invoice</th>
             <th>No.meja</th>
-            <th>pelanggan</th>
             <th>Tipe pesanan</th>
             <th>tanggal</th>
             <th>total</th>
@@ -32,7 +31,6 @@
           <tr>
           <th>No.Invoice</th>
             <th>No.Meja</th>
-            <th>Pelanggan</th>
             <th>Tipe Pesanan</th>
             <th>Tanggal</th>
             <th>Total</th>
@@ -53,7 +51,7 @@
           url: "{{ url('order/index/grid') }}",
           dataSrc: ''
       },
-        dom: '<"row"<"col-md-12"<"row"<"col-md-6"B><"col-md-6"f> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
+        dom: '<"row"<"col-md-12"<"row"<"col-md-1"f> > ><"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
         buttons: {
             buttons: [{ 
               text: "Tambah Baru",
@@ -82,10 +80,6 @@
           },
           { 
               data: 'orderboardid',
-              searchText: true
-          },
-          { 
-              data: 'ordercustname',
               searchText: true
           },
           { 
