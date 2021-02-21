@@ -18,8 +18,9 @@
           <tr>
             <th>Shift</th>
             <th>Karyawan</th>
-            <th>Tanggal Buka</th>
-            <th>Tanggal Tutup</th>
+            <th>Tanggal</th>
+            <th>Jam buka</th>
+            <th>Jam tutup</th>
             <th>Catatan</th>
             <th class="no-content" style="width:100px"></th>
           </tr>
@@ -30,8 +31,9 @@
           <tr>
             <th>Shift</th>
             <th>Karyawan</th>
-            <th>Tanggal Buka</th>
-            <th>Tanggal Tutup</th>
+            <th>Tanggal</th>
+            <th>Jam Buka</th>
+            <th>Jam Tutup</th>
             <th>Catatan</th>
             <th></th>
           </tr>
@@ -86,11 +88,15 @@
             searchText: true
           },
           { 
-            data: 'shiftstart',
+            data: 'shiftdate',
             searchText: true
           },
           { 
-              data: 'shiftclose',
+              data: 'shiftsttime',
+              searchText: true
+          },
+          { 
+              data: 'shiftcltime',
               searchText: true
           },
           { 

@@ -11,7 +11,7 @@ class ShiftRepository
   {
     return Shift::where('shiftactive', '1')
     ->join('users', 'shifts.shiftuserid', '=', 'users.id')
-    ->select('shifts.id','username','shiftindex', 'shiftstart', 'shiftclose', DB::raw('left(shiftenddetail, 15) as shiftenddetail'), DB::raw($perms['save']), DB::raw($perms['delete']), DB::raw($perms['close']), DB::raw($perms['view']))
+    ->select('shifts.id','username','shiftindex', DB::raw("to_char(shiftstart, 'DD-MM-YYYY') as shiftdate"), DB::raw("to_char(shiftstart, 'HH24:MI:SS') as shiftsttime"), DB::raw("to_char(shiftclose, 'HH24:MI:SS') as shiftcltime"), DB::raw('left(shiftenddetail, 15) as shiftenddetail'), DB::raw($perms['save']), DB::raw($perms['delete']), DB::raw($perms['close']), DB::raw($perms['view']))
     ->orderBy('shiftstart', 'DESC')
     ->orderBy('shiftindex', 'ASC')
     ->get();

@@ -7,6 +7,7 @@ use App\Http\Controllers\BoardController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\SettingController;
@@ -32,7 +33,14 @@ Route::get('/order-grid/bungkus', [ OrderController::class, 'orderBungkus' ]);
 Route::group(array('middleware' => 'auth'), function ()
 {
   Route::get('/', [DashboardController::class, 'index']);
- 
+
+  Route::get('/pengeluaran', [ExpenseController::class, 'index'])->middleware('can:pengeluaran_lihat');
+  Route::get('/pengeluaran/grid', [ExpenseController::class, 'getLists'])->middleware('can:pengeluaran_lihat');
+  Route::get('/pengeluaran/detail/{id?}', [ExpenseController::class, 'getById'])->middleware('can:pengeluaran_lihat', 'can:pengeluaran_simpan');
+  Route::post('/pengeluaran/simpan', [ExpenseController::class, 'save'])->middleware('can:pengeluaran_simpan');
+  Route::post('/pengeluaran/hapus/{id}', [ExpenseController::class, 'deleteById'])->middleware('can:pengeluaran_hapus');
+  Route::post('/pengeluaran/proses/{id}', [ExpenseController::class, 'proceedById'])->middleware('can:pengeluaran_proses');
+
   Route::get('/jabatan', [RoleController::class, 'index'])->middleware('can:jabatan_lihat');
   Route::get('/jabatan/grid', [RoleController::class, 'getLists'])->middleware('can:jabatan_lihat');
   Route::get('/jabatan/detail/{id?}', [RoleController::class, 'getById'])->middleware('can:jabatan_lihat', 'can:jabatan_simpan');

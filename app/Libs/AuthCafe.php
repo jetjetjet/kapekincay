@@ -35,6 +35,11 @@ class AuthCafe
     'pengaturan_lihat',
     'pengaturan_edit',
 
+    'pengeluaran_lihat',
+    'pengeluaran_simpan',
+    'pengeluaran_hapus',
+    'pengeluaran_proses',
+
     'shift_lihat',
     'shift_simpan',
     'shift_tutup',

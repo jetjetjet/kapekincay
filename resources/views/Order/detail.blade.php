@@ -21,13 +21,15 @@
                 <h4>Nomor Pesanan : <b>{{$data->orderinvoice}}</b></h4>
               </div>
               <div class='col-md-12'>
+              @if($data->ordertype == 'DINEIN')
               <h4>Tipe Pesanan : {{ $data->ordertypetext }}</h4>
+              @else
+              <h4>Tipe Pesanan : <b style="color:#1b55e2">Bungkus</b> </h4>
+              @endif
               </div>
               <div class='col-md-12 mb-2'>
                 @if($data->ordertype == 'DINEIN')
                 <h4 style="color:#1b55e2"><b>{{$data->orderboardtext}}</b></h4>
-                @else
-                <h4 style="color:#1b55e2"><b>Dibawa Pulang</b></h4>
                 @endif
               </div>
               <div class="col-md-12">
@@ -106,7 +108,7 @@
       var pay = $('#bayar').val();
       var change = Number(pay) - Number(price)
       if(Number(pay) >= Number(price)){
-        $("#kembalian").html('Kembalian : <b>'+change+'</b>');
+        $("#kembalian").html('Kembalian : <b>'+formatter.format(change)+'</b>');
         $('#prosesOrder').removeAttr('disabled');
       } else {
         $('#kembalian').html('Kembalian : <b>0</b>');
