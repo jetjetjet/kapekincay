@@ -9,6 +9,7 @@
   <link href="{{ url('/') }}/plugins/flatpickr/custom-flatpickr.css" rel="stylesheet" type="text/css">
   <link href="{{ url('/') }}/assets/css/dashboard/dash_2.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/select2/select2.min.css">
+  <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/assets/css/forms/theme-checkbox-radio.css">
   <link href="{{ url('/') }}/plugins/file-upload/file-upload-with-preview.min.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/assets/css/forms/switches.css">
@@ -92,8 +93,5 @@
   <script src="{{ url('/') }}/assets/js/ie11fix/fn.fix-padStart.js"></script>
   <script src="{{ url('/') }}/plugins/editors/quill/quill.js"></script>
   <script src="{{ url('/') }}/assets/js/apps/todoList.js"></script>
-  <script>
-    numberMask();
-  </script>
   @yield('js-form')
 @endsection

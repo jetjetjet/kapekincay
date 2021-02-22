@@ -309,6 +309,7 @@ function inputSearch(inputId, urlSearch, width, callBack)
 {
   let input = $(inputId);
   input.select2({
+    theme: 'bootstrap',
     placeholder: 'Cari...',
     width: width,
     ajax: {
@@ -486,4 +487,94 @@ $.fn.setupMask = function (precision){
       }
     }
   });
+}
+
+function showPopupForm($btn, options, title, $popup, postUrl, getPostDataFn, successCallbackFn, failCallbackFn){
+  var content = $('<form></form>').append($popup.html());
+  options.noClickOutside = true;
+  var modal = showModal(title, content, options, function (e)
+  {
+    var $form = e.modalBody.find('form');
+    // console.log($form)
+    // if (!$form.valid()) return;
+
+    var url = typeof postUrl === 'function' ? postUrl($form) : postUrl,
+      postData = getPostDataFn($form),
+      actualPostData = Object.assign({}, postData);
+    delete actualPostData.tempData;
+
+    $.post(url, actualPostData, function (data){
+      $btn.prop('disabled', false);
+      // Closes current modal.
+      e.close();
+
+      if (!data) return;
+      if (!data.status == 'success'){
+        if (failCallbackFn){
+          data.previousPostUrl = url;
+          data.postData = postData;
+          failCallbackFn(data);
+        } else {
+          console.log('e',data);
+        }
+      } else {
+        successCallbackFn(data);
+      }
+    });
+  });
+  return modal;
+}
+
+function showModal(title, content, options, callback){
+  $modal = cloneModal($('#cafeModal'));
+  $modal.modal({
+    show: false,
+    backdrop: options.noClickOutside ? 'static' : true,
+    keyboard: options.noClickOutside ? false : true
+  });
+  // Draws text.
+  var $modalTitle = $modal.find('.modal-title');
+  $modalTitle.html(title);
+  var $modalBody = $modal.find('.modal-body');
+  $modalBody.html(content);
+  $modal.find('.modal-action-cancel').removeClass('d-none');
+  $actionBtn = $modal.find('.modal-action-yes');
+  if (options.caption){
+    $actionBtn.text(options.caption);
+  }
+
+  $actionBtn
+    .removeClass('d-none')
+    .addClass('btn-' + ((typeof options === 'object' ? options.btnType : options) || 'primary'));
+  if (callback){
+    $modal.find('.modal-action-yes').click(function (){
+      callback({ 
+        confirmBtn: $(this), 
+        modalTitle: $modalTitle, 
+        modalBody: $modalBody,
+        options: options,
+        close: function (){
+          $modal.modal('hide');
+          $('#uiModalInstance').remove();
+          $('.modal-backdrop').remove();
+        }
+      });
+      if (!options || typeof options !== 'object' || !options.keepOpen){
+        $modal.modal('hide');
+      }
+    });
+  }
+
+  $modal.modal('show');
+  if (options.noAutoFocus){
+    setTimeout(function (){
+      $modalBody.find('input[type=text]:visible:not([readonly]):not([disabled]),select:visible:not([disabled]),textarea:visible:not([readonly])').first().focus();
+    }, 500);
+  }
+
+  return {
+    modalTitle: $modalTitle, 
+    modalBody: $modalBody,
+    actionBtn: $actionBtn
+  };
 }

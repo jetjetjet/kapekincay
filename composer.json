@@ -16,6 +16,7 @@
         "intervention/image": "^2.5",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
+        "mike42/escpos-php": "^3.0",
         "pusher/pusher-php-server": "~4.0",
         "spatie/laravel-permission": "^3.18",
         "yajra/laravel-datatables-oracle": "~9.0"

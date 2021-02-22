@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;use Validator;
 
 use App\Libs\Helpers;
+use App\Libs\Cetak;
 use App\Http\Controllers\ShiftController;
 use App\Repositories\OrderRepository;
 use App\Repositories\MenuRepository;
 use App\Repositories\ShiftRepository;
 use App\Events\OrderProceed;
+use App\Events\BoardEvent;
 use Auth;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -85,6 +87,7 @@ class OrderController extends Controller
 		$data = OrderRepository::orderBungkus();
 		return DataTables::of($data)->make(true);
 	}
+
   public function save(Request $request, $id = null)
   {
     $respon = Helpers::$responses;
@@ -92,8 +95,10 @@ class OrderController extends Controller
     $inputs = $request->all();
     $results = OrderRepository::save($respon, $id, $inputs, Auth::user()->getAuthIdentifier());
 
-    if($results['status'] == "success")
+    if($results['status'] == "success"){
       event(new OrderProceed('ok'));
+      event(new BoardEvent('ok'));
+		}
 
     $request->session()->flash($results['status'], $results['messages']);
 
@@ -120,6 +125,9 @@ class OrderController extends Controller
 		$respon = Helpers::$responses;
 
 		$results = OrderRepository::delete($respon, $id, Auth::user()->getAuthIdentifier());
+		if($results['status'] == "success")
+			event(new BoardEvent('ok'));
+
 		return response()->json($results);
 	}
 
@@ -130,6 +138,9 @@ class OrderController extends Controller
     $inputs = $request->all();
 
 		$results = OrderRepository::void($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
+		if($results['status'] == "success")
+			event(new BoardEvent('ok'));
+
 		return response()->json($results);
 	}
   
@@ -140,9 +151,19 @@ class OrderController extends Controller
     $inputs = $request->all();
 
 		$results = OrderRepository::paid($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
+		if($results['status'] == "success"){
+			event(new BoardEvent('ok'));
+			event(new OrderProceed('ok'));
+		}
 
 		$request->session()->flash($results['status'], $results['messages']);
 
 		return redirect('/order/meja/view');
+	}
+
+	public function orderReceipt($idOrder)
+	{
+		$data = OrderRepository::getOrderReceipt($idOrder);
+		$cetak = Cetak::print($data);
 	}
 }

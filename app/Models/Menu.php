@@ -9,6 +9,7 @@ class Menu extends Model
   use hasFactory;
   public $timestamps = false;
 	protected $fillable = [
+    'menumcid',
     'menuname',
     'menutype',
     'menuimg',

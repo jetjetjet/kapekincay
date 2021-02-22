@@ -16,7 +16,7 @@ class AuditTrail extends Model
         'mode',
         'status',
         'messages',
-        'created_at',
-        'created_by'
+        'createdat',
+        'createdby'
     ];
 }

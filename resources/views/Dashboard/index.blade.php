@@ -273,8 +273,7 @@
 			</div>
 		@endif
 		
-		@if(Perm::can(['shift_lihat']))
-		<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+		<!-- <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
 			<div class="widget widget-activity-three">
 				<div class="widget-content">
 					<div class="w-info">
@@ -298,8 +297,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
-		@endif
+		</div> -->
 	</div>
 @endsection
 

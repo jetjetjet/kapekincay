@@ -66,7 +66,10 @@ class BoardController extends Controller
 		$results = BoardRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
 		//cek
 		$request->session()->flash($results['status'], $results['messages']);
-		return redirect()->action([BoardController::class, 'getById'], ['id' => $results['id']]);
+		if($results['status'] == 'error')
+			return redirect()->back()->withInput($inputs);
+
+		return redirect()->action([BoardController::class, 'index']);
 	}
 
 	public function deleteById(Request $request, $id)

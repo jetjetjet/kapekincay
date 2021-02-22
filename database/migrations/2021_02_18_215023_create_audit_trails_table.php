@@ -20,8 +20,8 @@ class CreateAuditTrailsTable extends Migration
             $table->string('mode')->nullable();
             $table->string('status');
             $table->string('messages')->nullable();
-            $table->timestamp('created_at');
-            $table->integer('created_by');
+            $table->timestamp('createdat');
+            $table->integer('createdby');
         });
     }
 

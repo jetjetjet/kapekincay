@@ -77,11 +77,27 @@
 @endsection
 
 @section('js-order')
+  <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
   <script>
     $(document).ready(function (){
+      var pusher = new Pusher('631e0080537b4cc8a0c3', {
+        cluster: 'ap1'
+      });
+
+      var channel = pusher.subscribe('meja');
+      channel.bind('ch-meja', function(data) {
+        let msg = data
+        console.log(msg)
+        if(msg.message == "ok"){
+          grid.ajax.reload();
+          @if(Perm::can(['order_lihatBungkus']))
+            gridBungkus.ajax.reload();
+          @endif
+        }
+      });
       @if(Perm::can(['order_lihatBungkus']))
         let gridBungkus = $('#gridBungkus').DataTable({
-          ajax: "{{ url('order-grid/bungkus') }}",
+          ajax: "{{ url('order/grid/bungkus') }}",
           processing: true,
           serverSide: true,
           paging: true,

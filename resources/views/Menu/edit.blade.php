@@ -1,6 +1,17 @@
 @extends('Layout.layout-form')
 
 @section('breadcumb')
+<style>
+.input-group > .select2-container--bootstrap {
+	width: auto !important;
+	flex: 1 1 auto;
+}
+
+.input-group > .select2-container--bootstrap .select2-selection--single {
+	height: 100%;
+	line-height: inherit;
+}
+</style>
   <div class="title">
     <h3>Menu</h3>
   </div>
@@ -35,11 +46,24 @@
               </div>
               <div class="col-md-6 mb-2">
                 <label for="type">Kategori</label>
-                  <select class="form-control" id="type" name="menutype">
-                    <option value="Makanan" {{ old('menutype', $data->menutype) == 'Makanan' ? ' selected' : '' }}> Makanan</option>
-                    <option value="Minuman" {{ old('menutype', $data->menutype) == 'Minuman' ? ' selected' : '' }}> Minuman</option>
-                    <option value="Paket" {{ old('menutype', $data->menutype) == 'Paket' ? ' selected' : '' }}> Paket</option>
+                <select class="form-control" id="type" name="menutype">
+                  <option value="Makanan" {{ old('menutype', $data->menutype) == 'Makanan' ? ' selected' : '' }}> Makanan</option>
+                  <option value="Minuman" {{ old('menutype', $data->menutype) == 'Minuman' ? ' selected' : '' }}> Minuman</option>
+                  <option value="Paket" {{ old('menutype', $data->menutype) == 'Paket' ? ' selected' : '' }}> Paket</option>
+                </select>
+              </div>
+              <div class="col-md-6 mb-2">
+                <label for="cate">Kategori</label>
+                <div class="input-group">
+                  <select class="" id="menumcsearch" name="menumcid">
+                    @if($data->menumcid)
+                      <option value="{{$data->menumcid}}" selected="selected">{{$data->menumctext}}</option>
+                    @endif
                   </select>
+                  <div class="input-group-append" style="margin-bottom:auto">
+                    <button class="btn btn-info btn-flat" id="newCate" type="button">Tambah Baru</button>
+                  </div>
+                </div>
               </div>
               <div class="col-md-6 mb-2">
                 <label for="price">Harga</label>
@@ -47,7 +71,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">Rp </span>
                   </div>
-                  <input name="menuprice" value="{{ old('menuprice', $data->menuprice) }}" class="form-control rupiah" id="pricing" placeholder="Harga" required>
+                  <input name="menuprice" type="number" value="{{ old('menuprice', $data->menuprice) }}" class="form-control text-right" id="pricing" placeholder="Harga" required>
                 </div>
               </div>
               <div class="col-md-12 mb-2">
@@ -91,7 +115,7 @@
                   </label>
                 </div> 
                 <br>
-                <img src="{{ url('/').$data->menuimg}}"style="vertical-align:top"  class="imgrespo"  ></img>
+                <img src="{{ asset($data->menuimg) }}" style="vertical-align:top"  class="imgrespo"  ></img>
                 <input type="hidden" id="hidimg" name="hidimg" value="{{ old('menuimg', $data->menuimg) }}" />                
               </div>
               @endif
@@ -105,11 +129,51 @@
       </div>
     </div>
   </div>
+
+  <div id="popCate" class="d-none">
+    <div class="form-horizontal">
+      <div class="form-group required">
+        <label for="nama">Nama Kategori</label>
+        <input type="text" id="mcname" name="mcname" class="form-control" required>
+      </div>
+    </div>
+  </div>
 @endsection
+
 @section('js-form')
 <script>
-  
   $(document).ready(function (){
+    $('[type=number]').setupMask(0);
+
+    inputSearch('#menumcsearch', "{{ Url('/menu-category/search') }}", 'resolve', function(item) {
+      return {
+        text: item.text,
+        id: item.id
+      }
+    });
+
+    $('#menumcsearch').on('select2:select', function (e) {
+      $('#menumcsearch').attr('data-has-changed', '1');
+    });
+
+    $('#newCate').on('click',function(){
+      var modal = showPopupForm(
+        $(this),
+        { btnType: 'primary', keepOpen: true },
+        'Tambah Kategori Menu',
+        $('#popCate'),
+        '{{ url("menu-category/save") }}',
+        function ($form){
+            return {
+              mcname: $form.find('[name=mcname]').val()
+            };
+        },
+        //callback
+        function (data){
+          alert(data.msg)
+        });
+    });
+
     var firstUpload = new FileUploadWithPreview('myFirstImage')
     // Fetch all the forms we want to apply custom Bootstrap validation styles to
     let forms = document.getElementsByClassName('needs-validation');

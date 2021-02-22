@@ -60,43 +60,50 @@ class BoardRepository
   {
     $id = $inputs['id'] ?? 0;
     $number = $inputs['boardnumber'];
+    $floor = $inputs['boardfloor'];
 
-    $data = Board::where('boardactive', '1')
-      ->where(function($q) use($id, $number){
-        $q->where('id', $id)
-          ->orWhere('boardnumber', $number);
-     })->first();
-    try{
-      if ($data != null){
-        $data = $data->update([
-          'boardfloor' => $inputs['boardfloor'],
-          // 'boardspace' => $inputs['boardspace'],
-          'boardmodifiedat' => now()->toDateTimeString(),
-          'boardmodifiedby' => $loginid
-        ]);
-
-        $respon['status'] = 'success';
-        array_push($respon['messages'], 'Data Meja berhasil diubah.');
-        
-      } else {
-        $data = Board::create([
-          'boardnumber' => $inputs['boardnumber'],
-          'boardfloor' => $inputs['boardfloor'],
-          // 'boardspace' => $inputs['boardspace'],
-          'boardactive' => '1',
-          'boardcreatedat' => now()->toDateTimeString(),
-          'boardcreatedby' => $loginid
-        ]);
-
-        $respon['status'] = 'success';
-        array_push($respon['messages'], 'Data Meja baru berhasil ditambahkan.');
-      }
-    } catch(\Exception $e){
-      dd($e);
+    $cek = Board::where('boardactive', '1')
+      ->where('boardnumber', $number)
+      ->where('boardfloor', $floor)->first();
+    
+    if($cek != null){
       $respon['status'] = 'error';
-      array_push($respon['messages'], 'Error');
+      array_push($respon['messages'], 'Nomor meja dan lantai sudah ada pada sistem.');
+    } else {
+      $data = Board::where('boardactive', '1')->where('id', $id)->first();
+      try{
+        if ($data != null){
+          $data = $data->update([
+            'boardfloor' => $inputs['boardfloor'],
+            // 'boardspace' => $inputs['boardspace'],
+            'boardmodifiedat' => now()->toDateTimeString(),
+            'boardmodifiedby' => $loginid
+          ]);
+  
+          $respon['status'] = 'success';
+          array_push($respon['messages'], 'Data Meja berhasil diubah.');
+          
+        } else {
+          $data = Board::create([
+            'boardnumber' => $inputs['boardnumber'],
+            'boardfloor' => $inputs['boardfloor'],
+            // 'boardspace' => $inputs['boardspace'],
+            'boardactive' => '1',
+            'boardcreatedat' => now()->toDateTimeString(),
+            'boardcreatedby' => $loginid
+          ]);
+  
+          $respon['status'] = 'success';
+          array_push($respon['messages'], 'Data Meja baru berhasil ditambahkan.');
+        }
+      } catch(\Exception $e){
+        dd($e);
+        $respon['status'] = 'error';
+        array_push($respon['messages'], 'Error');
+      }
+      $respon['id'] = ($data->id ?? $inputs['id']) ?? null;
     }
-    $respon['id'] = ($data->id ?? $inputs['id']) ?? null;
+
     return $respon;
   }
 
