@@ -533,6 +533,7 @@ function showModal(title, content, options, callback){
     backdrop: options.noClickOutside ? 'static' : true,
     keyboard: options.noClickOutside ? false : true
   });
+  
   // Draws text.
   var $modalTitle = $modal.find('.modal-title');
   $modalTitle.html(title);
