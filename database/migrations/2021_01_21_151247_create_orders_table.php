@@ -20,7 +20,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('orderboardid')->nullable();
             $table->string('ordertype');
             $table->string('ordercustname')->nullable();
-            $table->string('orderdate');
+            $table->dateTime('orderdate');
             $table->decimal('orderprice',16,0);
             $table->string('orderstatus');
             $table->string('orderdetail')->nullable();
