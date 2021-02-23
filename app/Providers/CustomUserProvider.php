@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Repositories\AuditTrailRepository;
 
 use DB;
 
@@ -34,14 +35,21 @@ class CustomUserProvider implements UserProvider
 
     public function retrieveByCredentials(array $credentials)
     {
+        $result = [];
         $username =  $credentials['username'];
         $password =  $credentials['password'];
         $user = User:: //select('id', 'user_password as password', 'user_name as username', 'user_full_name as fullname')->
             where('username', $username)
             ->where('useractive', '1')
             ->orderBy('usercreatedat')->first();
-        if ($user === null || !Hash::check($password, $user['userpassword'])) return null;
+        if ($user === null || !Hash::check($password, $user['userpassword'])){
+            $result['status'] = 'error';
+            $audit = AuditTrailRepository::saveAuditTrail('/login', $result, 'Login', $user->id ?? 0);
+            return null;
+        };
         $user->permissions = self::cek($user->id);
+        $result['status'] = 'success';
+        $audit = AuditTrailRepository::saveAuditTrail('/login', $result, 'Login', $user->id ?? 0);
         return $user;
     }
 

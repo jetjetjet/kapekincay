@@ -28,11 +28,11 @@
             <div class="form-row">
               <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
               <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
-              <div class="col-md-12">
+              <div class="col-md-6">
                 <label for="number">Nomor Meja</label>
-                <input type="number" name="boardnumber" value="{{ old('boardnumber', $data->boardnumber) }}" class="form-control" id="number" placeholder="Nomor Meja" required {{ $data->id == null ? '' : 'readonly' }}>
+                <input type="number" name="boardnumber" value="{{ old('boardnumber', $data->boardnumber) }}" class="form-control text-right" id="number" placeholder="Nomor Meja" required {{ $data->id == null ? '' : 'readonly' }}>
               </div>
-              <div class="col-md-12">
+              <div class="col-md-6">
                   <label for="floor">Lantai</label>
                   <input type="number" name="boardfloor" value="{{ old('boardfloor', $data->boardfloor) }}" class="form-control text-right" id="floor" placeholder="Lantai" required>
               </div>

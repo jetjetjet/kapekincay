@@ -46,9 +46,6 @@
               <li class="nav-item">
                 <a class="nav-link" id="justify-right-pills-profile-tab" data-toggle="pill" href="#justify-right-pills-profile" role="tab" aria-controls="justify-right-pills-profile" aria-selected="false">Minuman</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" id="justify-right-pills-profile-paket" data-toggle="pill" href="#justify-right-pills-paket" role="tab" aria-controls="justify-right-pills-profile" aria-selected="false">Paket</a>
-              </li>
             </ul>
             <div class="tab-content" id="justify-right-pills-tabContent">
               <div class="tab-pane fade show active" id="justify-right-pills-home" role="tabpanel" aria-labelledby="justify-right-pills-home-tab">
@@ -57,7 +54,7 @@
                   <div>
                     <a class="{{$mkn['menuavaible'] != true ? 'card' : 'menuCard'}}" data-id="{{$mkn['id']}}" data-menutext="{{$mkn['menuname']}}" data-price="{{$mkn['menuprice']}}">
                       <div class="category-tile">
-                        <img width="120" height="120" src="{{ url('/').$mkn->menuimg}}" alt="Lunch">
+                        <img width="120" height="120" src="{{ isset($mkn->menuimg) ? asset($mkn->menuimg) : asset('default') }}" alt="Lunch">
                         <span>{{$mkn['menuname']}} {{$mkn['menuavaible'] != true ? " - Stok Kosong" : ""}}</span>
                       </div>
                     </a>
@@ -71,26 +68,12 @@
                     <div>
                       <a class="{{$mkn['menuavaible'] != true ? 'card' : 'menuCard'}}" data-id="{{$mkn['id']}}" data-menutext="{{$mkn['menuname']}}" data-price="{{$mkn['menuprice']}}">
                         <div class="category-tile">
-                          <img width="120" height="120" src="{{ url('/').$mkn->menuimg}}" alt="Lunch">
+                          <img width="120" height="120" src="{{ isset($mkn->menuimg) ? asset($mkn->menuimg) : asset('default') }}" alt="Lunch">
                           <span>{{$mkn['menuname']}} {{$mkn['menuavaible'] != true ? " - Stok Kosong" : ""}}</span>
                         </div>
                       </a>
                     </div>
                   @endforeach
-                </section>
-              </div>
-              <div class="tab-pane fade" id="justify-right-pills-paket" role="tabpanel" aria-labelledby="justify-right-pills-paket">
-              <section class="row">
-                @foreach($menu['Paket'] as $mkn)
-                  <div>
-                    <a class="{{$mkn['menuavaible'] != true ? 'card' : 'menuCard'}}" data-id="{{$mkn['id']}}" data-menutext="{{$mkn['menuname']}}" data-price="{{$mkn['menuprice']}}">
-                      <div class="category-tile">
-                        <img width="120" height="120" src="{{ url('/').$mkn->menuimg}}" alt="Lunch">
-                        <span>{{$mkn['menuname']}} {{$mkn['menuavaible'] != true ? " - Stok Kosong" : ""}}</span>
-                      </div>
-                    </a>
-                  </div>
-                @endforeach
                 </section>
               </div>
             </div>
@@ -181,6 +164,7 @@
             </div>
             <div class="float-right">
               <a href="{{url('/order/meja/view')}}" type="button" class="btn btn-warning mt-2">Kembali</a>
+              <a href="" type="button" id="print" class="btn btn-success mt-2">Cetak</a>
               @if(Perm::can(['order_simpan']))
                 <a href="" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Meja</a>
                 <a type="button" id="prosesOrder" class="btn btn-primary mt-2">Simpan</a>
@@ -290,6 +274,17 @@
       $('[name="orderboardid"]').val(urlMeja);
       $('[name="orderboardtext"]').val(urlMejaTeks);
     }
+
+    //Cetak
+    $('#print').on('click', function (e) {
+      e.preventDefault();
+      let url = "{{url('/order/cetak/struk') ."/" .$data->id }}";
+      $.get(url, function (data) {
+          window.location.href = data;  // main action
+      }).fail(function () {
+          alert("ajax error");
+      })
+    });
 
     //VOID
     $('#void').on('click', function (e) {

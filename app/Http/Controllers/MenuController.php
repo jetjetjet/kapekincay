@@ -45,18 +45,11 @@ class MenuController extends Controller
 	public function save(Request $request)
 	{
 		$respon = Helpers::$responses;
-	// 	if($request['menuimg'] == !null){
-	// 	$rules = array(
-	// 		'menuname' => 'required',
-	// 		'menuimg' => 'nullable|mimes:jpeg,png,jpg,gif,svg|max:2048',
-	// 		'menuprice' => 'required|integer'
-	// 	);
-	// }else{
 		$rules = array(
 			'menuname' => 'required',
 			'menuprice' => 'required|integer'
 		);
-	// }
+
 		$inputs = $request->all();
 		$validator = validator::make($inputs, $rules);
 
@@ -64,25 +57,29 @@ class MenuController extends Controller
 			return redirect()->back()->withErrors($validator)->withInput($inputs);
 		}
 	
-		// $imageName = time().'.'.$request['menuimg']->extension();     
-		// $inputs['menuimg']->move(public_path('images'), $imageName);
-		// $inputs['menuimgpath']='/images/'.$imageName;
 		if($request['id'] == null){
 			$idimg = $request['getid'];
 		}else{
 		$idimg = $request['id'];
 		}
-	
 		if($request['menuimg'] == !null){
-			$imageName = $idimg.'.'.$request['menuimg']->extension();
-			$img = Image::make($request->file('menuimg')->getRealPath());
+			$file = $request['menuimg'];
+			$imageName = time()."_".$file->getClientOriginalName();
+			$path = '/app/public/images/';
+			
+			if(!File::exists(storage_path().$path)) {
+				File::makeDirectory(storage_path().$path, 0755, true, true);
+			}
+
+			$img = Image::make($file->getRealPath());
 			$img->resize(400, 400, function ($constraint) {
-					$constraint->aspectRatio();
-			})->save(public_path('images').'/'.$imageName);
-		  $inputs['menuimgpath'] = '/images/'.$imageName;
+				$constraint->aspectRatio();
+			})->save(storage_path().$path.$imageName);
+
+		  $inputs['menuimgpath'] = '/storage/images/' . $imageName;
 		} elseif($request['delimg'] == '1'){
 			$inputs['menuimgpath'] = null ;
-			$delimgpath = public_path().$request['hidimg'];
+			$delimgpath = storage_path().'/app/public/images/'.$request['hidimg'];
 			if(File::exists($delimgpath)) {
 				File::delete($delimgpath);
 			}

@@ -66,7 +66,6 @@ class OrderRepository
         'orderdate',
         'orderprice')
       ->get();
-
     return $dataOrder;
   }
 
@@ -579,5 +578,40 @@ class OrderRepository
     array_push($respon['messages'], 'Kesalahan');
     }
     return $respon;
+  }
+
+  public static function getOrderReceipt($id)
+  {
+    $dataOrder = new \StdClass();
+    $order = Order::join('boards', 'boards.id', 'orderboardid')
+      ->where('orderactive', '1')
+      ->where('orders.id', $id)
+      ->select(
+        'orderinvoice',
+        'orderprice',
+        'orderdate',
+        DB::raw("case when ordertype = 'DINEIN' then 'Makan Ditempat' else 'Bungkus' end as ordertype"),
+        DB::raw("boardnumber || ' - Lantai ' || boardfloor as boardnumber")
+      )->first();
+    if($order != null){
+      $dataOrder->invoice = $order->orderinvoice;
+      $dataOrder->price = $order->orderprice;
+      $dataOrder->date = Carbon::parse($order->orderdate)->format('d/m/Y H:i') ?? null;
+      $dataOrder->orderType = $order->ordertype;
+      $dataOrder->noTable = $order->boardnumber;
+      $dataOrder->detail = Array();
+
+      $subs = self::getSubOrder($id);
+      foreach($subs as $sub){
+        $temp = new \StdClass();
+        $temp->text = $sub->odmenutext;
+        $temp->qty = $sub->odqty;
+        $temp->price = $sub->odprice;
+        $temp->totalPrice = $sub->odtotalprice;
+  
+        array_push($dataOrder->detail, $temp);
+      }
+    }
+    return $dataOrder;
   }
 }
