@@ -15,6 +15,7 @@ class AuthCafe
     'jabatan_hapus',
 
     'laporan_lihat',
+    'log_lihat',
 
     'meja_lihat',
     'meja_simpan',

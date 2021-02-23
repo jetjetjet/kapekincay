@@ -310,6 +310,7 @@ function inputSearch(inputId, urlSearch, width, callBack)
   let input = $(inputId);
   input.select2({
     theme: 'bootstrap',
+    allowClear: true,
     placeholder: 'Cari...',
     width: width,
     ajax: {

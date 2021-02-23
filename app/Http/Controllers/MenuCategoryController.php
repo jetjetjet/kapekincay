@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\MenuCategoryRepository;
+use App\Repositories\AuditTrailRepository;
 use App\Libs\Helpers;
 use Auth;
 
@@ -13,7 +14,10 @@ class MenuCategoryController extends Controller
 	{
 		$respon = Helpers::$responses;
 		$inputs = $request->all();
-		$results = MenuCategoryRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
+
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = MenuCategoryRepository::save($respon, $inputs, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Simpan Menu Kategori', $loginid);
 		
 		return response()->json($results, $results['state_code']);
 	}
@@ -21,7 +25,9 @@ class MenuCategoryController extends Controller
 	public function delete(Request $request, $id)
 	{
 		$respon = Helpers::$responses;
-		$results = MenuCategoryRepository::delete($respon, $id, Auth::user()->getAuthIdentifier());
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = MenuCategoryRepository::delete($respon, $id, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Hapus Menu Kategori', $loginid);
 		
 		return response()->json($results, $results['state_code']);
 	}

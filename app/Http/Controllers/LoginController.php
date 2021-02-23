@@ -47,6 +47,7 @@ class LoginController extends Controller
 		};
 		
 		$request->session()->put('username', Auth::user()->getUserName());
+		$request->session()->put('userid', Auth::user()->getAuthIdentifier());
 		return redirect()->intended(); 
 	}
 		

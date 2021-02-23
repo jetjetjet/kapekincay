@@ -10,7 +10,11 @@
       opacity: 1;
     }
     .dtl-order td, .dtl-order th {
-        padding: 0;
+      padding: 0;
+    }
+
+    .text-div {
+      border-bottom: 2px dotted #999
     }
   </style>
   <div class="title">
@@ -48,9 +52,11 @@
               </li>
             </ul>
             <div class="tab-content" id="justify-right-pills-tabContent">
-              <div class="tab-pane fade show active" id="justify-right-pills-home" role="tabpanel" aria-labelledby="justify-right-pills-home-tab">
-                <section class="row">
-                @foreach($menu['Makanan'] as $mkn)
+              <div class="tab-pane fade show active" id="justify-right-pills-home" style="padding:0 0 0 0" role="tabpanel" aria-labelledby="justify-right-pills-home-tab">
+                @foreach($menu['Makanan'] as $cat)
+                  <div class="text-div"><h4><span>{{$cat['nama']}}</span></h4></div>
+                  <section class="row">
+                  @foreach($cat['pilihan'] as $mkn)
                   <div>
                     <a class="{{$mkn['menuavaible'] != true ? 'card' : 'menuCard'}}" data-id="{{$mkn['id']}}" data-menutext="{{$mkn['menuname']}}" data-price="{{$mkn['menuprice']}}">
                       <div class="category-tile">
@@ -59,22 +65,26 @@
                       </div>
                     </a>
                   </div>
-                @endforeach
-                </section>
-              </div>
-              <div class="tab-pane fade" id="justify-right-pills-profile" role="tabpanel" aria-labelledby="justify-right-pills-profile-tab">
-                <section class="row">
-                  @foreach($menu['Minuman'] as $mkn)
-                    <div>
-                      <a class="{{$mkn['menuavaible'] != true ? 'card' : 'menuCard'}}" data-id="{{$mkn['id']}}" data-menutext="{{$mkn['menuname']}}" data-price="{{$mkn['menuprice']}}">
-                        <div class="category-tile">
-                          <img width="120" height="120" src="{{ isset($mkn->menuimg) ? asset($mkn->menuimg) : asset('default') }}" alt="Lunch">
-                          <span>{{$mkn['menuname']}} {{$mkn['menuavaible'] != true ? " - Stok Kosong" : ""}}</span>
-                        </div>
-                      </a>
-                    </div>
                   @endforeach
                 </section>
+                @endforeach
+              </div>
+              <div class="tab-pane fade" id="justify-right-pills-profile" role="tabpanel" aria-labelledby="justify-right-pills-profile-tab">
+                @foreach($menu['Minuman'] as $min)
+                  <div class="text-div"><h4><span>{{$cat['nama']}}</span></h4></div>
+                  <section class="row">
+                  @foreach($min['pilihan'] as $mkn)
+                  <div>
+                    <a class="{{$mkn['menuavaible'] != true ? 'card' : 'menuCard'}}" data-id="{{$mkn['id']}}" data-menutext="{{$mkn['menuname']}}" data-price="{{$mkn['menuprice']}}">
+                      <div class="category-tile">
+                        <img width="120" height="120" src="{{ isset($mkn->menuimg) ? asset($mkn->menuimg) : asset('default') }}" alt="Lunch">
+                        <span>{{$mkn['menuname']}} {{$mkn['menuavaible'] != true ? " - Stok Kosong" : ""}}</span>
+                      </div>
+                    </a>
+                  </div>
+                  @endforeach
+                </section>
+                @endforeach
               </div>
             </div>
           </div>

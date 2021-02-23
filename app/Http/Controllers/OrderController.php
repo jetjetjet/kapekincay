@@ -9,6 +9,7 @@ use App\Libs\Cetak;
 use App\Http\Controllers\ShiftController;
 use App\Repositories\OrderRepository;
 use App\Repositories\MenuRepository;
+use App\Repositories\AuditTrailRepository;
 use App\Repositories\ShiftRepository;
 use App\Events\OrderProceed;
 use App\Events\BoardEvent;
@@ -93,7 +94,9 @@ class OrderController extends Controller
     $respon = Helpers::$responses;
     
     $inputs = $request->all();
-    $results = OrderRepository::save($respon, $id, $inputs, Auth::user()->getAuthIdentifier());
+		$loginid = Auth::user()->getAuthIdentifier();
+    $results = OrderRepository::save($respon, $id, $inputs, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Buat Pesanan', $loginid);
 
     if($results['status'] == "success"){
       event(new OrderProceed('ok'));
@@ -124,7 +127,10 @@ class OrderController extends Controller
 	{
 		$respon = Helpers::$responses;
 
-		$results = OrderRepository::delete($respon, $id, Auth::user()->getAuthIdentifier());
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = OrderRepository::delete($respon, $id, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Hapus Pesanan', $loginid);
+
 		if($results['status'] == "success")
 			event(new BoardEvent('ok'));
 
@@ -137,7 +143,10 @@ class OrderController extends Controller
 
     $inputs = $request->all();
 
-		$results = OrderRepository::void($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = OrderRepository::void($respon, $id, $loginid, $inputs);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Batalkan Pesanan', $loginid);
+
 		if($results['status'] == "success")
 			event(new BoardEvent('ok'));
 
@@ -150,7 +159,10 @@ class OrderController extends Controller
 
     $inputs = $request->all();
 
-		$results = OrderRepository::paid($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = OrderRepository::paid($respon, $id, $loginid, $inputs);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Bayar Pesanan', $loginid);
+
 		if($results['status'] == "success"){
 			event(new BoardEvent('ok'));
 			event(new OrderProceed('ok'));

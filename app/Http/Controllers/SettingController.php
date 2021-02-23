@@ -9,6 +9,7 @@ use Validator;
 
 use App\Libs\Helpers;
 use App\Repositories\SettingRepository;
+use App\Repositories\AuditTrailRepository;
 use Auth;
 class SettingController extends Controller
 {
@@ -55,7 +56,9 @@ class SettingController extends Controller
 			return redirect()->back()->withErrors($validator)->withInput($inputs);
 		}
 
-		$results = SettingRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = SettingRepository::save($respon, $inputs, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Ubah Setting', $loginid);
 		//cek
 		$request->session()->flash($results['status'], $results['messages']);
 		return redirect()->action([SettingController::class, 'getById'], ['id' => $results['id']]);

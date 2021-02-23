@@ -8,6 +8,7 @@ use Validator;
 use App\Libs\Helpers;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\AuditTrailRepository;
 use Auth;
 
 class RoleController extends Controller
@@ -55,7 +56,9 @@ class RoleController extends Controller
 			return redirect()->back()->withErrors($validator)->withInput($inputs);
 		}
 
-    $results = RoleRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
+		$loginid = Auth::user()->getAuthIdentifier();
+    $results = RoleRepository::save($respon, $inputs, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Simpan Jabatan', $loginid);
 		//cek
 		$request->session()->flash($results['status'], $results['messages']);
 		return redirect()->action([RoleController::class, 'getById'], ['id' => $results['roleid']]);
@@ -65,7 +68,9 @@ class RoleController extends Controller
 	{
 		$respon = Helpers::$responses;
 
-		$results = RoleRepository::delete($respon, $id, Auth::user()->getAuthIdentifier());
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = RoleRepository::delete($respon, $id, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Hapus Jabatan', $loginid);
 		return response()->json($results);
 	}
 }

@@ -40,30 +40,9 @@
               <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
               <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
               <input type="hidden" id="idd" name="getid" value="{{ old('getId', $data->getId) }}" />
-              <div class="col-md-12 mb-2">
+              <div class="col-md-6 mb-2">
                 <label for="name">Nama</label>
                 <input type="text" name="menuname" value="{{ old('menuname', $data->menuname) }}" class="form-control" id="name" placeholder="Nama" required>
-              </div>
-              <div class="col-md-6 mb-2">
-                <label for="type">Kategori</label>
-                <select class="form-control" id="type" name="menutype">
-                  <option value="Makanan" {{ old('menutype', $data->menutype) == 'Makanan' ? ' selected' : '' }}> Makanan</option>
-                  <option value="Minuman" {{ old('menutype', $data->menutype) == 'Minuman' ? ' selected' : '' }}> Minuman</option>
-                  <option value="Paket" {{ old('menutype', $data->menutype) == 'Paket' ? ' selected' : '' }}> Paket</option>
-                </select>
-              </div>
-              <div class="col-md-6 mb-2">
-                <label for="cate">Kategori</label>
-                <div class="input-group">
-                  <select class="" id="menumcsearch" name="menumcid">
-                    @if($data->menumcid)
-                      <option value="{{$data->menumcid}}" selected="selected">{{$data->menumctext}}</option>
-                    @endif
-                  </select>
-                  <div class="input-group-append" style="margin-bottom:auto">
-                    <button class="btn btn-info btn-flat" id="newCate" type="button">Tambah Baru</button>
-                  </div>
-                </div>
               </div>
               <div class="col-md-6 mb-2">
                 <label for="price">Harga</label>
@@ -74,24 +53,45 @@
                   <input name="menuprice" type="number" value="{{ old('menuprice', $data->menuprice) }}" class="form-control text-right" id="pricing" placeholder="Harga" required>
                 </div>
               </div>
-              <div class="col-md-12 mb-2">
-              <label>Status Menu(Kosong, Ada)</label>
-              <br>
-              @if(isset($data->menuavaible))
-              <label class="switch s-icons s-outline  s-outline-success  mb-4 mr-2">
-                <input type="checkbox" id="mav" name="menuavaible" {{ $data->menuavaible ? 'checked' : ''}}>
-                <span class="slider round"></span>
-                </label>
-              @elseif(empty($data->menuavaible))
-              <label class="switch s-icons s-outline  s-outline-success  mb-4 mr-2">
-                <input type="checkbox" id="mav" name="menuavaible" checked>
-                <span class="slider round"></span>
-                </label>
-                @endif
-              </div> 
+              <div class="col-md-6 mb-2">
+                <label for="type">Jenis Menu</label>
+                <select class="form-control" id="type" name="menutype">
+                  <option value="Makanan" {{ old('menutype', $data->menutype) == 'Makanan' ? ' selected' : '' }}> Makanan</option>
+                  <option value="Minuman" {{ old('menutype', $data->menutype) == 'Minuman' ? ' selected' : '' }}> Minuman</option>
+                </select>
+              </div>
+              <div class="col-md-6 mb-2">
+                <label for="cate">Kategori Menu</label>
+                <div class="input-group">
+                  <select class="" id="menumcsearch" name="menumcid">
+                    <option value="">Hapus</option>
+                    @if($data->menumcid)
+                      <option value="{{$data->menumcid}}" selected="selected">{{$data->menumcname}}</option>
+                    @endif
+                  </select>
+                  <div class="input-group-append" style="margin-bottom:auto">
+                    <button class="btn btn-info btn-flat" id="newCate" type="button">Tambah Baru</button>
+                  </div>
+                </div>
+              </div>
               <div class="col-md-12 mb-2">
                 <label for="detail">Detail Menu</label>
                 <textarea name="menudetail" rows="3" class="form-control" id="detail" placeholder="Detail Menu" >{{ old('menudetail', $data->menudetail) }}</textarea>
+              </div>
+              <div class="col-md-12 mb-2">
+                <label>Status Menu(Kosong, Ada)</label>
+                <br>
+                @if(isset($data->menuavaible))
+                  <label class="switch s-icons s-outline  s-outline-success  mb-4 mr-2">
+                    <input type="checkbox" id="mav" name="menuavaible" {{ $data->menuavaible ? 'checked' : ''}}>
+                    <span class="slider round"></span>
+                  </label>
+                @elseif(empty($data->menuavaible))
+                  <label class="switch s-icons s-outline  s-outline-success  mb-4 mr-2">
+                    <input type="checkbox" id="mav" name="menuavaible" checked>
+                    <span class="slider round"></span>
+                  </label>
+                  @endif
               </div>
               <div class="col-md-6 mb-2">
                 <div class="custom-file-container" data-upload-id="myFirstImage">

@@ -56,7 +56,6 @@ class MenuRepository
   public static function save($respon, $inputs, $loginid)
   {
     $id = $inputs['id'] ?? 0;
-
     $data = Menu::where('menuactive', '1')
       ->where('id',$id)
       ->first();
@@ -95,7 +94,6 @@ class MenuRepository
         array_push($respon['messages'], 'Data Menu berhasil ditambah');
       }
     } catch(\Exception $e){
-      dd($e);
       $respon['status'] = 'error';
       array_push($respon['messages'], 'Error');
     }
@@ -185,17 +183,28 @@ class MenuRepository
     $getCat = Menu::join('menucategory as mc', 'mc.id', 'menumcid')
       ->where('mcactive', '1')
       ->where('menuactive', '1')
-      ->select('menuname', 'menuimg', 'menuprice', 'menuavaible', 'menutype')
+      ->select('menus.id','menuname', 'menuimg', 'menuprice', 'menuavaible', 'menutype', 'menumcid', 'mcname')
       ->get();
       
     foreach($getCat as $data )
     {
       if($data->menutype == 'Makanan'){
-      array_push($tempdata['Makanan'], $data);
+        if(!isset($tempdata['Makanan'][$data->mcname])){
+          $tempdata['Makanan'][$data->mcname] = Array();
+          $tempdata['Makanan'][$data->mcname]['nama'] = $data->mcname;
+          $tempdata['Makanan'][$data->mcname]['pilihan'] = Array();
+        }
+        array_push($tempdata['Makanan'][$data->mcname]['pilihan'], $data);
       }else if($data->menutype == 'Minuman'){
-        array_push($tempdata['Minuman'], $data);
+        if(!isset($tempdata['Minuman'][$data->mcname])){
+          $tempdata['Minuman'][$data->mcname] = Array();
+          $tempdata['Minuman'][$data->mcname]['nama'] = $data->mcname;
+          $tempdata['Minuman'][$data->mcname]['pilihan'] = Array();
+        }
+        array_push($tempdata['Minuman'][$data->mcname]['pilihan'], $data);
       }
     }
+    
     return $tempdata;
   }
 

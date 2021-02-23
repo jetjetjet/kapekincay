@@ -7,6 +7,7 @@ use Validator;
 
 use App\Libs\Helpers;
 use App\Repositories\BoardRepository;
+use App\Repositories\AuditTrailRepository;
 use Auth;
 
 class BoardController extends Controller
@@ -63,7 +64,9 @@ class BoardController extends Controller
 			return redirect()->back()->withErrors($validator)->withInput($inputs);
 		}
 
-		$results = BoardRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = BoardRepository::save($respon, $inputs, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Simpan Meja', $loginid);
 		//cek
 		$request->session()->flash($results['status'], $results['messages']);
 		if($results['status'] == 'error')
@@ -76,7 +79,9 @@ class BoardController extends Controller
 	{
 		$respon = Helpers::$responses;
 
-		$results = BoardRepository::delete($respon, $id, Auth::user()->getAuthIdentifier());
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = BoardRepository::delete($respon, $id, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Hapus Meja', $loginid);
 		return response()->json($results);
 	}
 }

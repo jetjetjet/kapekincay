@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuditTrailController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BoardController;
@@ -34,6 +35,9 @@ Route::group(array('middleware' => 'auth'), function ()
 {
   Route::get('/', [DashboardController::class, 'index']);
 
+  Route::get('/log', [AuditTrailController::class, 'index'])->middleware('can:log_lihat');
+  Route::get('/log/grid', [AuditTrailController::class, 'grid'])->middleware('can:log_lihat');
+  
   Route::get('/pengeluaran', [ExpenseController::class, 'index'])->middleware('can:pengeluaran_lihat,pengeluaran_simpan');
   Route::get('/pengeluaran/grid', [ExpenseController::class, 'getLists'])->middleware('can:pengeluaran_lihat');
   Route::get('/pengeluaran/detail/{id?}', [ExpenseController::class, 'getById'])->middleware('can:pengeluaran_lihat');
@@ -47,7 +51,6 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/jabatan/simpan', [RoleController::class, 'save'])->middleware('can:jabatan_simpan');
   Route::post('/jabatan/hapus/{id}', [RoleController::class, 'deleteById'])->middleware('can:jabatan_hapus');
 
-  
   Route::get('/meja', [BoardController::class, 'index'])->middleware('can:meja_lihat');
   Route::get('/meja/grid', [BoardController::class, 'getLists'])->middleware('can:meja_lihat');
   Route::get('/meja/detail/{id?}', [BoardController::class, 'getById'])->middleware('can:meja_lihat');
@@ -85,6 +88,10 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/order/batal/{id}', [OrderController::class, 'voidById'])->middleware('can:order_batal');
   Route::post('/order/bayar/{id}', [OrderController::class, 'paidById'])->middleware('can:order_pembayaran');
   Route::post('/order/delivered/{id}/{idSub}', [OrderController::class, 'deliver'])->middleware('can:order_simpan');
+
+  Route::get('/profile/{id}', [UserController::class, 'getProfile']);
+  Route::post('/profile/simpan/{id}', [UserController::class, 'saveProfile']);
+  Route::post('/profile/ubah-password/{id}', [UserController::class, 'changeProfilePassword']);
 
   Route::get('/shift', [ShiftController::class, 'index'])->middleware('can:shift_lihat');
   Route::get('/shift/grid', [ShiftController::class, 'getLists'])->middleware('can:shift_lihat');

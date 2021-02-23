@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Libs\Helpers;
 use App\Repositories\ShiftRepository;
+use App\Repositories\AuditTrailRepository;
 use Auth;
 use Validator;
 
@@ -82,7 +83,9 @@ class ShiftController extends Controller
 			return redirect()->back()->withErrors($validator)->withInput($inputs);
 		}
 
-		$results = ShiftRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = ShiftRepository::save($respon, $inputs, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Buat Shift', $loginid);
 		$request->session()->flash($results['status'], $results['messages']);
 
     if($orderUrl)
@@ -135,7 +138,10 @@ class ShiftController extends Controller
 		if ($validator->fails()){
 			return redirect()->back()->withErrors($validator)->withInput($inputs);
 		}
-		$results = ShiftRepository::close($respon, $inputs, Auth::user()->getAuthIdentifier());
+		
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = ShiftRepository::close($respon, $inputs, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Tutup Shift', $loginid);
 		//cek
 		$request->session()->flash($results['status'], $results['messages']);
 		$cekRes = $results['status'];
@@ -161,7 +167,9 @@ class ShiftController extends Controller
 			return response()->json($results);
 		}
 
-		$results = ShiftRepository::delete($respon, $id, Auth::user()->getAuthIdentifier(), $inputs);
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = ShiftRepository::delete($respon, $id, $loginid, $inputs);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Hapus Shift', $loginid);
 		return response()->json($results);
 	}
 

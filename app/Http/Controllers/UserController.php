@@ -40,6 +40,46 @@ class UserController extends Controller
 		return view('User.edit')->with('data', $results['data']);
 	}
 
+	public function getProfile(Request $request, $id)
+	{
+		$respon = Helpers::$responses;
+		if($id == Auth::user()->getAuthIdentifier()){
+			$results = UserRepository::get($respon, $id);
+			return view('User.profile')->with('data', $results['data']);
+		} else {
+			$request->session()->flash('error', ['Tidak dapat menjalankan perintah!']);
+			return redirect('/');
+		}
+	}
+
+	public function saveProfile(Request $request, $id)
+	{
+		$respon = Helpers::$responses;
+		if($id == Auth::user()->getAuthIdentifier()){
+			$inputs = $request->all();
+			$results = UserRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
+			$request->session()->flash($results['status'], $results['messages']);
+			return redirect()->action([UserController::class, 'getProfile'], ['id' => $id]);
+		} else {
+			$request->session()->flash('error', ['Tidak dapat menjalankan perintah!']);
+			return redirect('/');
+		}
+	}
+
+	public function changeProfilePassword(Request $request, $id)
+	{
+		$respon = Helpers::$responses;
+		if($id == Auth::user()->getAuthIdentifier()){
+			$inputs = $request->all();
+			$results = UserRepository::changepassword($respon, $id, $inputs, Auth::user()->getAuthIdentifier());
+			return response()->json($results);
+		} else {
+			array_push($respon['messages'], 'Tidak dapat menjalankan perintah!');
+			$respon['status'] = "error";
+			return response()->json($respon);
+		}
+	}
+
 	public function save(Request $request)
 	{
 		$respon = Helpers::$responses;

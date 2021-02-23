@@ -9,6 +9,7 @@ use Validator;
 
 use App\Libs\Helpers;
 use App\Repositories\ExpenseRepository;
+use App\Repositories\AuditTrailRepository;
 use Auth;
 class ExpenseController extends Controller
 {
@@ -19,7 +20,7 @@ class ExpenseController extends Controller
 
 	public function getLists(Request $request)
 	{
-        $permission = Array(
+		$permission = Array(
 			'save' => (Auth::user()->can(['pengeluaran_simpan']) == true ? "true" : "false") . " as can_save",
 			'delete' => (Auth::user()->can(['pengeluaran_hapus']) == true ? "true" : "false") . " as can_delete"
 		);
@@ -56,7 +57,9 @@ class ExpenseController extends Controller
 			return redirect()->back()->withErrors($validator)->withInput($inputs);
 		}
 
-		$results = ExpenseRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = ExpenseRepository::save($respon, $inputs, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Simpan Pengeluaran', $loginid);
 		//cek
 		$request->session()->flash($results['status'], $results['messages']);
 		return redirect()->action([ExpenseController::class, 'getById'], ['id' => $results['id']]);
@@ -66,7 +69,9 @@ class ExpenseController extends Controller
 	{
 		$respon = Helpers::$responses;
 
-		$results = ExpenseRepository::delete($respon, $id, Auth::user()->getAuthIdentifier());
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = ExpenseRepository::delete($respon, $id, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Hapus Pengeluaran', $loginid);
 		return response()->json($results);
 	}
 
@@ -74,11 +79,12 @@ class ExpenseController extends Controller
 	{
 		$respon = Helpers::$responses;
 
-		$results = ExpenseRepository::proceed($respon, $id, Auth::user()->getAuthIdentifier());
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = ExpenseRepository::proceed($respon, $id, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Proses Pengeluaran', $loginid);
         
-        $request->session()->flash($results['status'], $results['messages']);
-
-        $cekRes = $results['status'];
+		$request->session()->flash($results['status'], $results['messages']);
+		$cekRes = $results['status'];
 		if ($cekRes == 'success'){
 			return redirect('/');
 		}elseif($cekRes == 'error'){

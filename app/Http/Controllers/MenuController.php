@@ -7,6 +7,7 @@ use Validator;
 
 use App\Libs\Helpers;
 use App\Repositories\MenuRepository;
+use App\Repositories\AuditTrailRepository;
 use Auth;
 use Illuminate\Support\Facades\File;
 use Image;
@@ -86,8 +87,10 @@ class MenuController extends Controller
 		} elseif($request['menuimg'] == null){
 			$inputs['menuimgpath'] = $request['hidimg'];
 		}
-		$results = MenuRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
-		// dd($inputs);
+
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = MenuRepository::save($respon, $inputs, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Simpan Menu', $loginid);
 		//cek
 		$request->session()->flash($results['status'], $results['messages']);
 		return redirect()->action([MenuController::class, 'getById'], ['id' => $results['id']]);
@@ -97,7 +100,9 @@ class MenuController extends Controller
 	{
 		$respon = Helpers::$responses;
 
-		$results = MenuRepository::delete($respon, $id, Auth::user()->getAuthIdentifier());
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = MenuRepository::delete($respon, $id, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Hapus Menu', $loginid);
 		return response()->json($results);
 	}
 
