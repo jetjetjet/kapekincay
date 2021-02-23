@@ -13,6 +13,7 @@ use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReportController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -47,6 +48,7 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/jabatan/simpan', [RoleController::class, 'save'])->middleware('can:jabatan_simpan');
   Route::post('/jabatan/hapus/{id}', [RoleController::class, 'deleteById'])->middleware('can:jabatan_hapus');
 
+  Route::get('/laporan', [ReportController::class, 'index']);
   
   Route::get('/meja', [BoardController::class, 'index'])->middleware('can:meja_lihat');
   Route::get('/meja/grid', [BoardController::class, 'getLists'])->middleware('can:meja_lihat');
