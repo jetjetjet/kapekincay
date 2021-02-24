@@ -118,7 +118,7 @@
 								</a>
 								<ul class="collapse submenu list-unstyled animated fadeInUp" id="setting" data-parent="#topAccordion">
 									@if(Perm::can(['pengaturan_backupdb']))
-										<li><a href="{{ url('/setting/backupdb') }}">Backup Database</a></li>
+										<li><a href="{{ url('/setting/backupdb') }}" >Backup Database</a></li>
 									@endif
 									@if(Perm::can(['pengaturan_lihat']))
 										<li><a href="{{ url('/setting') }}">Pengaturan</a></li>
