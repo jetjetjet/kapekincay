@@ -76,6 +76,14 @@ return [
             'prefix_indexes' => true,
             'schema' => 'public',
             'sslmode' => 'prefer',
+            'dump' => [
+                'dump_binary_path' => 'C:/Program Files/PostgreSQL/12/bin', // '/path/to/the/binary', // only the path, so without `mysqldump` or `pg_dump`
+                // 'use_single_transaction',
+                'timeout' => 60 * 5, // 5 minute timeout
+                'add_extra_option' => '--format=c',
+                // 'exclude_tables' => ['table1', 'table2'],
+                // 'add_extra_option' => '--optionname=optionvalue', // for example '--column_statistics=0'
+             ]
         ],
 
         'sqlsrv' => [

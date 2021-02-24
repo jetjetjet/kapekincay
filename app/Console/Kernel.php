@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('backup:run --only-db --disable-notifications')->twiceMonthly(1, 16, '13:00');
         // $schedule->command('inspire')->hourly();
     }
 

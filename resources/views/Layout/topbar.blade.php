@@ -103,7 +103,7 @@
 							</a>
 						</li>
 						@endif
-						@if(Perm::can(['pengaturan_lihat']) || Perm::can(['pengaturan_db']))
+						@if(Perm::can(['pengaturan_lihat']) || Perm::can(['pengaturan_backupdb']))
 							<?php
 								$segm = (Request::segment(1) == 'setting' || Request::segment(1) == 'backupdb');
 							?>
@@ -117,8 +117,8 @@
 									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
 								</a>
 								<ul class="collapse submenu list-unstyled animated fadeInUp" id="setting" data-parent="#topAccordion">
-									@if(Perm::can(['pengaturan_lihat']))
-										<li><a href="{{ url('/setting') }}">Backup Database</a></li>
+									@if(Perm::can(['pengaturan_backupdb']))
+										<li><a href="{{ url('/setting/backupdb') }}" >Backup Database</a></li>
 									@endif
 									@if(Perm::can(['pengaturan_lihat']))
 										<li><a href="{{ url('/setting') }}">Pengaturan</a></li>

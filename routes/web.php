@@ -75,6 +75,7 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('/setting', [SettingController::class, 'index'])->middleware('can:pengaturan_lihat');
   Route::get('/setting/grid', [SettingController::class, 'getLists'])->middleware('can:pengaturan_lihat');
   Route::get('/setting/detail/{id?}', [SettingController::class, 'getById'])->middleware('can:pengaturan_lihat');
+  Route::get('/setting/backupdb', [SettingController::class, 'backupDb'])->middleware('can:pengaturan_backupdb');
   Route::post('/setting/simpan', [SettingController::class, 'save'])->middleware('can:pengaturan_edit');
   
   Route::get('/order/index', [OrderController::class, 'index'])->middleware('can:order_lihat');
