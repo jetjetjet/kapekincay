@@ -10,6 +10,8 @@ use Validator;
 use App\Libs\Helpers;
 use App\Repositories\SettingRepository;
 use App\Repositories\AuditTrailRepository;
+use Illuminate\Support\Facades\Artisan;
+
 use Auth;
 class SettingController extends Controller
 {
@@ -62,6 +64,17 @@ class SettingController extends Controller
 		//cek
 		$request->session()->flash($results['status'], $results['messages']);
 		return redirect()->action([SettingController::class, 'getById'], ['id' => $results['id']]);
+	}
+
+	public function backupDb(Request $request)
+	{
+		if($request->proses){
+			$backup = Artisan::call('backup:run --only-db --disable-notifications');
+				if($backup == "0")
+					$request->session()->flash('success', ['OK']);
+		}
+
+		return view('Setting.backupdb');
 	}
 
 }
