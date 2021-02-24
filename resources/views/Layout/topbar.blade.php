@@ -4,7 +4,6 @@
 		<div class="nav-logo align-self-center">
 			<a class="navbar-brand" href="{{url('/')}}"><img alt="logo" src="{{ url('/') }}/assets/img/90x90.jpg"> <span class="navbar-brand-name">CAFE</span></a>
 		</div>
-
 		<ul class="navbar-item topbar-navigation">
 			<!-- BEGIN TOPBAR -->
 			<div class="topbar-nav header navbar" role="banner">
@@ -20,7 +19,7 @@
 						</li>
 					</ul>
 					<ul class="list-unstyled menu-categories" id="topAccordion">
-						<li class="menu active">
+						<li class="menu {{Request::segment(1) == null ? 'active' : ''}}">
 							<a href="{{url('/')}}" class="dropdown-toggle">
 								<div class="">
 									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
@@ -30,10 +29,12 @@
 								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
 							</a>
 						</li>
-							
-					@if(Perm::can(['user_lihat']) || Perm::can(['jabatan_lihat']) || Perm::can(['pengaturan_lihat']) ||
-						Perm::can(['meja_lihat']) ||Perm::can(['menu_lihat']) || Perm::can(['shift_lihat']))
-							<li class="menu single-menu">
+					@if(Perm::can(['user_lihat']) || Perm::can(['jabatan_lihat']) ||
+						Perm::can(['meja_lihat']) ||Perm::can(['menu_lihat']))
+							<?php
+								$segm = (Request::segment(1) == 'menu' || Request::segment(1) == 'user' || Request::segment(1) == 'jabatan' || Request::segment(1) == 'meja');
+							?>
+							<li class="menu single-menu {{ $segm ? 'active' : ''}}">
 								<a href="#app" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
 									<div class="">
 										<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
@@ -58,18 +59,15 @@
 									@if(Perm::can(['menu_lihat']))
 										<li><a href="{{ url('/menu') }}">Menu</a></li>
 									@endif
-									@if(Perm::can(['shift_lihat']))
-										<li><a href="{{ url('/shift') }}">Shift</a></li>
-									@endif
-									@if(Perm::can(['pengaturan_lihat']))
-										<li class="menu-title"><hr style="margin:0; border-top: solid 1px lightgrey" /> </li>
-										<li><a href="{{ url('/setting') }}">Pengaturan</a></li>
-									@endif
 								</ul>
 							</li>
 						@endif
-						<li class="menu single-menu">
-								<a href="#app1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+						@if(Perm::can(['order_lihat']) || Perm::can(['pengeluaran_lihat']))
+							<?php
+								$segm = (Request::segment(1) == 'order' || Request::segment(1) == 'pengeluaran');
+							?>
+							<li class="menu single-menu {{ $segm ? 'active' : ''}}">
+								<a href="#transaction" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
 									<div class="">
 										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
 										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign shadow-icons"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
@@ -77,12 +75,57 @@
 									</div>
 									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
 								</a>
-								<ul class="collapse submenu list-unstyled animated fadeInUp" id="app1" data-parent="#topAccordion">
-								
+								<ul class="collapse submenu list-unstyled animated fadeInUp" id="transaction" data-parent="#topAccordion">
+									@if(Perm::can(['order_lihat']))
+										<li><a href="{{ url('/order/meja/view') }}">Pesanan</a></li>
+									@endif
+									@if(Perm::can(['order_lihat']))
+										<li><a href="{{ url('/order/Index') }}">Daftar Pesanan</a></li>
+									@endif
+									@if(Perm::can(['pengeluaran_lihat']))
 										<li><a href="{{ url('/pengeluaran') }}">Pengeluaran</a></li>
-									
+									@endif
 								</ul>
 							</li>
+						@endif
+						@if(Perm::can(['shift_lihat']))
+						<?php
+							$segm = Request::segment(1) == 'shift';
+						?>
+						<li class="menu {{ $segm ? 'active' : ''}}">
+							<a href="{{url('/shift')}}" class="dropdown-toggle">
+								<div class="">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock shadow-icons"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+									<span>Shift</span>
+								</div>
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+							</a>
+						</li>
+						@endif
+						@if(Perm::can(['pengaturan_lihat']) || Perm::can(['pengaturan_db']))
+							<?php
+								$segm = (Request::segment(1) == 'setting' || Request::segment(1) == 'backupdb');
+							?>
+							<li class="menu single-menu {{ $segm ? 'active' : ''}}">
+								<a href="#setting" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+									<div class="">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings shadow-icons"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+										<span>Aplikasi</span>
+									</div>
+									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+								</a>
+								<ul class="collapse submenu list-unstyled animated fadeInUp" id="setting" data-parent="#topAccordion">
+									@if(Perm::can(['pengaturan_lihat']))
+										<li><a href="{{ url('/setting') }}">Backup Database</a></li>
+									@endif
+									@if(Perm::can(['pengaturan_lihat']))
+										<li><a href="{{ url('/setting') }}">Pengaturan</a></li>
+									@endif
+								</ul>
+							</li>
+						@endif
 					</ul>
 				</nav>
 			</div>
