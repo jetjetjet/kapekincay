@@ -147,9 +147,11 @@
     <script src="{{ url('/') }}/assets/js/custom.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <script src="{{ url('/') }}/plugins/table/datatable/datatables.js"></script>
-<script src="{{ url('/') }}/plugins/rowgroup/dataTables.rowGroup.min.js"></script>
+    <script src="{{ url('/') }}/plugins/rowgroup/dataTables.rowGroup.min.js"></script>
     <script src="{{ url('/') }}/plugins/table/datatable/button-ext/dataTables.buttons.min.js"></script>    
     <script src="{{ url('/') }}/plugins/table/datatable/button-ext/buttons.html5.min.js"></script>
+    <script src="{{ url('/') }}/plugins/table/datatable/button-ext/jszip.min.js"></script>  
+    <script src="{{ url('/') }}/plugins/table/datatable/button-ext/buttons.print.min.js"></script>
 		@yield('js-body')
 </body>
 </html>

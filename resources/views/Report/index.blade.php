@@ -26,14 +26,10 @@
         <div class="col-md-4 mb-1"></div>
         <div class="col-md-4 mb-1">
           <h4>Karyawan</h4>
-          <input name="user" class="form-control" type="hidden">
-          <select class="form-control select2" name="user" multiple="multiple">
-            @foreach($user as $key=>$u)
-            <?php
-            $userActive = request('user');
-            $selectedUser = $userActive ? ' selected' : null;
-            ?>
-              <option value="{{$u->username}}" {!! $selectedUser !!}>{{$u->username}}</option>
+          <select class="form-control select2" name="user">
+            <option value="Semua">Semua Karyawan</option>
+            @foreach($user as $u)
+              <option value="{{$u->username}}" {{ request('user') == $u->username ? 'selected' : ''}}>{{$u->username}}</option>
             @endforeach
           </select>
         </div> 
@@ -45,7 +41,7 @@
   @if($data->sub['total'] != 0)
     <div class="table-responsive mb-4 mt-4">
       <hr>
-      <h3 style="color:#1b55e2">Laporan</h3>
+      <h3 style="color:#1b55e2">Hasil Pencarian</h3>
       <table id="grid" class="table table-hover" style="width:100%">
         <thead>
           <tr>
@@ -73,19 +69,17 @@
         </tbody>
         <tfoot>
           <tr>
-            <th colspan="6" class="text-right"><h3>Total : </h3></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th class="text-right"><h3>Total : </h3></th>
             <th><h3><b>{{number_format($data->sub['total'])}}</b></h3></th>
           </tr>
         </tfoot>
       </table>
       </div>      
-    </div>
-    <div class="row fixed-bottom">
-      <div class="col-sm-12">
-        <div class="widget-content widget-content-area float-right" style="padding:10px">
-          <button class="btn btn-primary mt-2" id="pdf" type="submit">Export Ke PDF</button>
-        </div>
-      </div>
     </div>
     @else
     <div class="table-responsive mb-4 mt-4">
@@ -115,9 +109,7 @@
 
       $('.select2').select2({
       tags: false,
-      placeholder: "{{ request('user') != null ? request('user') : 'Pilih' }}",
       searchInputPlaceholder: 'Search options',
-      maximumSelectionLength: 1
     });
       
     flatpickr($('#end'), {
@@ -140,6 +132,34 @@
 // $('#end').change(function(){
 // chg()
 // })
+
+$('#grid').DataTable( {
+            dom: '<"row"<"col-md-12"<"row"<"col-md-6"B> > ><"col-md-12"rt> >',
+            buttons: {
+                buttons: [
+                    { extend: 'copy', text:'Salin', className: 'btn', footer:'true' },
+                    { 
+                      extend: 'print', 
+                      className: 'btn', 
+                      title:"",
+                      text:'PDF/Cetak',
+                      footer:'true',
+                      customize: function ( win ) {
+                        $(win.document.body)
+                          .prepend(
+                              "<br><img class='float-left' width='80px' height='auto' src='{{ url('/') }}/assets/img/90x90.jpg'><br><h2><b>&nbsp;&nbsp;&nbsp;Kapekincay</b></h2><br><hr>"+
+                              "<h2 style='color:#1b55e2'>Laporan</h2>"+
+                              "<div class='form-row'>"+
+                              "<div class='col-md-6 float-left'><h4>Karyawan : <b>{{request('user')}}</b></h4></div>"+
+                              "<div class='col-md-6'><h4 class='text-right'>{{request('startdate')}}/{{request('enddate')}}</h4></div>"+
+                              "</div>"
+                          );
+                      }
+                    },
+                ]
+            },
+            paging: false
+        } );
     
     });
   </script>

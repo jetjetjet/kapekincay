@@ -13,7 +13,7 @@ class ReportRepository
        $od = Order::where('orderactive', '1')
       ->whereBetween('orderdate',[$inputs['startdate'], $inputs['enddate']])
       ->join('users', 'ordercreatedby', '=', 'users.id');
-      if($inputs['user'] != null){
+      if($inputs['user'] != 'Semua'){
         $od->where('username', $inputs['user']);
       }
       $data = $od->select(
@@ -37,7 +37,7 @@ class ReportRepository
       $od = Order::where('orderactive', '1')
       ->whereBetween('orderdate',[$inputs['startdate'], $inputs['enddate']])
       ->join('users', 'ordercreatedby', '=', 'users.id');
-      if($inputs['user'] != null){
+      if($inputs['user'] != 'Semua'){
         $od->where('username', $inputs['user']);
       }
       $data = $od->select(DB::raw("sum(orderprice) as total"))
