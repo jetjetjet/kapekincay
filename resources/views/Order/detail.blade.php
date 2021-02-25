@@ -50,11 +50,12 @@
                     <tbody>
                     </tbody>
                 </table>
-                <form id="orderMenuForm" method="post" novalidate action="{{ url('/order/bayar')}}/{{$data->id}}">
+                <form id="orderMenuForm" method="post" novalidate action="{{url('/order/bayar')}}/{{$data->id}}">
                   <div class="col-md-12">
                     <div class="text-right float-right">
                       <input type="hidden" id="total" value="{{$data->orderprice}}">
                       <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
+                      <input type="hidden" name="username" id="name" value="{{ session('username') }}" />
                         <h3>Total :<b> {{ number_format($data->orderprice,0) }}</b></h3>
                         @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
                         @elseif($data->getstat == null && $data->orderstatus == 'COMPLETED' || $data->ordertype == 'TAKEAWAY')
@@ -75,6 +76,11 @@
                     </div>
                   </div>
                 </form>
+                <form id="miniform" method="get" novalidate action="{{url('/order/bayar/cetak')}}/{{$data->id}}">
+                  <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
+                  <input type="hidden" name="username" id="name" value="{{ session('username') }}" />
+                  <input type="hidden" name="orderpaidprice" id="trigger" value="0" />
+                </form>
               </div>
             </div>
         </div>
@@ -83,8 +89,12 @@
             <div class="widget-content widget-content-area" style="padding:10px">
               <div class="float-right">
                 <a href="{{url('/order/meja/view')}}" type="button" class="btn btn-warning mt-2">Kembali</a>
+                @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
+                  <button id="print" class="btn btn-success mt-2">Cetak</button>
+                @endif
                 @if(!($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID'))
                   <a href="{{ url('/order').'/'.$data->id }}" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Pesanan</a>
+                  <a href="" type="button" id="drawer" class="btn btn-success mt-2">Buka Laci</a>
                   @if(Perm::can(['order_pembayaran']))
                     <button disabled id="prosesOrder" class="btn btn-primary mt-2">&nbsp;&nbsp;&nbsp;Bayar&nbsp;&nbsp;&nbsp;</button>
                   @endif
@@ -117,6 +127,22 @@
       console.log(price, pay, change )
     }
   $(document).ready(function (){
+    //Cetak
+
+    $('#drawer').on('click', function (e) {
+      e.preventDefault();
+      let url = "{{url('/open/drawer') }}";
+      $.get(url, function (data) {
+          window.location.href = data;  // main action
+      }).fail(function () {
+          alert("ajax error");
+      })
+    });
+
+    $('#print').on('click', function(){
+      $('#miniform').submit();
+    })
+
     $('[type=number]').setupMask(0);
     $('#bayar').on('keyup',function(){
       payAndchange();
