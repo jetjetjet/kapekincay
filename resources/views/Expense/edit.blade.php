@@ -12,8 +12,8 @@
 @endsection
 
 @section('content-form')
-  <div class="widget-content widget-content-area br-6">
-    <div class="row">
+  <!-- <div class="widget-content widget-content-area br-6">
+    <div class="row"> -->
       <div id="flStackForm" class="col-lg-12 layout-spacing layout-top-spacing">
         <div class="statbox widget box box-shadow">
         <div class="widget-header">                                
@@ -73,8 +73,8 @@
           @endif
         </div>
       </div>
-    </div>
-  </div>
+    <!-- </div>
+  </div> -->
 @endsection
 
 @section('js-form')
@@ -86,6 +86,7 @@
       altinput: true,
       altformat: "Y-m-d",
       dateFormat: "d-m-Y",
+      maxDate: "today",
       defaultDate: "today"
     });
 

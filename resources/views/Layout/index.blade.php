@@ -152,6 +152,7 @@
     <script src="{{ url('/') }}/plugins/table/datatable/button-ext/buttons.html5.min.js"></script>
     <script src="{{ url('/') }}/plugins/table/datatable/button-ext/jszip.min.js"></script>  
     <script src="{{ url('/') }}/plugins/table/datatable/button-ext/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.6.5/mousetrap.min.js"></script>
 		@yield('js-body')
 </body>
 </html>

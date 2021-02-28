@@ -39,7 +39,9 @@
         </tfoot>
       </table>
     </div>
-
+<br>
+<hr>
+<br>
     <div class="table-responsive mb-4 mt-4">
       <h3>Makan Ditempat</h3>
       <table id="griddinein" class="table table-hover" style="width:100%">
@@ -116,8 +118,10 @@
               searchText: true
           },
           { 
-              data: 'orderprice',
-              searchText: true
+            data: null,
+            render: function(data, type, full, meta){
+            return formatter.format(data.orderprice);
+            }
           },
           { 
               data: 'orderstatuscase',
@@ -134,21 +138,21 @@
           }
         ]
       });
-      $('#grid').on('click', 'a.gridEdit', function (e) {
+      $('#gridtakeaway').on('click', 'a.gridEdit', function (e) {
         e.preventDefault();
         const rowData = grid.row($(this).closest('tr')).data();
 
         window.location = "{{ url('/order') . '/' }}"+ rowData.id;
       });
 
-      $('#grid').on('click', 'a.gridDetail', function (e) {
+      $('#gridtakeaway').on('click', 'a.gridDetail', function (e) {
         e.preventDefault();
         const rowData = grid.row($(this).closest('tr')).data();
 
         window.location = "{{ url('/order/detail') . '/' }}"+ rowData.id;
       });
 
-      $('#grid').on('click', 'a.gridDelete', function (e) {
+      $('#gridtakeaway').on('click', 'a.gridDelete', function (e) {
         e.preventDefault();
         
         const rowData = grid.row($(this).closest('tr')).data();
@@ -159,7 +163,7 @@
         gridDeleteRow(url, title, pesan, grid);
       });
 
-      $('#grid').on('click', 'a.gridVoid', function (e) {
+      $('#gridtakeaway').on('click', 'a.gridVoid', function (e) {
         e.preventDefault();
         
         const rowData = grid.row($(this).closest('tr')).data();
@@ -216,8 +220,10 @@
               searchText: true
           },
           { 
-              data: 'orderprice',
-              searchText: true
+            data: null,
+            render: function(data, type, full, meta){
+            return formatter.format(data.orderprice);
+            }
           },
           { 
               data: 'orderstatuscase',
@@ -234,21 +240,21 @@
           }
         ]
       });
-      $('#grid').on('click', 'a.gridEdit', function (e) {
+      $('#griddinein').on('click', 'a.gridEdit', function (e) {
         e.preventDefault();
         const rowData = grid2.row($(this).closest('tr')).data();
 
         window.location = "{{ url('/order') . '/' }}"+ rowData.id;
       });
 
-      $('#grid').on('click', 'a.gridDetail', function (e) {
+      $('#griddinein').on('click', 'a.gridDetail', function (e) {
         e.preventDefault();
         const rowData = grid2.row($(this).closest('tr')).data();
 
         window.location = "{{ url('/order/detail') . '/' }}"+ rowData.id;
       });
 
-      $('#grid').on('click', 'a.gridDelete', function (e) {
+      $('#griddinein').on('click', 'a.gridDelete', function (e) {
         e.preventDefault();
         
         const rowData = grid2.row($(this).closest('tr')).data();
@@ -259,7 +265,7 @@
         gridDeleteRow(url, title, pesan, grid);
       });
 
-      $('#grid').on('click', 'a.gridVoid', function (e) {
+      $('#griddinein').on('click', 'a.gridVoid', function (e) {
         e.preventDefault();
         
         const rowData = grid2.row($(this).closest('tr')).data();

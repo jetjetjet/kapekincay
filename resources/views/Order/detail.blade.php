@@ -59,7 +59,7 @@
                         <h3>Total :<b> {{ number_format($data->orderprice,0) }}</b></h3>
                         @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
                         @elseif($data->getstat == null && $data->orderstatus == 'COMPLETED' || $data->ordertype == 'TAKEAWAY')
-                          <input type="number" class="form-control text-right" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang">
+                          <input autofocus type="number" class="form-control text-right mousetrap" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang">
                           <h3 id="kembalian">Kembalian :</h3>                       
                         @endif                
                     </div>
@@ -70,7 +70,7 @@
                         <h4>Jenis Pembayaran</h4>
                         <select class="form-control" id="type" name="orderpaymentmethod">
                           <option value="Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Tunai' ? ' selected' : '' }}> Tunai</option>
-                          <option value="Debit" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Debit' ? ' selected' : '' }}> Debit</option>
+                          <option value="Non-Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Non-Tunai' ? ' selected' : '' }}> Non-Tunai</option>
                         </select>                     
                       @endif
                     </div>
@@ -94,9 +94,9 @@
                 @endif
                 @if(!($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID'))
                   <a href="{{ url('/order').'/'.$data->id }}" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Pesanan</a>
-                  <a href="" type="button" id="drawer" class="btn btn-success mt-2">Buka Laci</a>
+                  <!-- <a href="" type="button" id="drawer" class="btn btn-success mt-2">Buka Laci</a> -->
                   @if(Perm::can(['order_pembayaran']))
-                    <button disabled id="prosesOrder" class="btn btn-primary mt-2">&nbsp;&nbsp;&nbsp;Bayar&nbsp;&nbsp;&nbsp;</button>
+                    <button disabled id="drawer" class="btn btn-primary mt-2">&nbsp;&nbsp;&nbsp;Bayar&nbsp;&nbsp;&nbsp;</button>
                   @endif
                 @endif
               </div>
@@ -108,6 +108,26 @@
   </div>
 </div>
 
+            <div class="modal fade" data-keyboard="false" id="konfirm">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><b>Konfirmasi</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <h4><b>Apakah Pembayaran Sudah Sesuai?</b></h4>
+                    <p class="modal-text">Silahkan cek uang di laci, Jika uang untuk kembalian sudah mencukupi, Lanjutkan Cetak</p>
+                  </div>
+                  <div class="modal-footer justify-content-between">
+                    <button class="btn btn-danger mt-2" data-dismiss="modal">Batalkan</button>
+                    <button type="button" id="prosesOrder" class="btn btn-primary mt-2">Cetak</button>
+                  </div>
+                </div>
+              </div>
+            </div>
 @endsection
 
 @section('js-form')
@@ -119,31 +139,113 @@
       var change = Number(pay) - Number(price)
       if(Number(pay) >= Number(price)){
         $("#kembalian").html('Kembalian : <b>'+formatter.format(change)+'</b>');
-        $('#prosesOrder').removeAttr('disabled');
+        $('#drawer').removeAttr('disabled');
       } else {
         $('#kembalian').html('Kembalian : <b>0</b>');
-        $('#prosesOrder').attr('disabled', true);
+        $('#drawer').attr('disabled', true);
       }
       console.log(price, pay, change )
     }
+
+
   $(document).ready(function (){
+      //shortcut
+    Mousetrap.bind('enter', function() {
+      var price = $("#total").val();
+      var pay = $('#bayar').val();
+      if(pay == 0){
+      alert('Masukkan jumlah uang')
+      }else if(pay < price){
+      alert('Jumlah Uang tidak mencukupi')
+      }else{
+      $('#drawer').trigger('click')
+      }
+    });
+
+      $(window).on('shown.bs.modal', function() { 
+          Mousetrap.bind('backspace', function(){
+          $('#konfirm').modal('hide')
+          });
+      });
+
+      $(window).on('hidden.bs.modal', function() { 
+        Mousetrap.unbind('backspace')
+        Mousetrap.bind('enter', function() {
+          var price = $("#total").val();
+          var pay = $('#bayar').val();
+          if(pay == 0){
+          alert('Masukkan jumlah uang')
+          }else if(pay < price){
+          alert('Jumlah Uang tidak mencukupi')
+          }else{
+          $('#drawer').trigger('click')
+          }
+        });
+      });
+
+      Mousetrap.bind('. 1', function(){
+        var s = $('#bayar').val();
+        var pay = Number(s) + 10000;
+        console.log(s, pay);
+        $('#bayar').val(pay);
+      });
+
     //Cetak
 
-    $('#drawer').on('click', function (e) {
-      e.preventDefault();
-      let url = "{{url('/open/drawer') }}";
-      $.get(url, function (data) {
-          window.location.href = data;  // main action
-      }).fail(function () {
-          alert("ajax error");
-      })
+    $('#drawer').on('click', function () {
+      var price = $("#total").val();
+      var pay = $('#bayar').val();
+      var change = Number(pay) - Number(price)
+      if(change == 0){
+        $.ajax({
+        url: "{{url('/open/drawer') }}",
+        type: "get",
+        success: function(result){
+          console.log(result);
+          var msg = result.messages[0];
+          if(result.status == 'success'){
+            $('#orderMenuForm').submit();
+          }else{
+            toast({
+            type: 'error',
+            title: 'Silahkan Cek Kertas/Koneksi Di Printer',
+            padding: '2em',
+            })
+          }         
+          },
+          error:function(error){
+          }
+        })
+      }else{
+        $.ajax({
+        url: "{{url('/open/drawer') }}",
+        type: "get",
+        success: function(result){
+          console.log(result);
+          var msg = result.messages[0];
+          if(result.status == 'success'){
+            $('#konfirm').modal('show');
+          }else{
+            toast({
+            type: 'error',
+            title: 'Silahkan Cek Kertas/Koneksi Di Printer',
+            padding: '2em',
+            })
+          }         
+          },
+          error:function(error){
+          }
+        })
+      }
+      
     });
 
     $('#print').on('click', function(){
       $('#miniform').submit();
     })
 
-    $('[type=number]').setupMask(0);
+    $('#bayar').setupMask(0);
+
     $('#bayar').on('keyup',function(){
       payAndchange();
     });
@@ -196,7 +298,7 @@
       toast: true,
       position: 'center',
       showConfirmButton: false,
-      timer: 3000,
+      timer: 5000,
       padding: '2em'
     });
   
