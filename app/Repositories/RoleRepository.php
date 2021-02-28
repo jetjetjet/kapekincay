@@ -14,6 +14,7 @@ class RoleRepository
       ->select(
         'id',
         'rolename',
+        'roleisadmin',
         'roledetail',        
         DB::raw($perms['save']),
         DB::raw($perms['delete']))
@@ -30,6 +31,7 @@ class RoleRepository
       ->where('id', $id)
       ->select(
         'id',
+        'roleisadmin',
         'rolename',
         'roledetail',
         'rolepermissions')
@@ -53,7 +55,6 @@ class RoleRepository
       $respon['data']->rolepermissions = explode(",",$respon['data']->rolepermissions);
       $respon['data']->userid = $is;
     }
-
     return $respon;
   }
 
@@ -62,6 +63,7 @@ class RoleRepository
     $id = $inputs['id'] ?? 0;
     $perm = !empty($inputs['rolepermissions']) ? $inputs['rolepermissions'] : array();
     $inputs['perm'] = implode(",", $perm);
+    $inputs['roleisadmin'] = isset($inputs['roleisadmin']) ? '1' : '0';
     try{
       DB::transaction(function () use (&$respon, $id, $inputs, $loginid){
         $respon = self::saveRole($respon, $id, $inputs, $loginid);
@@ -129,6 +131,7 @@ class RoleRepository
         'rolename' => $inputs['rolename'],
         'roledetail' => $inputs['roledetail'],
         'rolepermissions' => $inputs['perm'],
+        'roleisadmin' => $inputs['roleisadmin'],
         'roleactive' => '1',
         'rolecreatedat' => now()->toDateTimeString(),
         'rolecreatedby' => $loginid
@@ -140,6 +143,7 @@ class RoleRepository
         'rolename' => $inputs['rolename'],
         'roledetail' => isset($inputs['roledetail']) ? $inputs['roledetail'] :null,
         'rolepermissions' => $inputs['perm'],
+        'roleisadmin' => $inputs['roleisadmin'],
         'rolemodifiedat' => now()->toDateTimeString(),
         'rolemodifiedby' => $loginid
       ]);
@@ -192,6 +196,7 @@ class RoleRepository
   {
     $model->id = null;
     $model->rolename = null;
+    $model->roleisadmin = false;
     $model->roledetail = null;
     $model->userid = [];
     $model->rolepermissions = null;

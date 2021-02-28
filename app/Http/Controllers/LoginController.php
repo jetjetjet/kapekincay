@@ -3,14 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Repositories\SettingRepository;
 use Auth;
 use Validator;
+
+use App\Libs\Helpers;
 
 class LoginController extends Controller
 {
   public function index(Request $request)
 	{
+		$bool = is_bool(env('APP_FRESH')) ? env('APP_FRESH') : true;
+		if($bool)
+		{
+			return view('Setting.initApp');
+		}
 		// Redirects to home if the user is already logged into the application.
+
 		if (Auth::check()){
 			return redirect('/');
 		}
@@ -46,6 +55,9 @@ class LoginController extends Controller
 				->withInput($request->except('password'));
 		};
 		
+		$cafeName = SettingRepository::getAppSetting('NamaApp');
+
+		$request->session()->put('cafeName', $cafeName);
 		$request->session()->put('username', Auth::user()->getUserName());
 		$request->session()->put('userid', Auth::user()->getAuthIdentifier());
 		return redirect()->intended(); 

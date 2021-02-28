@@ -228,7 +228,7 @@
 			<div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12 layout-spacing">
 				<div class="widget widget-chart-one">
 						<div class="widget-heading">
-							<h5 class="">Chart Penjualan Bulan {{$data->bulan}}</h5>
+							<h5 class="">Chart Bulan {{$data->bulan}}</h5>
 							<ul class="tabs tab-pills">
 									<li><a href="javascript:void(0);" id="tb_1" class="tabmenu">Bulanan</a></li>
 							</ul>
@@ -322,8 +322,11 @@
 							curve: 'smooth'
 					},
 					series: [{
-							name: 'Jumlah',
-							data: ['{!! $data->chart->chartTotal !!}']
+							name: 'Pendapatan',
+							data: ['{!! $data->chart->chartIncome !!}']
+					}, {
+							name: 'Pengeluaran',
+							data: ['{!! $data->chart->chartExpense !!}']
 					}],
 					xaxis: {
 							categories: ['{!! $data->chart->chartTgl !!}'],                

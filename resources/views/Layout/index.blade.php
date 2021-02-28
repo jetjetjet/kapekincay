@@ -26,7 +26,7 @@
     </style>
   	<!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/table/datatable/datatables.css">
-<link href="{{ url('/') }}/plugins/rowgroup/rowGroup.dataTables.min.css" rel="stylesheet" type="text/css">
+    <link href="{{ url('/') }}/plugins/rowgroup/rowGroup.dataTables.min.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/table/datatable/custom_dt_html5.css">
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/table/datatable/dt-global_style.css">
     @yield('css-body')

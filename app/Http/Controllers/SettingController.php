@@ -11,6 +11,7 @@ use App\Libs\Helpers;
 use App\Repositories\SettingRepository;
 use App\Repositories\AuditTrailRepository;
 use Illuminate\Support\Facades\Artisan;
+use Exception;
 
 use Auth;
 class SettingController extends Controller
@@ -18,6 +19,11 @@ class SettingController extends Controller
 	public function index()
 	{
 		return view('Setting.index');
+	}
+
+	public function indexSetup()
+	{
+		return view('Setting.settingCafe');
 	}
 
 	public function getLists(Request $request)
@@ -64,6 +70,47 @@ class SettingController extends Controller
 		//cek
 		$request->session()->flash($results['status'], $results['messages']);
 		return redirect()->action([SettingController::class, 'getById'], ['id' => $results['id']]);
+	}
+
+	public function initAppSetup(Request $request)
+	{
+		try{
+			$init = Artisan::call('migrate:fresh --seed');
+			
+		}catch(\Exception $err){
+			$request->session()->flash('error', ['Tidak dapat membuat konfigurasi aplikasi. Hubungi Administrator Aplikasi!']);
+			return view('Setting.initApp');
+		}
+
+		return redirect()->action([SettingController::class, 'indexSetup']);
+	}
+
+	public function postSettingSetup(Request $request)
+	{
+		$respon = Helpers::$responses;
+		
+		$rules = array(
+			'NamaApp' => 'required',
+			'Alamat' => 'required',
+			'KodeInvoice' => 'required',
+			'HeaderStruk' => 'required',
+			'FooterStruk' => 'required', 
+			'IpPrinter' => 'required'
+		);
+
+		$inputs = $request->all();
+		
+		$validator = validator::make($inputs, $rules);
+
+		if ($validator->fails()){
+			return redirect()->back()->withErrors($validator)->withInput($inputs);
+		}
+
+		$results = SettingRepository::saveInitApp($respon, $inputs);
+		if($results['status'] == 'success')
+			$a = Helpers::changeEnvironmentVariable('APP_FRESH', 'false');
+
+		return redirect('/');
 	}
 
 	public function backupDb(Request $request)

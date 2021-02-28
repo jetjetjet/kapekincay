@@ -20,7 +20,7 @@ class DashboardController extends Controller
 
     //Chart
     if(Auth::user()->can(['laporan_lihat'])){
-      $filter = "orderdate::date between '". $awal->toDateString() . "'::date and '" . $akhir->toDateString() . "'::date";
+      $filter = Array('awal' => $awal->toDateString(), 'akhir' => $akhir->toDateString());
       $range = range($awal->format('d'), $akhir->format('d'));
       $yM = $awal->format('Y-m');
       $data->chart = OrderRepository::orderChart($filter, $range, $yM );

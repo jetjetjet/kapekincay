@@ -17,7 +17,7 @@ class CreateExpensesTable extends Migration
             $table->id();
             $table->string('expensename');
             $table->string('expensedetail');
-            $table->decimal('expenseprice',16,2);
+            $table->decimal('expenseprice',16,0);
             $table->dateTime('expensedate')->nullable();
             $table->boolean('expenseactive',);
             $table->dateTime('expensecreatedat');
