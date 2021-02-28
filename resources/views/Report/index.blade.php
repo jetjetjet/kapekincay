@@ -15,16 +15,15 @@
     <form class="needs-validation" method="get" novalidate action="{{ url('/laporan/') }}">
       <div class="form-row">     
         <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
-        <div class="col-md-4 mb-1">
+        <div class="col-md-6 mb-1">
           <h4>Tanggal Awal</h4>
           <input id="start" value="{{request('startdate')}}" name="startdate" class="form-control flatpickr flatpickr-input date">
         </div>
-        <div class="col-md-4 mb-1">
+        <div class="col-md-6 mb-1">
           <h4>Tanggal Akhir</h4>
           <input id="end" value="{{request('enddate')}}" name="enddate" class="form-control flatpickr flatpickr-input date">
         </div>  
-        <div class="col-md-4 mb-1"></div>
-        <div class="col-md-4 mb-1">
+        <div class="col-md-12 mb-1">
           <h4>Karyawan</h4>
           <select class="form-control select2" name="user">
             <option value="Semua">Semua Karyawan</option>

@@ -306,7 +306,7 @@ class OrderRepository
             'orderboardid' => $inputs['orderboardid'] ?? null,
             'ordertype' => $inputs['ordertype'],
             'orderprice' => $inputs['orderprice'] ?? 1,
-            'orderstatus' => 'ADDITIONAL',
+            // 'orderstatus' => 'ADDITIONAL',
             'orderdetail' => $inputs['orderdetail'] ?? "",
             'ordermodifiedat' => now()->toDateTimeString(),
             'ordermodifiedby' => $loginid,
@@ -365,6 +365,12 @@ class OrderRepository
             'odcreatedat' => now()->toDateTimeString(),
             'odcreatedby' => $loginid
           ]);
+
+            $updStatus = Order::where('orderactive', '1')
+            ->where('id', $idHeader)
+            ->update([
+              'orderstatus' => 'ADDITIONAL'
+            ]);
         } else {
           $detRow = OrderDetail::where('odactive', '1')
             ->where('id', $dtl['id'])

@@ -10,9 +10,9 @@ class ReportRepository
 {
     public static function grid($inputs)
     {
-       $od = Order::where('orderactive', '1')
-      ->whereBetween('orderdate',[$inputs['startdate'], $inputs['enddate']])
-      ->join('users', 'ordercreatedby', '=', 'users.id');
+      $od = Order::where('orderactive', '1')
+        ->whereRaw("orderdate::date between '" . $inputs['startdate'] . "' and '" . $inputs['enddate'] . "'")
+        ->join('users', 'ordercreatedby', '=', 'users.id');
       if($inputs['user'] != 'Semua'){
         $od->where('username', $inputs['user']);
       }
@@ -26,23 +26,20 @@ class ReportRepository
         'username',
         )
       ->get();
-
-
-        
       return $data;
     }
   
     public static function get($inputs)
     {
       $od = Order::where('orderactive', '1')
-      ->whereBetween('orderdate',[$inputs['startdate'], $inputs['enddate']])
-      ->join('users', 'ordercreatedby', '=', 'users.id');
+        ->whereRaw("orderdate::date between '" . $inputs['startdate'] . "' and '" . $inputs['enddate'] . "'")
+        ->join('users', 'ordercreatedby', '=', 'users.id');
       if($inputs['user'] != 'Semua'){
         $od->where('username', $inputs['user']);
       }
-      $data = $od->select(DB::raw("sum(orderprice) as total"))
-        ->first();
-        return $data;
+      $data = $od->select(DB::raw("sum(orderprice) as total"))->first();
+
+      return $data;
     }
 
     public static function getName()
