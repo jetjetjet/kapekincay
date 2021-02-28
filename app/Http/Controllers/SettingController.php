@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use Validator;
 
+use Illuminate\Support\Facades\Hash;
 use App\Libs\Helpers;
 use App\Repositories\SettingRepository;
 use App\Repositories\AuditTrailRepository;
@@ -58,6 +59,11 @@ class SettingController extends Controller
 		);
 
 		$inputs = $request->all();
+		
+		if($inputs['settingkey'] == 'PasswordLaci'){
+			$inputs['settingvalue'] = Hash::make($inputs['settingvalue']);
+		}
+		// dd($inputs);
 		$validator = validator::make($inputs, $rules);
 
 		if ($validator->fails()){
@@ -95,11 +101,15 @@ class SettingController extends Controller
 			'KodeInvoice' => 'required',
 			'HeaderStruk' => 'required',
 			'FooterStruk' => 'required', 
-			'IpPrinter' => 'required'
+			'HeaderStrukKasir' => 'required',
+			'FooterStrukKasir' => 'required', 
+			'IpPrinter' => 'required',
+			'PasswordLaci' => 'required'
+			
 		);
 
 		$inputs = $request->all();
-		
+		$inputs['PasswordLaci'] = Hash::make($inputs['PasswordLaci']);
 		$validator = validator::make($inputs, $rules);
 
 		if ($validator->fails()){

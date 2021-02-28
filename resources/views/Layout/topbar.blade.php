@@ -103,9 +103,9 @@
 							</a>
 						</li>
 						@endif
-						@if(Perm::can(['order_lihat']) || Perm::can(['pengeluaran_lihat']))
+						@if(Perm::can(['laporan_lihat']) || Perm::can(['log_lihat']))
 							<?php
-								$segm = (Request::segment(1) == 'order' || Request::segment(1) == 'pengeluaran');
+								$segm = (Request::segment(1) == 'laporan' || Request::segment(1) == 'log');
 							?>
 							<li class="menu single-menu {{ $segm ? 'active' : ''}}">
 								<a href="#report" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -118,10 +118,10 @@
 									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
 								</a>
 								<ul class="collapse submenu list-unstyled animated fadeInUp" id="report" data-parent="#topAccordion">
-									@if(Perm::can(['order_lihat']))
+									@if(Perm::can(['laporan_lihat']))
 										<li><a href="{{ url('/laporan') }}">Laporan Transaksi</a></li>
 									@endif
-									@if(Perm::can(['order_lihat']))
+									@if(Perm::can(['log_lihat']))
 										<li><a href="{{ url('/log') }}">Log</a></li>
 									@endif
 								</ul>

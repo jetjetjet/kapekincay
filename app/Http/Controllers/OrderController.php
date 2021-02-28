@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;use Validator;
+use Illuminate\Http\Request;
+use Validator;
+use Illuminate\Support\Facades\Hash;
 
 use App\Libs\Helpers;
 use App\Libs\Cetak;
@@ -11,6 +13,7 @@ use App\Repositories\OrderRepository;
 use App\Repositories\MenuRepository;
 use App\Repositories\AuditTrailRepository;
 use App\Repositories\ShiftRepository;
+use App\Repositories\SettingRepository;
 use App\Events\OrderProceed;
 use App\Events\BoardEvent;
 use Auth;
@@ -165,7 +168,6 @@ class OrderController extends Controller
 		$respon = Helpers::$responses;
 
     $inputs = $request->all();
-		
 	
 		$loginid = Auth::user()->getAuthIdentifier();
 		$results = OrderRepository::paid($respon, $id, $loginid, $inputs);
@@ -191,7 +193,7 @@ class OrderController extends Controller
 	{
 		$data = OrderRepository::getOrderReceiptkasir($id);
 		$inputs = $request->all();
-		// dd($data);
+		
 		$cetak = Cetak::printkasir($data, $inputs);
 		return redirect('/order/meja/view');
 	}
@@ -200,11 +202,38 @@ class OrderController extends Controller
 	public function opendrawer(Request $request)
 	{
 		$respon = Helpers::$responses;
-		$loginid = Auth::user()->getAuthIdentifier();
 		$cetak = Cetak::bukaLaci($respon);
-	
-		AuditTrailRepository::saveAuditTrail($request->path(), $cetak, 'Buka Laci', $loginid);
 
+		return response()->json($cetak);
+	}
+
+	public function opendraweraudit(Request $request)
+	{
+		$respon = Helpers::$responses;
+		$inputs = $request->all();
+		$loginid = Auth::user()->getAuthIdentifier();
+		$inputs['pass1'] = SettingRepository::getAppSetting('PasswordLaci');
+	
+		$cek = Hash::check($inputs['pass'], $inputs['pass1']);
+
+		if($cek == false){
+			array_push($respon['messages'], 'Periksa Kembali Password Anda');
+			$respon['status'] = "error";
+			$respon['errorMessages'] = "Salah Password";
+			AuditTrailRepository::saveAuditTrail($request->path(), $respon, 'Buka Laci', $loginid);
+			return response()->json($respon);
+		}else{
+			$cetak = Cetak::bukaLaci($respon);
+			AuditTrailRepository::saveAuditTrail($request->path(), $cetak, 'Buka Laci', $loginid);
+			return response()->json($cetak);
+		}		
+	}
+
+	public function ping(Request $request)
+	{
+		$respon = Helpers::$responses;
+		$cetak = Cetak::ping($respon);
+		// dd($cetak);
 		return response()->json($cetak);
 	}
 }

@@ -47,6 +47,8 @@
     <!--  BEGIN MAIN CONTAINER  -->
     <div class="main-container" id="container">
 			<div class="overlay"></div>
+      <input type='hidden' id='bukalaci' value="{{url('/open/drawerauth')}}">
+      <input type='hidden' id='ping' value="{{url('/cek/printer')}}">
 			<div class="search-overlay"></div>
 			<!--  BEGIN CONTENT PART  -->
 			<div id="content" class="main-content">
@@ -135,6 +137,7 @@
     <script src="{{ url('/') }}/bootstrap/js/bootstrap.min.js"></script>
     <script src="{{ url('/') }}/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="{{ url('/') }}/assets/js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.6.5/mousetrap.min.js"></script>
     <script src="{{ url('/') }}/js/cafe.js"></script>
     <script src="{{ url('/') }}/plugins/font-icons/feather/feather.min.js"></script>
     <script src="{{ url('/') }}/plugins/sweetalerts/sweetalert2.min.js"></script>
@@ -151,8 +154,7 @@
     <script src="{{ url('/') }}/plugins/table/datatable/button-ext/dataTables.buttons.min.js"></script>    
     <script src="{{ url('/') }}/plugins/table/datatable/button-ext/buttons.html5.min.js"></script>
     <script src="{{ url('/') }}/plugins/table/datatable/button-ext/jszip.min.js"></script>  
-    <script src="{{ url('/') }}/plugins/table/datatable/button-ext/buttons.print.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.6.5/mousetrap.min.js"></script>
+    <script src="{{ url('/') }}/plugins/table/datatable/button-ext/buttons.print.min.js"></script>    
 		@yield('js-body')
 </body>
 </html>

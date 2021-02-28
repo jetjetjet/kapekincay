@@ -24,7 +24,7 @@
             </div>
             <div class="form-group mb-2">
               <label for="Alamat">Alamat</label>
-              <input type="text" class="form-control" name="Alamat" id="Alamat" value="{{ old('Alamat')}}" placeholder="" required>
+              <textarea class="form-control" name="Alamat" rows="3" id="Alamat" value="{{ old('Alamat')}}" placeholder="" required></textarea>
               <div class="invalid-feedback">
                 Alamat harus diisi!
               </div>
@@ -41,15 +41,29 @@
                 Prefix Invoice harus diisi!
               </div>
             <div class="form-group mb-2">
-              <label for="HeaderStruk">Header Struk</label>
+              <label for="HeaderStruk">Header Struk Pelayan</label>
               <textarea class="form-control" name="HeaderStruk" required>{{ old('HeaderStruk')}}</textarea>
               <div class="invalid-feedback">
                 Format Atas Struk harus diisi!
               </div>
             </div>
             <div class="form-group mb-2">
-              <label for="FooterStruk">Footer Struk</label>
+              <label for="FooterStruk">Footer Struk Pelayan</label>
               <textarea class="form-control" name="FooterStruk" required>{{ old('FooterStruk')}}</textarea>
+              <div class="invalid-feedback">
+                Format Akhir Struk harus diisi!
+              </div>
+            </div>
+            <div class="form-group mb-2">
+              <label for="HeaderStruk">Header Struk Kasir</label>
+              <textarea class="form-control" name="HeaderStrukKasir" required>{{ old('HeaderStrukKasir')}}</textarea>
+              <div class="invalid-feedback">
+                Format Atas Struk harus diisi!
+              </div>
+            </div>
+            <div class="form-group mb-2">
+              <label for="FooterStruk">Footer Struk Kasir</label>
+              <textarea class="form-control" name="FooterStrukKasir" required>{{ old('FooterStrukKasir')}}</textarea>
               <div class="invalid-feedback">
                 Format Akhir Struk harus diisi!
               </div>
@@ -60,9 +74,16 @@
             </div> -->
             <div class="form-group mb-2">
               <label for="IpPrinter">Ip Printer Kasir</label>
-              <input type="text" class="form-control" value="{{ old('IpPrinter')}}" name="IpPrinter" id="IpPrinter" placeholder="192.168.1.5" required>
+              <input type="text" class="form-control" value="{{ old('IpPrinter')}}" name="IpPrinter" id="IpPrinter" placeholder="192.168.192.168" required>
               <div class="invalid-feedback">
                 Ip Printer harus diisi!
+              </div>
+            </div>
+            <div class="form-group mb-2">
+              <label for="IpPrinter">Password Laci</label>
+              <input type="password" class="form-control" value="{{ old('PasswordLaci')}}" name="PasswordLaci" id="PasswordLaciform" required>
+              <div class="invalid-feedback">
+                Password harus diisi!
               </div>
             </div>
             <button type="submit" class="btn btn-primary">Simpan</button>

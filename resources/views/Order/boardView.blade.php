@@ -80,6 +80,17 @@
   <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
   <script>
     $(document).ready(function (){
+      //shortcut
+      Mousetrap.bind('enter', function() {
+        $('#bgks').trigger('click')
+      });
+      Mousetrap.bind('plus', function() {
+        $('#gridBungkus_next').trigger('click')
+      });
+      Mousetrap.bind('-', function() {
+        $('#gridBungkus_previous').trigger('click')
+      });
+
       var pusher = new Pusher('631e0080537b4cc8a0c3', {
         cluster: 'ap1'
       });
@@ -110,6 +121,9 @@
             buttons: [{ 
               text: "Tambah Baru",
               className: 'btn',
+              attr: {
+                id: 'bgks',
+              },            
               action: function ( e, dt, node, config ) {
                 window.location = "{{ url('/order') }}" + "?type=TAKEAWAY";
               }

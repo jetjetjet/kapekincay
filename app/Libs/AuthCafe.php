@@ -50,6 +50,8 @@ class AuthCafe
     'user_lihat',
     'user_simpan',
     'user_hapus',
+
+    'tambahan_bukalaci',
   );
 
   public static function all(){

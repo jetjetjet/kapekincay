@@ -20,7 +20,9 @@ class Cetak
       "AppName" => SettingRepository::getAppSetting('AppName'),
       "IpPrinter" => SettingRepository::getAppSetting('IpPrinter'),
       "Telp" => SettingRepository::getAppSetting('Telp'),
-      "Alamat" => SettingRepository::getAppSetting('Alamat')
+      "Alamat" => SettingRepository::getAppSetting('Alamat'),
+      "footerkasir" => SettingRepository::getAppSetting('FooterStrukKasir'),
+      "headerkasir" => SettingRepository::getAppSetting('HeaderStrukKasir'),
     );
   }
 
@@ -95,8 +97,10 @@ class Cetak
       $printer -> graphics($tux);
       $printer -> feed();
       $printer->selectPrintMode();
-      $printer->text(self::getSetting()['header']."\n");
       $printer->text(self::getSetting()['Alamat']."\n");
+      $printer->text(self::getSetting()['Telp']."\n");
+      $printer->text(self::getSetting()['headerkasir']."\n");
+      
       $printer->feed();
       /* Title of receipt */
       $printer->setEmphasis(true);
@@ -143,7 +147,7 @@ class Cetak
       /* Footer */
       $printer->feed(1);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
-      $printer->text(self::getSetting()['footer']."\n");
+      $printer->text(self::getSetting()['footerkasir']."\n");
       $printer->feed(1);
 
       /* Lisence*/ 
@@ -158,23 +162,37 @@ class Cetak
     }catch(\Exception $e){
       $printer = false;
     }
-    // $printer->text($date . "\n");
   }
 
   public static function bukaLaci($respon)
   {
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = new NetworkPrintConnector("192.168.192.168", 9100);
+      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100);
       $printer = new Printer($connector, $profile);
       $printer -> pulse();
       $printer->close();
       $respon['status'] = 'success';
     }catch(\Exception $e){
       $printer = false;
+      array_push($respon['messages'], 'Periksa Kertas/Koneksi Di Printer');
       $respon['status'] = "error";
     }
-    // dd($respon);
+    return $respon;
+  }
+
+  public static function ping($respon)
+  {
+    try{
+      $profile = CapabilityProfile::load("simple");
+      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100);
+      $printer = new Printer($connector, $profile);
+      $printer->close();
+      $respon['status'] = 'success';
+    }catch(\Exception $e){
+      $printer = false;
+      $respon['status'] = "error";
+    }
     return $respon;
   }
 

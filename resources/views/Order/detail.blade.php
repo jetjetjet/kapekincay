@@ -58,17 +58,20 @@
                       <input type="hidden" name="username" id="name" value="{{ session('username') }}" />
                         <h3>Total :<b> {{ number_format($data->orderprice,0) }}</b></h3>
                         @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
+                        
                         @elseif($data->getstat == null && $data->orderstatus == 'COMPLETED' || $data->ordertype == 'TAKEAWAY')
                           <input autofocus type="number" class="form-control text-right mousetrap" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang">
                           <h3 id="kembalian">Kembalian :</h3>                       
-                        @endif                
+                        @else      
+                        <input type="hidden" id="bayar" value="-1" />
+                        @endif          
                     </div>
                     <div class="form-group col-md-3">
                       @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')                                           
                         <h4>Status Pesanan : <b>{{$data->orderstatuscase}}</b></h4>                     
                       @elseif($data->orderstatus == 'COMPLETED' && $data->getstat == null || $data->ordertype == 'TAKEAWAY')
                         <h4>Jenis Pembayaran</h4>
-                        <select class="form-control" id="type" name="orderpaymentmethod">
+                        <select class="form-control mousetrap" id="type" name="orderpaymentmethod">
                           <option value="Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Tunai' ? ' selected' : '' }}> Tunai</option>
                           <option value="Non-Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Non-Tunai' ? ' selected' : '' }}> Non-Tunai</option>
                         </select>                     
@@ -76,7 +79,7 @@
                     </div>
                   </div>
                 </form>
-                <form id="miniform" method="get" novalidate action="{{url('/order/bayar/cetak')}}/{{$data->id}}">
+                <form id="miniform" method="post" novalidate action="{{url('/order/bayar/cetak')}}/{{$data->id}}">
                   <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
                   <input type="hidden" name="username" id="name" value="{{ session('username') }}" />
                   <input type="hidden" name="orderpaidprice" id="trigger" value="0" />
@@ -153,9 +156,11 @@
     Mousetrap.bind('enter', function() {
       var price = $("#total").val();
       var pay = $('#bayar').val();
-      if(pay == 0){
+      if(Number(pay) == -1){
+      alert('Pesanan Belum selesai')
+      }else if(Number(pay) == 0){
       alert('Masukkan jumlah uang')
-      }else if(pay < price){
+      }else if(Number(pay) < Number(price)){
       alert('Jumlah Uang tidak mencukupi')
       }else{
       $('#drawer').trigger('click')
@@ -166,28 +171,26 @@
           Mousetrap.bind('backspace', function(){
           $('#konfirm').modal('hide')
           });
+          Mousetrap.bind('enter', function() {
+          $('#prosesOrder').trigger('click')
+          })
+          $('#prosesOrder').focus()
       });
 
       $(window).on('hidden.bs.modal', function() { 
         Mousetrap.unbind('backspace')
+        $('#bayar').focus()
         Mousetrap.bind('enter', function() {
           var price = $("#total").val();
           var pay = $('#bayar').val();
-          if(pay == 0){
+          if(Number(pay) == 0){
           alert('Masukkan jumlah uang')
-          }else if(pay < price){
+          }else if(Number(pay) < Number(price)){
           alert('Jumlah Uang tidak mencukupi')
           }else{
           $('#drawer').trigger('click')
           }
         });
-      });
-
-      Mousetrap.bind('. 1', function(){
-        var s = $('#bayar').val();
-        var pay = Number(s) + 10000;
-        console.log(s, pay);
-        $('#bayar').val(pay);
       });
 
     //Cetak
@@ -199,7 +202,7 @@
       if(change == 0){
         $.ajax({
         url: "{{url('/open/drawer') }}",
-        type: "get",
+        type: "post",
         success: function(result){
           console.log(result);
           var msg = result.messages[0];
@@ -208,7 +211,7 @@
           }else{
             toast({
             type: 'error',
-            title: 'Silahkan Cek Kertas/Koneksi Di Printer',
+            title: 'Periksa Kertas/Koneksi Di Printer',
             padding: '2em',
             })
           }         
@@ -219,7 +222,7 @@
       }else{
         $.ajax({
         url: "{{url('/open/drawer') }}",
-        type: "get",
+        type: "post",
         success: function(result){
           console.log(result);
           var msg = result.messages[0];
@@ -228,7 +231,7 @@
           }else{
             toast({
             type: 'error',
-            title: 'Silahkan Cek Kertas/Koneksi Di Printer',
+            title: 'Periksa Kertas/Koneksi Di Printer',
             padding: '2em',
             })
           }         
@@ -244,7 +247,7 @@
       $('#miniform').submit();
     })
 
-    $('#bayar').setupMask(0);
+    // $('#bayar').setupMask(0);
 
     $('#bayar').on('keyup',function(){
       payAndchange();
@@ -254,6 +257,14 @@
       $('#prosesOrder').attr('dissabled');
       $('#orderMenuForm').submit();
     })
+
+    $('#orderMenuForm').on('keyup keypress', function(e) {
+  var keyCode = e.keyCode || e.which;
+  if (keyCode === 13) { 
+    e.preventDefault();
+    return false;
+  }
+  });
 
 
     let grid = $('#grid').DataTable({

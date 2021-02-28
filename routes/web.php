@@ -55,7 +55,7 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/jabatan/simpan', [RoleController::class, 'save'])->middleware('can:jabatan_simpan');
   Route::post('/jabatan/hapus/{id}', [RoleController::class, 'deleteById'])->middleware('can:jabatan_hapus');
 
-  Route::get('/laporan', [ReportController::class, 'index']);
+  Route::get('/laporan', [ReportController::class, 'index'])->middleware('can:laporan_lihat');
   
   Route::get('/meja', [BoardController::class, 'index'])->middleware('can:meja_lihat');
   Route::get('/meja/grid', [BoardController::class, 'getLists'])->middleware('can:meja_lihat');
@@ -91,8 +91,10 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('/order/meja/view', [OrderController::class, 'orderView']);
   Route::get('/order/meja/lists', [OrderController::class, 'orderViewLists']);
   Route::get('/order/cetak/struk/{idOrder}', [OrderController::class, 'orderReceipt']);
-  Route::get('/order/bayar/cetak/{idOrder}', [OrderController::class, 'orderReceiptkasir']);
-  Route::get('/open/drawer', [OrderController::class, 'opendrawer']);
+  Route::post('/order/bayar/cetak/{idOrder}', [OrderController::class, 'orderReceiptkasir']);
+  Route::post('/open/drawer', [OrderController::class, 'opendrawer'])->middleware('can:order_pembayaran');
+  Route::post('/cek/printer', [OrderController::class, 'ping']);
+  Route::post('/open/drawerauth', [OrderController::class, 'opendraweraudit'])->middleware('can:tambahan_bukalaci');
   Route::post('/order/save/{id?}', [OrderController::class, 'save'])->middleware('can:order_simpan');
   Route::post('/order/hapus/{id}', [OrderController::class, 'deleteById'])->middleware('can:order_hapus');
   Route::post('/order/batal/{id}', [OrderController::class, 'voidById'])->middleware('can:order_batal');
