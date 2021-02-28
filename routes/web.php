@@ -29,6 +29,9 @@ use App\Http\Controllers\ReportController;
 Route::get('login', [LoginController::class, 'index']);
 Route::get('logout', [LoginController::class, 'getLogoff']);
 Route::post('login', [LoginController::class, 'postLogin']);
+Route::get('init-app', [SettingController::class, 'initAppSetup']);
+Route::get('setup-cafe', [SettingController::class, 'indexSetup']);
+Route::post('init-setting-setup', [SettingController::class, 'postSettingSetup']);
 Route::get('/dapur', [App\Http\Controllers\DapurController::class, 'index']);
 Route::get('/dapur/lists', [App\Http\Controllers\DapurController::class, 'getLists']);
 

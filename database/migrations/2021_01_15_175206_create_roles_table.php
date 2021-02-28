@@ -18,6 +18,7 @@ class CreateRolesTable extends Migration
             $table->string('rolename');
             $table->string('roledetail')->nullable();
             $table->text('rolepermissions');
+            $table->boolean('roleisadmin');
 
             $table->boolean('roleactive');
             $table->dateTime('rolecreatedat');

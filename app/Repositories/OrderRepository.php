@@ -73,22 +73,35 @@ class OrderRepository
   {
     $transaction = Order::select(DB::raw('ordercreatedat::date as date,sum(orderprice) as total'))
       ->where('orderstatus', 'PAID')
-      ->whereRaw($filter)
+      ->where('orderactive', '1')
+      ->whereRaw("orderdate::date between '". $filter['awal'] . "'::date and '" . $filter['akhir'] . "'::date")
       ->groupBy(DB::raw('ordercreatedat::date'))->get();
+    
+    $expenses = DB::table('expenses')
+      ->where('expenseactive', '1')
+      ->whereNotNull('expenseexecutedat')
+      ->whereRaw("expensedate::date between '". $filter['awal'] . "'::date and '" . $filter['akhir'] . "'::date")
+      ->groupBy(DB::raw('expensedate::date'))
+      ->select(
+        DB::raw('expensedate::date as date,sum(expenseprice) as total')
+      )->get();
       
     $data = new \StdClass();
-    $nom = [];
+    $inc = [];
+    $exp = [];
     foreach ($range as $row) {
       $f_date = strlen($row) == 1 ? 0 . $row:$row;
       $date = $month . "-".  $f_date;
-      $total = $transaction->firstWhere('date', $date);
+      $totalInc = $transaction->firstWhere('date', $date);
+      $totalExp = $expenses->firstWhere('date', $date);
       
-      array_push($nom,$total ? $total->total:0);
+      array_push($inc,$totalInc ? $totalInc->total:0);
+      array_push($exp,$totalExp ? $totalExp->total:0);
     }
     
-    $data->chartTotal = implode("','", $nom);
+    $data->chartIncome = implode("','", $inc);
+    $data->chartExpense = implode("','", $exp);
     $data->chartTgl = implode("','", $range);
-    
     return $data;
   }
 

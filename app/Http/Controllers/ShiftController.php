@@ -22,9 +22,11 @@ class ShiftController extends Controller
 			'save' => (Auth::user()->can(['shift_simpan']) == true ? "true" : "false") . " as can_save",
 			'delete' => (Auth::user()->can(['shift_hapus']) == true ? "true" : "false") . " as can_delete",
 			'close' => (Auth::user()->can(['shift_tutup'])  == true ? "true" : "false") . " as can_close",
-			'view' => (Auth::user()->can(['shift_detail'])  == true ? "true" : "false") . " as can_view"
+			'view' => (Auth::user()->can(['shift_detail'])  == true ? "true" : "false") . " as can_view",
+			// 'is_admin' => 
 		);
-		$results = ShiftRepository::grid($perms);
+		$isAdmin = Auth::user()->getAuthIdentifier() == 1 ? true :false;
+		$results = ShiftRepository::grid($perms, $isAdmin, Auth::user()->getAuthIdentifier());
 		
 		return response()->json($results);
 	}

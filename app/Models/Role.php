@@ -13,6 +13,7 @@ class Role extends Model
     protected $fillable = ['rolename'
         ,'roledetail'
         ,'rolepermissions'
+        ,'roleisadmin'
         ,'roleactive'
         ,'rolecreatedat'
         ,'rolecreatedby'

@@ -29,6 +29,16 @@ class SettingRepository
       }
       return $respon;
     }
+
+    public static function getCafeName()
+    {
+      $q = Setting::where('settingactive', '1')
+        ->where('settingkey', 'NamaApp')
+        ->select('settingvalue')
+        ->first();
+      
+      return $q->settingvalue;
+    }
   
     public static function save($respon, $inputs, $loginid)
     {
@@ -58,5 +68,29 @@ class SettingRepository
       return $respon;
     }
   
-    
+    public static function saveInitApp($respon, $inputs)
+    {
+      try{
+        foreach($inputs as $key=>$input){
+          if ($key == '_token')
+            continue;
+
+          $cr = Setting::create([
+            'settingcategory' => 'AppSetting',
+            'settingkey' => $key,
+            'settingvalue' => $input,
+            'settingactive' => '1',
+            'settingcreatedat' => now()->toDateTimeString(),
+            'settingcreatedby' => '0'
+          ]);
+        }
+        
+        $respon['status'] = 'success';
+        array_push($respon['messages'], 'Setting Aplikasi berhasil.');
+      }catch(\Exception $e){
+        $respon['status'] = 'error';
+        array_push($respon['messages'], 'Error');
+      }
+      return $respon;
+    }
   }

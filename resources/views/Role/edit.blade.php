@@ -32,6 +32,15 @@
                 <label for="rolename">Nama Jabatan</label>
                 <input type="text" name="rolename" value="{{ old('rolename', $data->rolename) }}" class="form-control" id="rolename" placeholder="Nama Jabatan" required>
               </div>
+                <!-- <div class="col-md-12">
+                  <label for="roledetail">Admin Aplikasi (Tidak/Ya)</label>
+                  <div class="">
+                    <label class="switch s-icons s-outline  s-outline-success  mb-4 mr-2">
+                      <input type="checkbox" name="roleisadmin">
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+                </div> -->
               <div class="col-md-12 mb-2">
                 <label for="roledetail">Detail Jabatan</label>
                 <textarea class="form-control" name="roledetail" >{{ old('roledetail', $data->roledetail) }}</textarea>
@@ -62,8 +71,8 @@
                       $checkedStr = $permissionActive ? 'checked="checked"' : null;
                     ?>
                     <div class="custom-control custom-switch">
-                        <input type="checkbox" name="rolepermissions[]" class="custom-control-input" value="{{$act->raw}}" id="{{$act->raw}}" {!! $checkedStr !!} >
-                        <label class="custom-control-label" for="{{$act->raw}}">{{$act->value}}</label>
+                      <input type="checkbox" name="rolepermissions[]" class="custom-control-input" value="{{$act->raw}}" id="{{$act->raw}}" {!! $checkedStr !!} >
+                      <label class="custom-control-label" for="{{$act->raw}}">{{$act->value}}</label>
                     </div>
                   @endforeach
                   </div>

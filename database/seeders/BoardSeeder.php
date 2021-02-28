@@ -20,65 +20,9 @@ class BoardSeeder extends Seeder
      */
     public function run()
     {
-        Setting::truncate();
         Board::truncate();
         User::truncate();
-
-        //Setting
-        Setting::create([
-            'settingcategory' => 'Setting',
-            'settingkey' => 'Nama Cafe',
-            'settingvalue' => 'Kape',
-            'settingactive' => '1',
-            'settingcreatedat' => now()->toDateTimeString(),
-            'settingcreatedby' => '1'
-          ]);
-    
-          Setting::create([
-            'settingcategory' => 'Setting',
-            'settingkey' => 'Alamat',
-            'settingvalue' => 'Sungai Penuh - Jambi',
-            'settingactive' => '1',
-            'settingcreatedat' => now()->toDateTimeString(),
-            'settingcreatedby' => '1'
-          ]);
-          
-          Setting::create([
-            'settingcategory' => 'Setting',
-            'settingkey' => 'Telepon',
-            'settingvalue' => '0748-00000',
-            'settingactive' => '1',
-            'settingcreatedat' => now()->toDateTimeString(),
-            'settingcreatedby' => '1'
-          ]);
-          
-          Setting::create([
-            'settingcategory' => 'Setting',
-            'settingkey' => 'NomorInvoice',
-            'settingvalue' => 'KPKC',
-            'settingactive' => '1',
-            'settingcreatedat' => now()->toDateTimeString(),
-            'settingcreatedby' => '1'
-          ]);
-
-          Setting::create([
-            'settingcategory' => 'Setting',
-            'settingkey' => 'FooterInvoice',
-            'settingvalue' => 'Terima Kasih Atas Kepercayaan Anda',
-            'settingactive' => '1',
-            'settingcreatedat' => now()->toDateTimeString(),
-            'settingcreatedby' => '1'
-          ]);
-          
-          Setting::create([
-            'settingcategory' => 'Logo',
-            'settingkey' => 'LogoAplikasi',
-            'settingvalue' => null,
-            'settingactive' => '1',
-            'settingcreatedat' => now()->toDateTimeString(),
-            'settingcreatedby' => '1'
-          ]);
-
+        
         User::create([
             'username' => 'superadmin',
             'userpassword' => Hash::make('superadmin'),
