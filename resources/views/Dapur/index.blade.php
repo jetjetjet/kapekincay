@@ -54,6 +54,14 @@
         width: 150px;
         margin: 15px;
       }
+
+      ol {
+        margin-bottom: 0,
+        font-size: 15px
+      }
+      li{
+        font-size: 15px
+      }
     </style>
     <!-- END GLOBAL MANDATORY STYLES -->
 </head>
@@ -160,19 +168,21 @@
               'data': null,
               'render': function(data, type, full, meta){
                   let sub = data.subOrder,
-                    order = "<br><ul>",
-                    temp;
+                    makanan = "<br>Makanan<ol>",
+                    minuman = "</ol>Minuman<ol>";
                   sub.forEach(function(e){
-                    order += "<li> " + e.odqty + " - " + e.odmenutext + " (" + e.odmenutype + ")";
-                    if(e.odremark != null){
-                      order += "<br>" + e.odremark + "</li>"
-                    } else {
-                      order += "</li>"
-                    }
+                    let temp = "";
+                    temp += "<li> " + e.odmenutext + " x<b>" + e.odqty+"</b>";
+                    e.odremark != null 
+                      ? temp += "<br>" + e.odremark + "</li>"
+                      : temp += "</li>"
+                    
+                    e.odmenutype == 'Makanan'
+                      ? makanan += temp
+                      : minuman += temp
                   })
-                  order += "</ul>"
                   
-              return order;
+              return makanan + minuman + "</ol>";
               }
             }
         ],

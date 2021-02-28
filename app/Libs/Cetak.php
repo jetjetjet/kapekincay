@@ -16,7 +16,7 @@ class Cetak
     return Array(
       "footer" => SettingRepository::getAppSetting('FooterStruk'),
       "header" => SettingRepository::getAppSetting('HeaderStruk'),
-      "AppName" => SettingRepository::getAppSetting('AppName'),
+      "AppName" => SettingRepository::getAppSetting('NamaApp'),
       "IpPrinter" => SettingRepository::getAppSetting('IpPrinter'),
       "Telp" => SettingRepository::getAppSetting('Telp'),
       "Alamat" => SettingRepository::getAppSetting('Alamat')
@@ -32,9 +32,10 @@ class Cetak
       $printer->setJustification(Printer::JUSTIFY_CENTER);
       $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
       $printer->setEmphasis(true);
-      $printer->text(self::getSetting()['AppName'] ."\n");
       $printer->selectPrintMode();
-      $printer->text(self::getSetting()['header']."\n");
+      $printer->text(self::getSetting()['AppName'] ."\n");
+      if(self::getSetting()['header'])
+        $printer->text(self::getSetting()['header']."\n");
       $printer->text(self::getSetting()['Alamat']."\n");
       $printer->text("================================\n");
       /* Title of receipt */
