@@ -7,58 +7,81 @@ use Mike42\Escpos\PrintConnectors\RawbtPrintConnector;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 use Mike42\Escpos\CapabilityProfile;
 
+use App\Repositories\SettingRepository;
+
 class Cetak
 {
+  private static function getSetting()
+  {
+    return Array(
+      "footer" => SettingRepository::getAppSetting('FooterStruk'),
+      "header" => SettingRepository::getAppSetting('HeaderStruk'),
+      "AppName" => SettingRepository::getAppSetting('AppName'),
+      "IpPrinter" => SettingRepository::getAppSetting('IpPrinter'),
+      "Telp" => SettingRepository::getAppSetting('Telp'),
+      "Alamat" => SettingRepository::getAppSetting('Alamat')
+    );
+  }
+
   public static function print($data)
   {
-    $profile = CapabilityProfile::load("simple");
-		$connector = new RawbtPrintConnector();
-		$printer = new Printer($connector, $profile);
-    $printer->setJustification(Printer::JUSTIFY_CENTER);
-    $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-    $printer->text("KapeKincay.\n");
-    $printer->selectPrintMode();
-    $printer->text("Sungai Penuh - Jambi.\n");
-    $printer->feed();
-    /* Title of receipt */
-    $printer->setEmphasis(true);
-    $printer->text("Daftar Pesanan\n");
-    $printer->text($data->invoice . "\n");
-    $printer->text($data->orderType . " - No.". $data->noTable . "\n");
-    $printer->setEmphasis(false);
-    $printer->feed(1);
-
-    // Body
-    $printer->setJustification(Printer::JUSTIFY_LEFT);
-    $printer->setEmphasis(true);
-    // $printer->text(self::getAsString("", $data->price, "Rp "));
-    $printer->setEmphasis(false);
-    if($data->detail){
-      foreach($data->detail as $item){
-        $printer->text(self::getAsString($item->qty . " - " . $item->text, $item->totalPrice)); // for 58mm Font A
+    try{
+      $profile = CapabilityProfile::load("simple");
+      $connector = new RawbtPrintConnector();
+      $printer = new Printer($connector, $profile);
+      $printer->setJustification(Printer::JUSTIFY_CENTER);
+      $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+      $printer->setEmphasis(true);
+      $printer->text(self::getSetting()['AppName'] ."\n");
+      $printer->selectPrintMode();
+      $printer->text(self::getSetting()['header']."\n");
+      $printer->text(self::getSetting()['Alamat']."\n");
+      $printer->text("================================\n");
+      /* Title of receipt */
+      $printer->text("Daftar Pesanan\n");
+      $printer -> setTextSize(2, 1);
+      $printer->text($data->invoice . "\n");
+      $printer -> setTextSize(1, 1);
+      $printer->text($data->orderType . " - No.". $data->noTable . "\n");
+      $printer->setEmphasis(false);
+  
+      $printer->text("--------------------------------\n");
+      // Body
+      $printer->setJustification(Printer::JUSTIFY_LEFT);
+      $printer->setEmphasis(true);
+      // $printer->text(self::getAsString("", $data->price, "Rp "));
+      $printer->setEmphasis(false);
+      if($data->detail){
+        foreach($data->detail as $item){
+          $printer->text($item->text."\n");
+          $printer->text(self::getAsString($item->qty . " x " . number_format($item->price,0), number_format($item->totalPrice,0))); // for 58mm Font A
+        }
       }
+  
+      $printer->text("--------------------------------\n");
+      /* Total */
+      $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+      $printer->text(self::getAsString("Total ", number_format($data->price,0), "Rp "));
+      $printer->selectPrintMode();
+  
+      /* Footer */
+      $printer->feed(1);
+      $printer->setJustification(Printer::JUSTIFY_CENTER);
+      $printer->text(self::getSetting()['footer'] . "\n");
+      $printer->feed();
+      $printer->close();
+      // $printer->text($date . "\n");
+    }catch(\Exception $e){
+      $printer = false;
     }
-
-    $printer->text("--------------------------------\n");
-    /* Total */
-    $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-    $printer->text(self::getAsString("Total ", $data->price, "Rp "));
-    $printer->selectPrintMode();
-
-    /* Footer */
-    $printer->feed(1);
-    $printer->setJustification(Printer::JUSTIFY_CENTER);
-    $printer->text("-= Terima Kasih =-\n");
-    $printer->feed(1);
-		$printer->close();
-    // $printer->text($date . "\n");
+    
   }
 
   public static function printKasir($data, $inputs)
   {
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = new NetworkPrintConnector("192.168.192.168", 9100);
+      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100);
       $printer = new Printer($connector, $profile);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
       // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
@@ -69,18 +92,19 @@ class Cetak
       $printer -> graphics($tux);
       $printer -> feed();
       $printer->selectPrintMode();
-      $printer->text("Sungai Penuh - Jambi.\n");
+      $printer->text(self::getSetting()['header']."\n");
+      $printer->text(self::getSetting()['Alamat']."\n");
       $printer->feed();
       /* Title of receipt */
       $printer->setEmphasis(true);
       $printer->setJustification(Printer::JUSTIFY_LEFT);
       $printer->text("Nomor Pesanan : " . $data->invoice . "\n");
-      $printer->text("Kasir : ". $inputs['username'] . "\n");
-      $printer->text("Tipe Pesanan : " . $data->orderType . "\n");
+      $printer->text("Kasir         : ". $inputs['username'] . "\n");
+      $printer->text("Tipe Pesanan  : " . $data->orderType . "\n");
       if($data->noTable != null){
         $printer->text("Meja - " . $data->noTable . "\n");
       }
-      $printer->text("Tanggal : ". $data->date . "\n");
+      $printer->text("Tanggal       : ". $data->date . "\n");
       $printer->setEmphasis(false);
       $printer->feed(1);
   
@@ -119,20 +143,16 @@ class Cetak
       /* Footer */
       $printer->feed(1);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
-      $printer->text("-= Terima Kasih =-\n");
+      $printer->text(self::getSetting()['footer']."\n");
       $printer->feed(1);
       $printer -> pulse();
 
-
-  
       $printer -> cut();
       $printer->close();
 
     }catch(\Exception $e){
       $printer = false;
     }
-    
-    
     // $printer->text($date . "\n");
   }
 

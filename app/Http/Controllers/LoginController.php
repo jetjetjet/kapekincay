@@ -55,7 +55,7 @@ class LoginController extends Controller
 				->withInput($request->except('password'));
 		};
 		
-		$cafeName = SettingRepository::getCafeName();
+		$cafeName = SettingRepository::getAppSetting('NamaApp');
 
 		$request->session()->put('cafeName', $cafeName);
 		$request->session()->put('username', Auth::user()->getUserName());

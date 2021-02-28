@@ -30,14 +30,13 @@ class SettingRepository
       return $respon;
     }
 
-    public static function getCafeName()
+    public static function getAppSetting($filter)
     {
       $q = Setting::where('settingactive', '1')
-        ->where('settingkey', 'NamaApp')
+        ->where('settingkey', $filter)
         ->select('settingvalue')
         ->first();
-      
-      return $q->settingvalue;
+      return $q->settingvalue ?? null;
     }
   
     public static function save($respon, $inputs, $loginid)
