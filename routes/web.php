@@ -82,7 +82,8 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/setting/simpan', [SettingController::class, 'save'])->middleware('can:pengaturan_edit');
   
   Route::get('/order/index', [OrderController::class, 'index'])->middleware('can:order_lihat');
-  Route::get('/order/index/grid', [OrderController::class, 'getGrid'])->middleware('can:order_lihat');
+  Route::get('/order/index/grid/takeaway', [OrderController::class, 'getGridaway'])->middleware('can:order_lihat');
+  Route::get('/order/index/grid/dinein', [OrderController::class, 'getGridin'])->middleware('can:order_lihat');
   Route::get('/order/grid/bungkus', [ OrderController::class, 'orderBungkus' ])->middleware('can:order_lihatBungkus');
   Route::get('/order/{id?}', [OrderController::class, 'order'])->middleware('can:order_lihat');
   Route::get('/order/detail/{id?}', [ OrderController::class, 'detail' ])->middleware('can:order_lihat');
@@ -90,6 +91,8 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('/order/meja/view', [OrderController::class, 'orderView']);
   Route::get('/order/meja/lists', [OrderController::class, 'orderViewLists']);
   Route::get('/order/cetak/struk/{idOrder}', [OrderController::class, 'orderReceipt']);
+  Route::get('/order/bayar/cetak/{idOrder}', [OrderController::class, 'orderReceiptkasir']);
+  Route::get('/open/drawer', [OrderController::class, 'opendrawer']);
   Route::post('/order/save/{id?}', [OrderController::class, 'save'])->middleware('can:order_simpan');
   Route::post('/order/hapus/{id}', [OrderController::class, 'deleteById'])->middleware('can:order_hapus');
   Route::post('/order/batal/{id}', [OrderController::class, 'voidById'])->middleware('can:order_batal');

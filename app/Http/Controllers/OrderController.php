@@ -23,9 +23,16 @@ class OrderController extends Controller
 		return view('Order.index');
 	}
 
-  public function getGrid(Request $request)
+  public function getGridaway(Request $request)
 	{
-		$results = OrderRepository::grid();
+		$results = OrderRepository::gridtakeaway();
+		
+		return response()->json($results);
+	}
+
+	public function getGridin(Request $request)
+	{
+		$results = OrderRepository::griddinein();
 		
 		return response()->json($results);
 	}
@@ -158,7 +165,8 @@ class OrderController extends Controller
 		$respon = Helpers::$responses;
 
     $inputs = $request->all();
-
+		self::orderReceiptkasir($id, $request);
+	
 		$loginid = Auth::user()->getAuthIdentifier();
 		$results = OrderRepository::paid($respon, $id, $loginid, $inputs);
 		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Bayar Pesanan', $loginid);
@@ -177,5 +185,26 @@ class OrderController extends Controller
 	{
 		$data = OrderRepository::getOrderReceipt($idOrder);
 		$cetak = Cetak::print($data);
+	}
+
+	public function orderReceiptkasir($id, Request $request)
+	{
+		$data = OrderRepository::getOrderReceiptkasir($id);
+		$inputs = $request->all();
+		
+		$cetak = Cetak::printkasir($data, $inputs);
+		return redirect('/order/meja/view');
+	}
+
+
+	public function opendrawer(Request $request)
+	{
+		$respon = Helpers::$responses;
+		$loginid = Auth::user()->getAuthIdentifier();
+		$cetak = Cetak::bukaLaci($respon);
+	
+		AuditTrailRepository::saveAuditTrail($request->path(), $cetak, 'Buka Laci', $loginid);
+
+		
 	}
 }

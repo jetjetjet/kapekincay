@@ -105,9 +105,26 @@ class OrderRepository
     return $data;
   }
 
-  public static function grid()
+  public static function gridtakeaway()
   {
     return Order::where('orderactive', '1')
+    ->where('ordertype', 'TAKEAWAY')
+    ->select(
+      'id',
+      'orderinvoice',  
+      // 'ordercustname', 
+      DB::raw("CASE WHEN orders.ordertype = 'DINEIN' THEN 'Makan ditempat' ELSE 'Bungkus' END as ordertypetext"), 
+      'orderdate',
+      'orderprice', 
+      DB::raw("CASE WHEN orders.orderstatus = 'PROCEED' THEN 'Diproses' WHEN orders.orderstatus = 'COMPLETED' THEN 'Selesai' WHEN orders.orderstatus = 'PAID' THEN 'Lunas' WHEN orders.orderstatus = 'VOIDED' THEN 'Batal' WHEN orders.orderstatus = 'ADDITIONAL' THEN 'Proses Tambah' END as orderstatuscase")
+      ) 
+    ->get();
+  }
+ 
+  public static function griddinein()
+  {
+    return Order::where('orderactive', '1')
+    ->where('ordertype', 'DINEIN')
     ->select(
       'id',
       'orderinvoice', 
@@ -115,7 +132,7 @@ class OrderRepository
       // 'ordercustname', 
       DB::raw("CASE WHEN orders.ordertype = 'DINEIN' THEN 'Makan ditempat' ELSE 'Bungkus' END as ordertypetext"), 
       'orderdate',
-      DB::raw("to_char(orders.orderprice, '999G999G999G999D99')as orderprice"), 
+      'orderprice', 
       DB::raw("CASE WHEN orders.orderstatus = 'PROCEED' THEN 'Diproses' WHEN orders.orderstatus = 'COMPLETED' THEN 'Selesai' WHEN orders.orderstatus = 'PAID' THEN 'Lunas' WHEN orders.orderstatus = 'VOIDED' THEN 'Batal' WHEN orders.orderstatus = 'ADDITIONAL' THEN 'Proses Tambah' END as orderstatuscase")
       ) 
     ->get();
@@ -606,6 +623,52 @@ class OrderRepository
         DB::raw("case when ordertype = 'DINEIN' then 'Makan Ditempat' else 'Bungkus' end as ordertype"),
         DB::raw("boardnumber || ' - Lantai ' || boardfloor as boardnumber")
       )->first();
+    if($order != null){
+      $dataOrder->invoice = $order->orderinvoice;
+      $dataOrder->price = $order->orderprice;
+      $dataOrder->date = Carbon::parse($order->orderdate)->format('d/m/Y H:i') ?? null;
+      $dataOrder->orderType = $order->ordertype;
+      $dataOrder->noTable = $order->boardnumber;
+      $dataOrder->detail = Array();
+
+      $subs = self::getSubOrder($id);
+      foreach($subs as $sub){
+        $temp = new \StdClass();
+        $temp->text = $sub->odmenutext;
+        $temp->qty = $sub->odqty;
+        $temp->price = $sub->odprice;
+        $temp->totalPrice = $sub->odtotalprice;
+  
+        array_push($dataOrder->detail, $temp);
+      }
+    }
+    return $dataOrder;
+  }
+
+  public static function getOrderReceiptkasir($id)
+  {
+    $dataOrder = new \StdClass();
+    $data = Order::where('orderactive', '1')
+      ->where('orders.id', $id)
+      ->first();
+      if($data->orderboardid == null){
+        $order = $data->select(
+          'orderinvoice',
+          'orderprice',
+          'orderdate',     
+        )->first();
+        $order->boardnumber = null;
+        $order->ordertype = 'Bungkus';
+      }else{
+        $order = $data->join('boards', 'boards.id', 'orderboardid')      
+        ->select(
+          'orderinvoice',
+          'orderprice',
+          'orderdate',
+          DB::raw("case when ordertype = 'DINEIN' then 'Makan Ditempat' else 'Bungkus' end as ordertype"),
+          DB::raw("'No.' ||boardnumber || ' - Lantai ' || boardfloor as boardnumber")
+        )->first();
+      }
     if($order != null){
       $dataOrder->invoice = $order->orderinvoice;
       $dataOrder->price = $order->orderprice;
