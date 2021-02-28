@@ -1,6 +1,6 @@
-@extends('Layout.layout-form')
+@extends('Layout.index-notopbar')
 
-@section('breadcumb')
+@section('content-breadcumb')
   <link rel="stylesheet" href="{{ url('/') }}/plugins/font-icons/fontawesome/css/regular.css">
   <link rel="stylesheet" href="{{ url('/') }}/plugins/font-icons/fontawesome/css/fontawesome.css">
   <style>
@@ -20,13 +20,9 @@
   <div class="title">
     <h3>Pesanan</h3>
   </div>
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);">Pesanan</a></li>
-    <li class="breadcrumb-item"><a href="javascript:void(0);">Proses Pesanan</a></li>
-  </ol>
 @endsection
 
-@section('content-form')
+@section('content-body')
 <div class="widget-content widget-content-area br-4">
   <div class="col-xl-12 col-lg-12 col-md-12">
     <div class="statbox box box-shadow">
@@ -112,8 +108,8 @@
                         <option value="TAKEAWAY" "{{ $data->ordertype == 'TAKEAWAY' ?'selected':'' }}">Bungkus</option>
                       </select>
                     @else
-                      <input type="hidden" value="{{ $data->ordertype }}" name="ordertype" readonly>
-                      <input type="text" id="boardText" value="{{ $data->ordertypetext }}" name="ordertypetext" class="form-control form-control-sm" readonly>
+                      <input type="hidden" value="{{ $data->ordertype }}" id="orderType" name="ordertype" readonly>
+                      <input type="text" id="boardText1" value="{{ $data->ordertypetext }}" name="ordertypetext" class="form-control form-control-sm" readonly>
                     @endif
                   </div>
                 </div>
@@ -264,7 +260,7 @@
 </table>
 @endsection
 
-@section('js-form')
+@section('js-body')
 <script>
   $(document).ready(function (){
     const query = window.location.search.substring(1);
@@ -284,6 +280,8 @@
       $('[name="orderboardid"]').val(urlMeja);
       $('[name="orderboardtext"]').val(urlMejaTeks);
     }
+    
+    initMeja($('#orderType').val());
 
     //Cetak
     $('#print').on('click', function (e) {
@@ -329,14 +327,7 @@
     
     $('#orderType').on('change',function(){
       let val = $(this).val();
-      if(val == "TAKEAWAY"){
-        $('.divMeja').addClass('d-none');
-        $('#headerOrder').addClass('d-none');
-        $modal.find('.cariMeja').select2().val(null).trigger('change');
-      } else {
-        $('.divMeja').removeClass('d-none')
-        $('#headerOrder').removeClass('d-none');
-      }
+      initMeja(val);
     });
 
     $('#headerOrder').on('click', function(){
@@ -474,6 +465,18 @@
     });
     $('#idTotal').html(formatter.format(totalPrice));
     $('[name="orderprice"]').val(totalPrice);
+  }
+
+  function initMeja(val){
+    // let type = $('#orderType').val();
+    if(val == "TAKEAWAY"){
+      $('.divMeja').addClass('d-none');
+      $('#headerOrder').addClass('d-none');
+      // $modal.find('.cariMeja').select2().val(null).trigger('change');
+    } else {
+      $('.divMeja').removeClass('d-none')
+      $('#headerOrder').removeClass('d-none');
+    }
   }
 
   const toast = swal.mixin({
