@@ -165,7 +165,7 @@ class OrderController extends Controller
 		$respon = Helpers::$responses;
 
     $inputs = $request->all();
-		self::orderReceiptkasir($id, $request);
+		
 	
 		$loginid = Auth::user()->getAuthIdentifier();
 		$results = OrderRepository::paid($respon, $id, $loginid, $inputs);
@@ -175,7 +175,7 @@ class OrderController extends Controller
 			event(new BoardEvent('ok'));
 			event(new OrderProceed('ok'));
 		}
-
+		self::orderReceiptkasir($id, $request);
 		$request->session()->flash($results['status'], $results['messages']);
 
 		return redirect('/order/meja/view');
@@ -191,7 +191,7 @@ class OrderController extends Controller
 	{
 		$data = OrderRepository::getOrderReceiptkasir($id);
 		$inputs = $request->all();
-		
+		// dd($data);
 		$cetak = Cetak::printkasir($data, $inputs);
 		return redirect('/order/meja/view');
 	}
@@ -205,6 +205,6 @@ class OrderController extends Controller
 	
 		AuditTrailRepository::saveAuditTrail($request->path(), $cetak, 'Buka Laci', $loginid);
 
-		
+		return response()->json($cetak);
 	}
 }

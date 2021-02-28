@@ -1,6 +1,7 @@
 <?php
 namespace App\Libs;
 
+use Carbon\Carbon;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\EscposImage;
 use Mike42\Escpos\PrintConnectors\RawbtPrintConnector;
@@ -56,6 +57,8 @@ class Cetak
 
   public static function printKasir($data, $inputs)
   {
+    
+    // dd($jam);
     try{
       $profile = CapabilityProfile::load("simple");
       $connector = new NetworkPrintConnector("192.168.192.168", 9100);
@@ -104,15 +107,12 @@ class Cetak
       $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
       $printer->text(self::getAsStringkasirtotal("Total ", number_format($data->price), "Rp "));
 
-      if($inputs['orderpaidprice'] != 0){
-        if($inputs['orderpaymentmethod'] == 'Tunai'){
-          $printer->text(self::getAsStringkasirtotal("Tunai ", number_format($inputs['orderpaidprice']), "Rp "));
-          $kembalian = $inputs['orderpaidprice'] - $data->price;
+
+        
+          $printer->text(self::getAsStringkasirtotal($data->payment , number_format($data->paidprice), "Rp "));
+          $kembalian = $data->paidprice - $data->price;
           $printer->text(self::getAsStringkasirtotal("Kembalian ", number_format($kembalian), "Rp "));
-        }else{
-          $printer->text(self::getAsStringkasirtotal("Non-Tunai ", number_format($inputs['orderpaidprice']), "Rp "));
-        }
-      }
+      
 
       $printer->selectPrintMode();
   
@@ -121,13 +121,18 @@ class Cetak
       $printer->setJustification(Printer::JUSTIFY_CENTER);
       $printer->text("-= Terima Kasih =-\n");
       $printer->feed(1);
-      $printer -> pulse();
+
+      /* Lisence*/ 
+      // $printer -> setFont(Printer::FONT_B);
+      // $jam = now()->format('d/m/Y h:i:s');
+      // $printer->text(self::getAsStringkasirfooter($jam, '@IkhwanKomputer'));
+      // $printer -> pulse();
 
 
   
       $printer -> cut();
       $printer->close();
-
+// dd($jam);
     }catch(\Exception $e){
       $printer = false;
     }
@@ -197,5 +202,16 @@ class Cetak
     $sign = str_pad( 'Rp.', $md, ' ', STR_PAD_LEFT);
     $right = str_pad($price, $rightCols, ' ', STR_PAD_LEFT);
     return "$left$sign$right\n";
+  }
+
+  public static function getAsStringkasirfooter($jam, $lisen)
+  {
+    $rightCols = 44;
+    $width = 80;
+    $leftCols = 20;
+    $left = str_pad($jam, $leftCols);
+
+    $right = str_pad($lisen, $rightCols, ' ', STR_PAD_LEFT);
+    return "$left$right\n";
   }
 }

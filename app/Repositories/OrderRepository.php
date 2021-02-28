@@ -635,30 +635,37 @@ class OrderRepository
   public static function getOrderReceiptkasir($id)
   {
     $dataOrder = new \StdClass();
-    $data = Order::where('orderactive', '1')
-      ->where('orders.id', $id)
-      ->first();
+    $data = Order::where('orderactive', '1')->where('orders.id', $id)->first();
       if($data->orderboardid == null){
-        $order = $data->select(
+        $order = $data->where('orders.id', $id)
+        ->select(
           'orderinvoice',
           'orderprice',
-          'orderdate',     
+          'orderdate',   
+          'orderpaidprice', 
+          'orderpaymentmethod' 
         )->first();
         $order->boardnumber = null;
         $order->ordertype = 'Bungkus';
       }else{
-        $order = $data->join('boards', 'boards.id', 'orderboardid')      
+        $order = $data->join('boards', 'boards.id', 'orderboardid')  
+        ->where('orders.id', $id)    
         ->select(
           'orderinvoice',
           'orderprice',
           'orderdate',
+          'orderpaidprice', 
+          'orderpaymentmethod', 
           DB::raw("case when ordertype = 'DINEIN' then 'Makan Ditempat' else 'Bungkus' end as ordertype"),
           DB::raw("'No.' ||boardnumber || ' - Lantai ' || boardfloor as boardnumber")
         )->first();
       }
+      // dd($order);
     if($order != null){
       $dataOrder->invoice = $order->orderinvoice;
       $dataOrder->price = $order->orderprice;
+      $dataOrder->paidprice = $order->orderpaidprice;
+      $dataOrder->payment = $order->orderpaymentmethod;
       $dataOrder->date = Carbon::parse($order->orderdate)->format('d/m/Y H:i') ?? null;
       $dataOrder->orderType = $order->ordertype;
       $dataOrder->noTable = $order->boardnumber;
