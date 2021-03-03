@@ -58,7 +58,13 @@ Mousetrap.bind('esc', function(){
     confirmButtonText: 'Buka',
     cancelButtonText: 'Batal',
     reverseButtons: true,
-    padding: '2em'
+    padding: '2em',
+    preConfirm: function(result) {
+      if (result) { 
+      } else {
+        Swal.showValidationError('Password Harus Dimasukkan')        
+      }
+    }
     }).then(function(result) {
       console.log(result)
       if (result.value) {
@@ -78,23 +84,61 @@ Mousetrap.bind('esc', function(){
               })
           }
         });
-      } else if (
-        result.dismiss === swal.DismissReason.cancel
-      ) {
-        toast({
-          type: 'error',
-          title: 'Dibatalkan',
-          padding: '2em',
-          })
-      }else {
-        toast({
-          type: 'error',
-          title: 'Password Harus diisi',
-          padding: '2em',
-          })
       }
     });
   });
+
+  Mousetrap.bind('*', function(){
+    const swalWithBootstrapButtons = swal.mixin({
+      input: 'password',
+      confirmButtonClass: 'btn btn-success btn-rounded',
+      cancelButtonClass: 'btn btn-danger btn-rounded mr-3',
+      buttonsStyling: false,
+    })
+    const toast = swal.mixin({
+      toast: true,
+      position: 'center',
+      showConfirmButton: false,
+      timer: 3000,
+      padding: '2em'
+    });
+    swalWithBootstrapButtons({
+      title: 'Buka Laci',
+      text: 'Masukkan Password',
+      type: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Buka',
+      cancelButtonText: 'Batal',
+      reverseButtons: true,
+      padding: '2em',
+      preConfirm: function(result) {
+        if (result) { 
+        } else {
+          Swal.showValidationError('Password Harus Dimasukkan')        
+        }
+      }
+      }).then(function(result) {
+        console.log(result)
+        if (result.value) {
+          const url = $('#bukalaci').val()
+          $.post( url,{'pass':result.value}, function (data){         
+            if (data.status == 'success'){
+              toast({
+                type: 'success',
+                title: 'Laci Dibuka',
+                padding: '2em',
+                })
+            } else {
+              toast({
+                type: 'error',
+                title: data.messages[0],
+                padding: '2em',
+                })
+            }
+          });
+        }
+      });
+    });
 
 // end bukalaci
 let formatter = new Intl.NumberFormat();
