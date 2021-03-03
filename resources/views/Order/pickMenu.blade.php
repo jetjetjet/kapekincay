@@ -17,6 +17,103 @@
       border-bottom: 2px dotted #999
     }
   </style>
+  <style>
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+.input-number {
+  width: 30px;
+  padding: 0 0 0 0px;
+  vertical-align: top;
+  text-align: center;
+  outline: none;
+}
+
+.input-number,
+.input-number-decrement,
+.input-number-increment {
+  border: 1px solid #ccc;
+  height: 20px;
+  user-select: none;
+}
+
+.input-number-decrement,
+.input-number-increment {
+  display: inline-block;
+  width: 20px;
+  line-height: 18px;
+  background: #f1f1f1;
+  color: #444;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 0;
+}
+.input-number-decrement:active,
+.input-number-increment:active {
+  background: #ddd;
+}
+
+.input-number-decrement {
+  border-right: none;
+  border-radius: 1px 0 0 1px;
+}
+
+.input-number-increment {
+  border-left: none;
+  border-radius: 0 1px 1px 0;
+}
+
+.input-number-sm {
+  width: 80px;
+  padding: 0 12px;
+  vertical-align: top;
+  text-align: center;
+  outline: none;
+}
+
+.input-number-sm,
+.input-number-decrement-sm,
+.input-number-increment-sm {
+  border: 1px solid #ccc;
+  height: 40px;
+  user-select: none;
+}
+
+.input-number-decrement-sm,
+.input-number-increment-sm {
+  display: inline-block;
+  width: 30px;
+  line-height: 38px;
+  background: #f1f1f1;
+  color: #444;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+.input-number-decrement-sm:active,
+.input-number-increment-sm:active {
+  background: #ddd;
+}
+
+.input-number-decrement-sm {
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+
+.input-number-increment-sm {
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+}
+</style>
   <div class="title">
     <h3>Pesanan</h3>
   </div>
@@ -30,9 +127,9 @@
         <div class="alert alert-warning" role="alert">
           <strong>Pesanan Dibatalkan!</strong>
             <ul>
-              <li>Dibatalkan Oleh: </li>
+              <li>Dibatalkan Oleh: <b>{{$data->ordervoidedusername}}</b></li>
               <li>Dibatalkan Pada: {{$data->ordervoidedat}}</li>
-              <li>Alasan: {{$data->ordervoidedreason}}</li>
+              <li>Alasan: {{$data->ordervoidreason}}</li>
             </ul>
         </div>
       @endif
@@ -127,7 +224,7 @@
                     <tr>
                       <th width="40%">Menu</th>
                       <th>Harga</th>
-                      <th style="width:50px">qty</th>
+                      <th style="width:100px" class="text-center">qty</th>
                       <th>Total</th>
                       <th>Cttn</th>
                       <th></th>
@@ -156,30 +253,34 @@
           </div>
         </div>
       </div>
-      @if(!isset($data->ordervoidedat))
       <div class="row fixed-bottom">
         <div class="col-sm-12 ">
           <div class="widget-content widget-content-area" style="padding:10px">
-            <div class="float-left">
-              @if(Perm::can(['order_hapus']) && ($data->orderstatus == 'PROCEED' || $data->orderstatus == 'ADDITIONAL'))
-                <a href="" id="deleteOrder" type="button" class="btn btn-danger mt-2">Hapus</a>
-              @endif
-              @if(Perm::can(['order_void']) && ($data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED' || $data->orderstatus == 'PAID'))
-                <a href="" id="void" type="button" class="btn btn-danger mt-2">Batalkan Pesanan</a>
-              @endif
-            </div>
-            <div class="float-right">
-              <a href="{{url('/order/meja/view')}}" type="button" class="btn btn-warning mt-2">Kembali</a>
-              <a href="" type="button" id="print" class="btn btn-success mt-2">Cetak</a>
-              @if(Perm::can(['order_simpan']))
-                <a href="" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Meja</a>
-                <a type="button" id="prosesOrder" class="btn btn-primary mt-2">Simpan</a>
-              @endif
-            </div>
+          @if(!isset($data->ordervoidedat))
+              <div class="float-left">
+                @if(Perm::can(['order_hapus']) && ($data->orderstatus == 'PROCEED' || $data->orderstatus == 'ADDITIONAL'))
+                  <a href="" id="deleteOrder" type="button" class="btn btn-danger mt-2">Hapus</a>
+                @endif
+                @if(Perm::can(['order_void']) && ($data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED' || $data->orderstatus == 'PAID'))
+                  <a href="" id="void" type="button" class="btn btn-danger mt-2">Batalkan Pesanan</a>
+                @endif
+                <a href="{{url('/order/meja/view')}}" type="button" class="btn btn-warning mt-2">Kembali</a>
+              </div>
+              <div class="float-right">
+                <a href="" type="button" id="print" class="btn btn-success mt-2">Cetak</a>
+                @if(Perm::can(['order_simpan']))
+                  <a href="" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Meja</a>
+                  <a type="button" id="prosesOrder" class="btn btn-primary mt-2">Simpan</a>
+                @endif
+              </div>
+            @else
+              <div class="float-right">
+                <a href="{{url('/order/meja/view')}}" type="button" class="btn btn-warning mt-2">Kembali</a>
+              </div>
+            @endif
           </div>
         </div>
       </div>
-      @endif
     </div>
   </div>
 </div>
@@ -234,7 +335,10 @@
               <tr>
                 <td class="text-left">Jumlah</td>
                 <td class="text-primary" >
-                  <input type="number" class="form-control form-control-sm text-right" id="menuPopupQty" name="menuPopupQty" class="menuPopupQty text-right"/>
+                  <span class="input-number-decrement-sm">–</span>
+                    <input type="number" id="menuPopupQty" name="menuPopupQty" class="input-number-sm text-right" min="0">
+                  <span class="input-number-increment-sm">+</span> 
+                  <!-- <input type="number" class="form-control form-control-sm text-right" id="menuPopupQty" name="menuPopupQty" class="menuPopupQty text-right"/> -->
                 </td>
               </tr>
               <tr>
@@ -330,6 +434,7 @@
       initMeja(val);
     });
 
+    //Ubah Meja
     $('#headerOrder').on('click', function(){
       let idMeja, textMeja;
       $(this).attr('data-toggle', 'modal');
@@ -442,6 +547,31 @@
             // $row.find('[id^=dtl][id$="[deleteRow]"]').addClass('d-none');
           }
       });
+    })
+    .on('row-counterup', function(e, $row){
+      let rQty = $row.find('[name^=dtl][name$="[odqty]"]');
+      let  min = rQty.attr('min') || false;
+      
+      let oldVal = Number(rQty.val());
+      let newVal = oldVal + 1;
+      
+      rQty.val(newVal);
+      rQty.trigger("change");
+    })
+    .on('row-counterdown', function(e, $row){
+      let rQty = $row.find('[name^=dtl][name$="[odqty]"]');
+      let min = rQty.attr('min') || false;
+      let oldVal = Number(rQty.val());
+
+      let newVal = oldVal;
+      if (!min || oldVal <= min) {
+        let newVal = oldVal;
+      } else {
+        newVal = oldVal - 1;
+      }
+
+      rQty.val(newVal);
+      rQty.trigger("change");
     })
     .on('row-updating', function (e, $row){
       let newQty = $row.find('[name^=dtl][name$="[odqty]"]').val(),

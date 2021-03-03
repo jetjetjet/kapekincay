@@ -30,13 +30,14 @@ class OrderRepository
       ->where('boardactive', '1')
       ->select(
         'o.orderstatus',
-        DB::raw("case when o.orderstatus = 'PAID' then true
+        DB::raw("case when o.orderstatus = 'PAID' or o.orderstatus = 'VOIDED' then true
         when o.orderstatus is null then true else false end as boardstatus"),
         'o.id as orderid',
         'boards.id as boardid',
         'boardfloor',
         'o.orderinvoice',
         'boardnumber');
+        dd($board->toSql());
     if($filters){
       $board = $board->addSelect(
         DB::raw($filters['is_kasir']),
@@ -47,11 +48,33 @@ class OrderRepository
   }
   public static function orderGrid($filters)
   {
-    $qFloor = DB::table('boards')->where('boardactive', '1')->select(DB::raw("max(boardfloor) as maxfloor"))->first();
-    $floorMax = $qFloor->maxfloor ?? 0;
-    $board = self::orderBoard($filters)->orderBy('boardfloor', 'ASC')->orderBy('boardnumber', 'ASC')->get();
-
-    return $board;
+    $q = DB::select(DB::raw("
+      select o.orderstatus, 
+        case when o.orderstatus = 'PAID' or o.orderstatus = 'VOIDED' then true
+              when o.orderstatus is null then true else false end as boardstatus, 
+        o.id as orderid, 
+        boards.id as boardid, 
+        boardfloor, 
+        o.orderinvoice, 
+        boardnumber from boards 
+      left join (
+        select distinct on(a.orderboardid) a.id, 
+        a.orderstatus, 
+        a.orderboardid, 
+        a.orderinvoice from (
+          select id, 
+            orderstatus, 
+            orderboardid, 
+            orderinvoice from orders 
+          where orderactive = '1' 
+          and orderboardid is not null 
+          and ordervoid is null order by ordercreatedat desc) 
+        a) as o 
+      on boards.id = o.orderboardid 
+      where boardactive = '1'
+      order by boardfloor asc, boardnumber asc
+    "));
+    return $q;
   }
 
   public static function orderBungkus()
@@ -145,6 +168,7 @@ class OrderRepository
       $data = Order::leftJoin('boards', function($q){
         $q->whereRaw('orderboardid = boards.id')
           ->whereRaw("boardactive = '1'");})
+        ->leftJoin('users as uvoid', 'uvoid.id', 'ordervoidedby')
         ->where('orderactive', '1')
         ->where('orders.id', $id)
         ->select(
@@ -163,6 +187,7 @@ class OrderRepository
           'ordervoidedat',
           'ordervoidreason',
           'ordervoidedby',
+          'uvoid.username as ordervoidedusername',
           DB::raw("CASE WHEN orders.orderstatus = 'PROCEED' THEN 'Diproses' WHEN orders.orderstatus = 'COMPLETED' THEN 'Selesai' WHEN orders.orderstatus = 'PAID' THEN 'Lunas' WHEN orders.orderstatus = 'VOIDED' THEN 'Batal' WHEN orders.orderstatus = 'ADDITIONAL' THEN 'Proses Tambah' END as orderstatuscase")
         )->first();
       if($data == null){
@@ -352,36 +377,54 @@ class OrderRepository
     try{
       foreach ($details as $key=>$dtl){
         if (!isset($dtl['id'])){
-          $detRow = OrderDetail::create([
-            'odorderid' => $idHeader,
-            'odmenuid' => $dtl['odmenuid'],
-            'odqty' => $dtl['odqty'],
-            'odprice' => $dtl['odprice'],
-            'odtotalprice' => ($dtl['odprice'] * $dtl['odqty']),
-            'odremark' => $dtl['odremark'],
-            'oddelivered' => '0',
-            'odindex' => $key,
-            'odactive' => '1',
-            'odcreatedat' => now()->toDateTimeString(),
-            'odcreatedby' => $loginid
-          ]);
-
-            $updStatus = Order::where('orderactive', '1')
-            ->where('id', $idHeader)
-            ->update([
-              'orderstatus' => 'ADDITIONAL'
+          if($dtl['odqty'] > 0){
+            $detRow = OrderDetail::create([
+              'odorderid' => $idHeader,
+              'odmenuid' => $dtl['odmenuid'],
+              'odqty' => $dtl['odqty'],
+              'odprice' => $dtl['odprice'],
+              'odtotalprice' => ($dtl['odprice'] * $dtl['odqty']),
+              'odremark' => $dtl['odremark'],
+              'oddelivered' => '0',
+              'odindex' => $key,
+              'odactive' => '1',
+              'odcreatedat' => now()->toDateTimeString(),
+              'odcreatedby' => $loginid
             ]);
+  
+              $updStatus = Order::where('orderactive', '1')
+              ->where('id', $idHeader)
+              ->update([
+                'orderstatus' => 'ADDITIONAL'
+              ]);
+          }
         } else {
           $detRow = OrderDetail::where('odactive', '1')
-            ->where('id', $dtl['id'])
-            ->update([
+            ->where('id', $dtl['id']);
+          if($dtl['odqty'] > 0){
+            $detRow->update([
               'odmenuid' => $dtl['odmenuid'],
               'odqty' => $dtl['odqty'],
               'odprice' => $dtl['odprice'],
               'odtotalprice' => ($dtl['odprice'] * $dtl['odqty']),
               'odremark' => $dtl['odremark'],
               'odindex' => $key,
+              'odmodifiedat' => now()->toDateTimeString(),
+              'odmodifiedby' => $loginid
             ]);
+          }else{
+            $detRow->update([
+              'odmenuid' => $dtl['odmenuid'],
+              'odqty' => $dtl['odqty'],
+              'odprice' => $dtl['odprice'],
+              'odtotalprice' => ($dtl['odprice'] * $dtl['odqty']),
+              'odremark' => $dtl['odremark'],
+              'odindex' => $key,
+              'odactive' => '0',
+              'odmodifiedat' => now()->toDateTimeString(),
+              'odmodifiedby' => $loginid
+            ]);
+          }
         }
       }
       $respon['success'] = true;
@@ -431,7 +474,7 @@ class OrderRepository
     $ui->orderpaidprice = $db->orderpaidprice ?? null;
     $ui->orderpaidremark = $db->orderpaidremark ?? null;
     $ui->ordervoid = $db->ordervoid ?? null;
-    $ui->ordervoidedname = $db->ordervoidedname ?? null;
+    $ui->ordervoidedusername = $db->ordervoidedusername ?? null;
     $ui->ordervoidedat = $db->ordervoidedat ?? null;
     $ui->ordervoidreason = $db->ordervoidreason ?? null;
     $ui->ordercreatedat = $db->ordercreatedat ?? null;
