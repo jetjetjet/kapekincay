@@ -48,13 +48,13 @@ class OrderRepository
   }
   public static function orderGrid($filters)
   {
+    $f = $filters['is_kasir']  ?? "";
+    $fp = $filters['is_pelayan'] ?? "";
+    $f1 = DB::raw($f != null?$f. "," : "");
+    $f2 = DB::raw($fp != null ?$fp. ",": "");
     $q = DB::select(DB::raw("
-      select o.orderstatus,".
-      DB::raw($filters['is_kasir'])
-      .",".
-      DB::raw($filters['is_pelayan'])
-      ."
-        ,case when o.orderstatus = 'PAID' or o.orderstatus = 'VOIDED' then true
+      select o.orderstatus,". $f1 . $f2 ."
+        case when o.orderstatus = 'PAID' or o.orderstatus = 'VOIDED' then true
               when o.orderstatus is null then true else false end as boardstatus, 
         o.id as orderid, 
         boards.id as boardid, 
