@@ -264,7 +264,7 @@ input[type=number] {
                 @if(Perm::can(['order_void']) && ($data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED' || $data->orderstatus == 'PAID'))
                   <a href="" id="void" type="button" class="btn btn-danger mt-2">Batalkan Pesanan</a>
                 @endif
-                <a href="{{url('/order/meja/view')}}" type="button" class="btn btn-warning mt-2">Kembali</a>
+                <a href="{{url('/order/meja/view')}}" type="button" id='back' class="btn btn-warning mt-2">Kembali</a>
               </div>
               <div class="float-right">
                 <a href="" type="button" id="print" class="btn btn-success mt-2">Cetak</a>
@@ -275,7 +275,7 @@ input[type=number] {
               </div>
             @else
               <div class="float-right">
-                <a href="{{url('/order/meja/view')}}" type="button" class="btn btn-warning mt-2">Kembali</a>
+                <a href="{{url('/order/meja/view')}}" type="button" id='back' class="btn btn-warning mt-2">Kembali</a>
               </div>
             @endif
           </div>
@@ -335,9 +335,9 @@ input[type=number] {
               <tr>
                 <td class="text-left">Jumlah</td>
                 <td class="text-primary" >
-                  <span class="input-number-decrement-sm">–</span>
-                    <input type="number" id="menuPopupQty" name="menuPopupQty" class="input-number-sm text-right" min="0">
-                  <span class="input-number-increment-sm">+</span> 
+                  <span id="keymin" class="input-number-decrement-sm">–</span>
+                    <input type="number" id="menuPopupQty" name="menuPopupQty" class="input-number-sm text-right" value="1" min="0">
+                  <span id="keyplus" class="input-number-increment-sm">+</span> 
                   <!-- <input type="number" class="form-control form-control-sm text-right" id="menuPopupQty" name="menuPopupQty" class="menuPopupQty text-right"/> -->
                 </td>
               </tr>
@@ -352,7 +352,7 @@ input[type=number] {
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><i class="flaticon-cancel-12"></i>Batal</button>
+        <button type="button" id="popDismiss" class="btn btn-default btn-sm" data-dismiss="modal"><i class="flaticon-cancel-12"></i>Batal</button>
         <button type="button" id="popSubmit" style="min-width: 75px;" class="btn btn-info btn-sm font-bold modal-add-row">Tambah</button>
       </div>
     </div>
@@ -367,6 +367,39 @@ input[type=number] {
 @section('js-body')
 <script>
   $(document).ready(function (){
+    //hotkeys
+      //modal-tambah
+      Mousetrap.bind('backspace', function() {
+        $('#back').click(function() {
+        this.click();
+        }).click();
+        })
+      $(this).on('shown.bs.modal', function() {
+        Mousetrap.bind('-', function() {
+          $('#uiModalInstance').find('#keymin').trigger('click')
+        })
+        Mousetrap.bind('+', function() {
+          $('#uiModalInstance').find('#keyplus').trigger('click')
+        })
+        Mousetrap.bind('enter', function() {
+          $('#uiModalInstance').find('#popSubmit').trigger('click')
+        })
+        Mousetrap.bind('backspace', function() {
+          $('#uiModalInstance').find('#popDismiss').trigger('click')
+        })
+      })
+      $(this).on('hidden.bs.modal', function() {
+        Mousetrap.bind('enter', function() {
+          $('#prosesOrder').trigger('click')
+        })
+        Mousetrap.bind('backspace', function() {
+          $('#back').click(function() {
+        this.click();
+        }).click();
+        })
+      })
+      //modal-tambah
+    //endhotkeys
     const query = window.location.search.substring(1);
     const urlParams = new URLSearchParams(query);
     const urlMeja = urlParams.get('idMeja');

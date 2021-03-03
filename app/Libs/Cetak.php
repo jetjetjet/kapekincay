@@ -179,7 +179,7 @@ class Cetak
       $respon['status'] = 'success';
     }catch(\Exception $e){
       $printer = false;
-      array_push($respon['messages'], 'Periksa Kertas/Koneksi Di Printer');
+      array_push($respon['messages'], 'Periksa Koneksi Di Printer');
       $respon['status'] = "error";
     }
     return $respon;

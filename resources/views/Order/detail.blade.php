@@ -91,7 +91,7 @@
           <div class="col-sm-12 ">
             <div class="widget-content widget-content-area" style="padding:10px">
               <div class="float-right">
-                <a href="{{url('/order/meja/view')}}" type="button" class="btn btn-warning mt-2">Kembali</a>
+                <a href="{{url('/order/meja/view')}}" id="back" type="button" class="btn btn-warning mt-2">Kembali</a>
                 @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
                   <button id="print" class="btn btn-success mt-2">Cetak</button>
                 @endif
@@ -166,6 +166,11 @@
       $('#drawer').trigger('click')
       }
     });
+    Mousetrap.bind('backspace', function(){
+      $('#back').click(function() {
+        this.click();
+        }).click();
+        })
 
       $(window).on('shown.bs.modal', function() { 
           Mousetrap.bind('backspace', function(){
@@ -178,7 +183,11 @@
       });
 
       $(window).on('hidden.bs.modal', function() { 
-        Mousetrap.unbind('backspace')
+        Mousetrap.bind('backspace', function(){
+          $('#back').click(function() {
+        this.click();
+        }).click();
+        })
         $('#bayar').focus()
         Mousetrap.bind('enter', function() {
           var price = $("#total").val();

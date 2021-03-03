@@ -42,11 +42,20 @@
                               <p><b style="color: #007bff;">Enter</b> Untuk melanjutkan pembayaran setelah memasukkan total pembayaran</p>
                               <p><b style="color: #007bff;">Backspace</b> Untuk kembali ke halaman meja</p>
                               <p><b style="color: #acb0c3;">--------------------------------------</b></p>
-                              <p><i style="color: #acb0c3;">Saat Muncul Halaman Konfirmasi</i></p>
+                              <p><i style="color: #acb0c3;">Saat Muncul tampilan Konfirmasi</i></p>
                               <p><b style="color: #007bff;">Enter</b> Untuk melanjutkan pembayaran di tampilan konfirmasi</p>
                               <p><b style="color: #007bff;">Backspace</b> Untuk menutup konfirmasi pembayaran</p>
                             </section>
-
+                            <section>
+                              <h5>Halaman Pesanan</h5>
+                              <p><b style="color: #007bff;">Enter</b> Untuk melanjutkan pesanan setelah memasukkan menu</p>
+                              <p><b style="color: #007bff;">Backspace</b> Untuk kembali ke halaman meja</p>
+                              <p><b style="color: #acb0c3;">--------------------------------------</b></p>
+                              <p><i style="color: #acb0c3;">Saat Muncul tampilan rincian menu</i></p>
+                              <p><b style="color: #007bff;">+</b> dan <b style="color: #007bff;">-</b> Untuk menambah/mengurangi jumlah pesanan</p>
+                              <p><b style="color: #007bff;">Enter</b> Untuk memasukan menu ke pesanan</p>
+                              <p><b style="color: #007bff;">Backspace</b> Untuk menutup tampilan rincian menu</p>
+                            </section>
 
 
                         </div>
