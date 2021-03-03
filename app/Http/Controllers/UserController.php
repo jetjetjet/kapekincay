@@ -113,7 +113,7 @@ class UserController extends Controller
 		$respon = Helpers::$responses;
 		
 		$rules = array(
-			'userpassword' => 'required|same:userpass2'
+			'userpassword' => 'required'
 		);
 
 		$inputs = $request->all();

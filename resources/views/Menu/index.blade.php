@@ -17,6 +17,7 @@
         <thead>
           <tr>
             <th>Nama</th>
+            <th>Jenis</th>
             <th>Kategori</th>
             <th>Harga</th>
             <th>Status</th>
@@ -28,6 +29,7 @@
         <tfoot>
           <tr>
             <th>Name</th>
+            <th>Jenis</th>
             <th>Kategori</th>
             <th>Harga</th>
             <th>Status</th>
@@ -83,8 +85,14 @@
             searchText: true
           },
           { 
-              data: 'menuprice',
-              searchText: true
+            data: 'mcname',
+            searchText: true
+          },
+          { 
+            data: null,
+            render: function(data, type, full, meta){
+            return formatter.format(data.menuprice);
+            }
           },
           { 
               data:null,

@@ -82,7 +82,6 @@
                 <form id="miniform" method="post" novalidate action="{{url('/order/bayar/cetak')}}/{{$data->id}}">
                   <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
                   <input type="hidden" name="username" id="name" value="{{ session('username') }}" />
-                  <input type="hidden" name="orderpaidprice" id="trigger" value="0" />
                 </form>
               </div>
             </div>
@@ -111,26 +110,47 @@
   </div>
 </div>
 
-            <div class="modal fade" data-keyboard="false" id="konfirm">
-              <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"><b>Konfirmasi</b></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    <h4><b>Apakah Pembayaran Sudah Sesuai?</b></h4>
-                    <p class="modal-text">Silahkan cek uang di laci, Jika uang untuk kembalian sudah mencukupi, Lanjutkan Cetak</p>
-                  </div>
-                  <div class="modal-footer justify-content-between">
-                    <button class="btn btn-danger mt-2" data-dismiss="modal">Batalkan</button>
-                    <button type="button" id="prosesOrder" class="btn btn-primary mt-2">Cetak</button>
-                  </div>
-                </div>
-              </div>
-            </div>
+<div class="modal fade" data-keyboard="false" id="konfirm">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"><b>Konfirmasi</b></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h4><b>Apakah Pembayaran Sudah Sesuai?</b></h4>
+        <p class="modal-text">Silahkan cek uang di laci, Jika uang untuk kembalian sudah mencukupi, Lanjutkan Cetak</p>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button class="btn btn-danger mt-2" data-dismiss="modal">Batalkan</button>
+        <button type="button" id="prosesOrder" class="btn btn-primary mt-2">Cetak</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" data-keyboard="false" id="withoutPrint">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"><b style="color: #e7515a;">Printer Tidak Terhubung</b></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h4><b>Apakah anda ingin melanjutkan pembayaran?</b></h4>
+        <p class="modal-text">Data akan tersimpan tanpa cetak, sebelum melanjutkan, cek kembalian dahulu</p>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button class="btn btn-danger mt-2" data-dismiss="modal">Batalkan</button>
+        <button type="button" id="buttOut" class="btn btn-primary mt-2">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
 @endsection
 
 @section('js-form')
@@ -152,55 +172,58 @@
 
 
   $(document).ready(function (){
-      //shortcut
-    Mousetrap.bind('enter', function() {
-      var price = $("#total").val();
-      var pay = $('#bayar').val();
-      if(Number(pay) == -1){
-      alert('Pesanan Belum selesai')
-      }else if(Number(pay) == 0){
-      alert('Masukkan jumlah uang')
-      }else if(Number(pay) < Number(price)){
-      alert('Jumlah Uang tidak mencukupi')
-      }else{
-      $('#drawer').trigger('click')
-      }
-    });
-    Mousetrap.bind('backspace', function(){
-      $('#back').click(function() {
-        this.click();
-        }).click();
-        })
-
-      $(window).on('shown.bs.modal', function() { 
+    //hotkey
+      Mousetrap.bind('enter', function() {
+        var price = $("#total").val();
+        var pay = $('#bayar').val();
+        if(Number(pay) == -1){
+          alert('Pesanan Belum selesai')
+        }else if(Number(pay) == 0){
+          alert('Masukkan jumlah uang')
+        }else if(Number(pay) < Number(price)){
+          alert('Jumlah Uang tidak mencukupi')
+        }else{
+          $('#drawer').trigger('click')
+        }
+      });
+    //endhotkey
+    //hotkeymodal
+        $('#withoutPrint').on('shown.bs.modal', function() { 
           Mousetrap.bind('backspace', function(){
-          $('#konfirm').modal('hide')
+            $('#withoutPrint').modal('hide')
           });
           Mousetrap.bind('enter', function() {
-          $('#prosesOrder').trigger('click')
+            $('#buttOut').trigger('click')
+          })
+          $('#buttOut').focus()
+        });
+
+        $('#konfirm').on('shown.bs.modal', function() { 
+          Mousetrap.bind('backspace', function(){
+            $('#konfirm').modal('hide')
+          });
+          Mousetrap.bind('enter', function() {
+            $('#prosesOrder').trigger('click')
           })
           $('#prosesOrder').focus()
-      });
-
-      $(window).on('hidden.bs.modal', function() { 
-        Mousetrap.bind('backspace', function(){
-          $('#back').click(function() {
-        this.click();
-        }).click();
-        })
-        $('#bayar').focus()
-        Mousetrap.bind('enter', function() {
-          var price = $("#total").val();
-          var pay = $('#bayar').val();
-          if(Number(pay) == 0){
-          alert('Masukkan jumlah uang')
-          }else if(Number(pay) < Number(price)){
-          alert('Jumlah Uang tidak mencukupi')
-          }else{
-          $('#drawer').trigger('click')
-          }
         });
-      });
+
+        $(window).on('hidden.bs.modal', function() { 
+          Mousetrap.unbind('backspace')
+            $('#bayar').focus()
+            Mousetrap.bind('enter', function() {
+              var price = $("#total").val();
+              var pay = $('#bayar').val();
+              if(Number(pay) == 0){
+                alert('Masukkan jumlah uang')
+              }else if(Number(pay) < Number(price)){
+                alert('Jumlah Uang tidak mencukupi')
+              }else{
+                $('#drawer').trigger('click')
+              }
+            });
+        });
+    //endmodalkey
 
     //Cetak
 
@@ -208,6 +231,8 @@
       var price = $("#total").val();
       var pay = $('#bayar').val();
       var change = Number(pay) - Number(price)
+      Swal.fire('Sedang Diproses')
+      Swal.showLoading()
       if(change == 0){
         $.ajax({
         url: "{{url('/open/drawer') }}",
@@ -218,15 +243,15 @@
           if(result.status == 'success'){
             $('#orderMenuForm').submit();
           }else{
-            toast({
-            type: 'error',
-            title: 'Periksa Kertas/Koneksi Di Printer',
-            padding: '2em',
-            })
-          }         
-          },
-          error:function(error){
-          }
+            $('#withoutPrint').modal('show');
+          }      
+          Swal.hideLoading()  
+          Swal.clickConfirm()
+        },
+        error:function(error){
+          Swal.hideLoading()
+          Swal.clickConfirm()
+        }
         })
       }else{
         $.ajax({
@@ -238,15 +263,15 @@
           if(result.status == 'success'){
             $('#konfirm').modal('show');
           }else{
-            toast({
-            type: 'error',
-            title: 'Periksa Kertas/Koneksi Di Printer',
-            padding: '2em',
-            })
-          }         
-          },
-          error:function(error){
+            $('#withoutPrint').modal('show');
           }
+          Swal.hideLoading()
+          Swal.clickConfirm()
+        },
+        error:function(error){
+          Swal.hideLoading()
+          Swal.clickConfirm()
+        }
         })
       }
       
@@ -256,6 +281,9 @@
       $('#miniform').submit();
     })
 
+    $('#buttOut').on('click', function(){
+      $('#orderMenuForm').submit();
+    })
     // $('#bayar').setupMask(0);
 
     $('#bayar').on('keyup',function(){
@@ -263,10 +291,10 @@
     });
 
     $('#prosesOrder').on('click', function(){
-      $('#prosesOrder').attr('dissabled');
       $('#orderMenuForm').submit();
     })
 
+    //disable enter form
     $('#orderMenuForm').on('keyup keypress', function(e) {
   var keyCode = e.keyCode || e.which;
   if (keyCode === 13) { 
@@ -274,6 +302,7 @@
     return false;
   }
   });
+    //e
 
 
     let grid = $('#grid').DataTable({
@@ -318,7 +347,7 @@
       toast: true,
       position: 'center',
       showConfirmButton: false,
-      timer: 5000,
+      timer: 2000,
       padding: '2em'
     });
   

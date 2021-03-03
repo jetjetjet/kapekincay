@@ -20,50 +20,52 @@
                         <div class="d-flex justify-content-between privacy-head">
                             <div class="privacyHeader">
                                 <h1>Tentang Kami</h1>
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam, quibusdam perferendis. Sapiente mollitia quas totam nobis vero excepturi similique ullam ipsa. Dolorem similique corporis impedit hic asperiores corrupti debitis consectetur!</p>
+                                <p>Aplikasi ini di Lisensi oleh Ikhwan Komputer</p>
                             </div>
                         </div>
 
                         <div class="privacy-content-container">
 
                             <section>
-                                <h5>Please read our policy carefully</h5>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                                <h5>Siapa Kami?</h5>
+                                <p>Ikhwan Komputer, Badan Usaha
+                                yang bergerak dibidang Komputer Teknologi, Elektronika, Penjualan dan Jasa Perbaikan Komputer. 
+                                Ikhwan Komputer berdiri pada tahun 1998 bulan Mei dan boleh dikatakan sebagai Badan Usaha Pertama 
+                                yang bergerak dibidang Teknologi Komputer di Kabupaten Kerinci (Sebelum Berdirinya Kota Sungai Penuh).
+                                 Telah banyak memiliki jaringan Kerja Sama Perbaikan dan Perawatan Komputer (Maintenance)
+                                  di Dinas Instansi dan Perusahaan Swasta yang ada di Kota Sungai Penuh dan Kabupaten Kerinci. </p>
                             </section>
-
-                            <h5 class="policy-info-ques">What personal data we collect and why we collect it</h5>
-
+                            <section>                               
+                                <h5>Siap Melayani</h5>
+                                <p>1. Perawatan Perangkat Keras (Hardware)</p>
+                                <p>2.	Instalasi Program (Software)</p>
+                                <p>3. Perbaikan </p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;- CPU</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;- Laptop</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;- Monitor</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;- Printer Tinta Dan Dot Matrix (Pita & Jarum)</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;- UPS</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;- CCTV</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;- PABX</p>
+                                <p>4. Penjualan Aksesories Komputer</p>
+                                <p>5. Instalasi Telepon PABX, Running Text, CCTV, Jaringan Komputer</p>
+                                <p>6. Pembuatan</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;- Aplikasi</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;- Jadwal Sholat</p>
+                            </section>
                             <section>
+
+                                <h5> Hubungi Kami </h5>
+                                <p>Telepon</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;- 0813-6770-3965</p>
+                                <p>Alamat</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;- Jl.Sisingamangaraja No.23</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;- Kota Sungai Penuh</p>
+                                <p>&nbsp;&nbsp;&nbsp;&nbsp;- Jambi</p>
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7974.467893558946!2d101.39601!3d-2.062349!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x832d5a6056f4e8a2!2sIkhwan%20Komputer%20Elektronika!5e0!3m2!1sid!2sid!4v1614795924498!5m2!1sid!2sid" class="imgrespo" style="border:0;" allowfullscreen="" loading="lazy"></iframe>  
                                 
-                                <h5>Media</h5>
-
-                                <p>If you upload images to the website, you should avoid uploading images with embedded location data (EXIF GPS) included. Visitors to the website can download and extract any location data from images on the website.</p>
-                            </section>
-
-                            <section>
-
-                                <h5> Cookies </h5>
-
-                                <p> If you leave a comment on our site you may opt-in to saving your name, email address and website in cookies. These are for your convenience so that you do not have to fill in your details again when you leave another comment. These cookies will last for one year.</p>
-
-                                <p> If you have an account and you log in to this site, we will set a temporary cookie to determine if your browser accepts cookies. This cookie contains no personal data and is discarded when you close your browser.</p>
-
-                                <p> When you log in, we will also set up several cookies to save your login information and your screen display choices. Login cookies last for two days, and screen options cookies last for a year. If you select “Remember Me”, your login will persist for two weeks. If you log out of your account, the login cookies will be removed.</p>
-
-                                <p> If you edit or publish an article, an additional cookie will be saved in your browser. This cookie includes no personal data and simply indicates the post ID of the article you just edited. It expires after 1 day.</p>
-
                             </section>
                                 
-                            <section>
-                                <h5> Embedded content from other websites.</h5>
-
-                                <p> Articles on this site may include embedded content (e.g. videos, images, articles, etc.). Embedded content from other websites behaves in the exact same way as if the visitor has visited the other website.</p>
-
-                                <p> These websites may collect data about you, use cookies, embed additional third-party tracking, and monitor your interaction with that embedded content, including tracking your interaction with the embedded content if you have an account and are logged in to that website.</p>
-                            </section>
 
                         </div>
 

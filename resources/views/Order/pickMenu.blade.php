@@ -373,37 +373,28 @@ input[type=number] {
 <script>
   let totalPrice = 0;
   $(document).ready(function (){
-    //hotkeys
+    //hotkeys    
+
       //modal-tambah
-      Mousetrap.bind('backspace', function() {
-        $('#back').click(function() {
-        this.click();
-        }).click();
+        $(this).on('shown.bs.modal', function() {
+          Mousetrap.bind('-', function() {
+            $('#uiModalInstance').find('#keymin').trigger('click')
+          })
+          Mousetrap.bind('+', function() {
+            $('#uiModalInstance').find('#keyplus').trigger('click')
+          })
+          Mousetrap.bind('enter', function() {
+            $('#uiModalInstance').find('#popSubmit').trigger('click')
+          })
+          Mousetrap.bind('backspace', function() {
+            $('#uiModalInstance').find('#popDismiss').trigger('click')
+          })
         })
-      $(this).on('shown.bs.modal', function() {
-        Mousetrap.bind('-', function() {
-          $('#uiModalInstance').find('#keymin').trigger('click')
+        $(this).on('hidden.bs.modal', function() {
+          Mousetrap.bind('enter', function() {
+            $('#prosesOrder').trigger('click')
+          })
         })
-        Mousetrap.bind('+', function() {
-          $('#uiModalInstance').find('#keyplus').trigger('click')
-        })
-        Mousetrap.bind('enter', function() {
-          $('#uiModalInstance').find('#popSubmit').trigger('click')
-        })
-        Mousetrap.bind('backspace', function() {
-          $('#uiModalInstance').find('#popDismiss').trigger('click')
-        })
-      })
-      $(this).on('hidden.bs.modal', function() {
-        Mousetrap.bind('enter', function() {
-          $('#prosesOrder').trigger('click')
-        })
-        Mousetrap.bind('backspace', function() {
-          $('#back').click(function() {
-        this.click();
-        }).click();
-        })
-      })
       //modal-tambah
     //endhotkeys
     const query = window.location.search.substring(1);

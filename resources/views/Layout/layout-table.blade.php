@@ -3,6 +3,13 @@
 @section('css-body')
   <link href="{{ url('/') }}/assets/css/pages/privacy/privacy.css" rel="stylesheet" type="text/css" />
   <link href="{{ url('/') }}/assets/css/apps/notes.css" rel="stylesheet" type="text/css" />
+  <style>
+    .imgrespo {
+    height: 300px;
+    width: 55vw;
+    max-width: 755px;
+    }
+  </style>
 @endsection
 
 @section('content-breadcumb')
