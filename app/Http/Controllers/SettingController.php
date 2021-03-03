@@ -63,6 +63,12 @@ class SettingController extends Controller
 		if($inputs['settingkey'] == 'PasswordLaci'){
 			$inputs['settingvalue'] = Hash::make($inputs['settingvalue']);
 		}
+
+		if($inputs['settingkey'] == 'logoApp'){
+			$path = '\public\images';
+			$file = Helpers::prepareFile($inputs, $path);
+			$inputs['settingvalue'] = '\images\\' . $file->newName;
+		}
 		// dd($inputs);
 		$validator = validator::make($inputs, $rules);
 
@@ -104,11 +110,12 @@ class SettingController extends Controller
 			'HeaderStrukKasir' => 'required',
 			'FooterStrukKasir' => 'required', 
 			'IpPrinter' => 'required',
-			'PasswordLaci' => 'required'
-			
+			'PasswordLaci' => 'required',
+			'Telp' => 'required'
 		);
 
 		$inputs = $request->all();
+		$inputs['logoApp'] = Helpers::prepareFile($inputs, '\public\images');
 		$inputs['PasswordLaci'] = Hash::make($inputs['PasswordLaci']);
 		$validator = validator::make($inputs, $rules);
 
