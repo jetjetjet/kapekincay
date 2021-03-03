@@ -99,6 +99,23 @@ class OrderController extends Controller
 		return DataTables::of($data)->make(true);
 	}
 
+	public function apiSave(Request $request, $id = null)
+	{$respon = Helpers::$responses;
+    
+    $inputs = $request->all();
+		$loginid = Auth::user()->getAuthIdentifier();
+    $results = OrderRepository::save($respon, $id, $inputs, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Buat Pesanan', $loginid);
+
+    if($results['status'] == "success"){
+      event(new OrderProceed('ok'));
+      event(new BoardEvent('ok'));
+		}
+		$data = OrderRepository::getOrderReceipt($results['id']);
+		$cetak = Cetak::print($data);
+		// return response()->json($results);
+	}
+
   public function save(Request $request, $id = null)
   {
     $respon = Helpers::$responses;

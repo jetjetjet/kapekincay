@@ -98,6 +98,7 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/cek/printer', [OrderController::class, 'ping']);
   Route::post('/open/drawerauth', [OrderController::class, 'opendraweraudit'])->middleware('can:tambahan_bukalaci');
   Route::post('/order/save/{id?}', [OrderController::class, 'save'])->middleware('can:order_simpan');
+  Route::post('/order/api-save/{id?}', [OrderController::class, 'apiSave'])->middleware('can:order_pelayan');
   Route::post('/order/hapus/{id}', [OrderController::class, 'deleteById'])->middleware('can:order_hapus');
   Route::post('/order/batal/{id}', [OrderController::class, 'voidById'])->middleware('can:order_batal');
   Route::post('/order/bayar/{id}', [OrderController::class, 'paidById'])->middleware('can:order_pembayaran');
