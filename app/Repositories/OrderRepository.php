@@ -493,6 +493,8 @@ class OrderRepository
 
   public static function generateInvoice()
   {
+    $prefix = DB::table('settings')->where('settingactive', '1')->where('settingkey', 'KodeInvoice')->select('settingvalue')->first();
+    $invoicePref = $prefix->settingvalue ?? "Cf";
     $invoice = Array();
     $q = Order::where('orderactive', '1')
       ->orderBy('ordercreatedat', 'DESC')
@@ -501,7 +503,7 @@ class OrderRepository
     $cekTgl = $q->tglawal ?? Carbon::now()->format('d');
     if($q == null || $cekTgl == 1){
       $invoice['index'] = 1;
-      $invoice['invoice'] = "KPKCO" . Carbon::now()->format('ymd')."001";
+      $invoice['invoice'] = $invoicePref . Carbon::now()->format('ymd')."001";
     } else {
       $invoice['index'] = $q->orderinvoiceindex + 1;
       $cek = strlen($invoice['index']);
@@ -513,7 +515,7 @@ class OrderRepository
       } else {
         $incr = $invoice['index'];
       }
-      $invoice['invoice'] = "KPKCO" . Carbon::now()->format('ymd'). $incr ;
+      $invoice['invoice'] = $invoicePref . Carbon::now()->format('ymd'). $incr ;
     }
     return $invoice;
   }

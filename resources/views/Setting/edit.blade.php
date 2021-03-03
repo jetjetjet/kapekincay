@@ -24,19 +24,35 @@
           </div>
         </div>
         <div class="widget-content">
-          <form class="needs-validation" method="post" novalidate action="{{ url('/setting/simpan') }}">
+          <form class="needs-validation" method="post" novalidate action="{{ url('/setting/simpan') }}" enctype="multipart/form-data">
+            <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
+            <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
             <div class="form-row">
-              <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
-              <input type="hidden" id="id" name="id" value="{{ old('id', $data->id) }}" />
-              <div class="col-md-6 mb-5">
+              <div class="col-md-12 mb-5">
                 <input type="text" name="settingcategory" value="{{ old('settingcategory', $data->settingcategory) }}" class="form-control"  placeholder="Nama Pelanggan" required readonly>
               </div>
+              @if($data->settingcategory == 'AppLogo')
+              <div class="col-md-6 mb-2">
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" id="LogoApp" name="file" required>
+                  <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
+              </div>
+              <div class="col-md-6 mb-2">                
+                <label for="img"><b>Logo saat ini.</b></label>
+                <br>
+                <img width="150" height="150" src="{{ asset($data->settingvalue) }}" style="vertical-align:top"></img>
+                <input type="hidden" name="settingvalue" value="{{ old('settingvalue', $data->settingvalue) }}" />
+                <input type="hidden" name="settingkey" value="{{ old('settingkey', $data->settingkey) }}" />           
+              </div>
+              @else
               <div class="col-md-6 mb-5">
                   <input type="text" name="settingkey" value="{{ old('settingkey', $data->settingkey) }}" class="form-control" readonly  placeholder="Nomor Kontak Pelanggan">
               </div>
               <div class="col-md-12 mb-5">
                   <textarea rows="3" name="settingvalue" class="form-control"  placeholder="Pengaturan saat ini">{{ old('settingvalue', $data->settingvalue) }}</textarea>
               </div>
+              @endif
             </div>
             <div class="float-right">
               <a href="{{ url('/setting') }}" type="button" class="btn btn-danger mt-2" type="submit">Batal</a>

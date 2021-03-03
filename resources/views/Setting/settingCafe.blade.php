@@ -23,23 +23,26 @@
               </div>
             </div>
             <div class="form-group mb-2">
+              <label for="Telp">Telp</label>
+              <input type="text" class="form-control" name="Telp" id="Telp" value="{{ old('Telp')}}" placeholder="0748-00000" required>
+              <div class="invalid-feedback">
+                Nomor Telepon harus diisi!
+              </div>
+            </div>
+            <div class="form-group mb-2">
+              <label for="KodeInvoice">Prefix Invoice</label>
+              <input type="text" class="form-control" name="KodeInvoice" id="KodeInvoice" value="{{ old('KodeInvoice')}}" placeholder="ICR" required>
+              <div class="invalid-feedback">
+                Prefix Invoice harus diisi!
+              </div>
+            </div>
+            <div class="form-group mb-2">
               <label for="Alamat">Alamat</label>
               <textarea class="form-control" name="Alamat" rows="3" id="Alamat" value="{{ old('Alamat')}}" placeholder="" required></textarea>
               <div class="invalid-feedback">
                 Alamat harus diisi!
               </div>
             </div>
-            <div class="form-group mb-2">
-              <label for="Telp">Telp</label>
-              <input type="text" class="form-control" name="Telp" id="Telp" value="{{ old('Telp')}}" placeholder="0748-00000">
-            </div>
-            <div class="form-group mb-2">
-              <label for="KodeInvoice">Prefix Invoice</label>
-              <input type="text" class="form-control" name="KodeInvoice" id="KodeInvoice" value="{{ old('KodeInvoice')}}" placeholder="ICR" required>
-            </div>
-              <div class="invalid-feedback">
-                Prefix Invoice harus diisi!
-              </div>
             <div class="form-group mb-2">
               <label for="HeaderStruk">Header Struk Pelayan</label>
               <textarea class="form-control" name="HeaderStruk" required>{{ old('HeaderStruk')}}</textarea>
@@ -86,6 +89,17 @@
                 Password harus diisi!
               </div>
             </div>
+            <div class="form-group mb-2">
+              <label for="logo">Logo Aplikasi</label>
+              <div class="custom-file">
+                <input type="file" class="custom-file-input" id="LogoApp" name="file" required>
+                <label class="custom-file-label" for="customFile">Choose file</label>
+              </div>
+              <div class="invalid-feedback">
+                Logo harus diisi!
+              </div>
+            </div>
+            <br>
             <button type="submit" class="btn btn-primary">Simpan</button>
           </form>
         </div>

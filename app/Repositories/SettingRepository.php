@@ -73,15 +73,27 @@ class SettingRepository
         foreach($inputs as $key=>$input){
           if ($key == '_token')
             continue;
-
-          $cr = Setting::create([
-            'settingcategory' => 'AppSetting',
-            'settingkey' => $key,
-            'settingvalue' => $input,
-            'settingactive' => '1',
-            'settingcreatedat' => now()->toDateTimeString(),
-            'settingcreatedby' => '0'
-          ]);
+          
+          if($key == 'logoApp'){
+            $path = "\images\\";
+            $cr = Setting::create([
+              'settingcategory' => 'AppLogo',
+              'settingkey' => $key,
+              'settingvalue' => $path . $input->newName,
+              'settingactive' => '1',
+              'settingcreatedat' => now()->toDateTimeString(),
+              'settingcreatedby' => '0'
+            ]);
+          } else {
+            $cr = Setting::create([
+              'settingcategory' => 'AppSetting',
+              'settingkey' => $key,
+              'settingvalue' => $input,
+              'settingactive' => '1',
+              'settingcreatedat' => now()->toDateTimeString(),
+              'settingcreatedby' => '0'
+            ]);
+          }
         }
         
         $respon['status'] = 'success';

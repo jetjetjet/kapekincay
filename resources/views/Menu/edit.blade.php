@@ -50,7 +50,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">Rp </span>
                   </div>
-                  <input name="menuprice" type="number" value="{{ old('menuprice', $data->menuprice) }}" class="form-control text-right" id="pricing" placeholder="Harga" required>
+                  <input name="menuprice" type="number" min="0" value="{{ old('menuprice', $data->menuprice) }}" class="form-control text-right" id="pricing" placeholder="Harga" required>
                 </div>
               </div>
               <div class="col-md-6 mb-2">
@@ -142,6 +142,14 @@
 
 @section('js-form')
 <script>
+  const toast = swal.mixin({
+    toast: true,
+    position: 'center',
+    showConfirmButton: false,
+    timer: 3000,
+    padding: '2em'
+  });
+
   $(document).ready(function (){
     $('[type=number]').setupMask(0);
 
@@ -170,7 +178,12 @@
         },
         //callback
         function (data){
-          alert(data.msg)
+          $('body').removeClass('modal-open');
+          toast({
+            type: data.status,
+            title: data.msg,
+            padding: '2em',
+          });
         });
     });
 

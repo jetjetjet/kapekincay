@@ -448,9 +448,18 @@ input[type=number] {
             type: "POST",
             url: url,
             data: form.serialize(),
-            success: function(data)
-            {
+            success: function(data){
               window.location.href = data;
+              setTimeout(() => {
+                window.location.href = "{{ url('/order/meja/view') }}"
+              }, 1000);
+            },
+            error: function(data){
+              toast({
+                type: 'error',
+                title: 'Tidak dapat mencetak struk!',
+                padding: '2em',
+              });
               setTimeout(() => {
                 window.location.href = "{{ url('/order/meja/view') }}"
               }, 1000);
