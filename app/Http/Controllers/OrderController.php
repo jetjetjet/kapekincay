@@ -233,7 +233,6 @@ class OrderController extends Controller
 	{
 		$respon = Helpers::$responses;
 		$cetak = Cetak::ping($respon);
-		// dd($cetak);
 		return response()->json($cetak);
 	}
 }

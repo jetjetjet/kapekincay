@@ -5,6 +5,7 @@
     <h3>Log</h3>
   </div>
   <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="javascript:void(0);">Laporan</a></li>
     <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">Log</a></li>
   </ol>
 @endsection

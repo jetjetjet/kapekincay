@@ -2,10 +2,10 @@
 
 @section('breadcumb')
   <div class="title">
-    <h3>Pengaturan</h3>
+    <h3>Backup Database</h3>
   </div>
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url('/setting/') }}">Pengaturan</a></li>
+    <li class="breadcrumb-item"><a href="{{ url('/setting/') }}">Aplikasi</a></li>
     <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">Backup Database</a></li>
   </ol>
 @endsection

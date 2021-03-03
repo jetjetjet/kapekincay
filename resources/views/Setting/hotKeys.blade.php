@@ -2,39 +2,61 @@
 
 @section('breadcumb')
   <div class="title">
-    <h3>Pengaturan</h3>
+    <h3>Tombol Pintas</h3>
   </div>
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);">Aplikasi</a></li>
-    <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">Pengaturan</a></li>
+    <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">Tombol Pintas</a></li>
   </ol>
 @endsection
 
 @section('content-table')
-  <div class="widget-content widget-content-area br-6">
-    <div class="table-responsive mb-4 mt-4">
-      <table id="grid" class="table table-hover" style="width:100%">
-        <thead>
-          <tr>
-            <th>Kategori</th>
-            <th></th>
-            <th></th>
-            <th class="no-content"></th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-        <tfoot>
-          <tr>
-            <th>Kategori</th>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  </div>
+
+
+<div id="privacyWrapper" class="">
+                <div class="privacy-container">
+                    <div class="privacyContent">
+
+                        <div class="d-flex justify-content-between privacy-head">
+                            <div class="privacyHeader">
+                                <h1>Tombol Pintas</h1>
+                            </div>
+                        </div>
+
+                        <div class="privacy-content-container">
+
+                            <section>
+                                <h5>Global (Semua Halaman)</h5>
+                                <p><b style="color: #007bff;">Esc</b> Atau <b style="color: #007bff;">*</b> Untuk membuka laci</p>
+                                <p><b style="color: #007bff;">P</b> Untuk ping ke printer</p>
+                            </section>
+                            <hr>
+                            <section>
+                              <h5>Halaman Meja</h5>
+                              <p><b style="color: #007bff;">Enter</b> Untuk membuat pesanan bungkus baru</p>
+                              <p><b style="color: #007bff;">+</b> dan <b style="color: #007bff;">-</b> Untuk bergeser tabel pesanan bungkus</p>
+                            </section>
+                            <hr>
+                            <section>
+                              <h5>Halaman Pembayaran</h5>
+                              <p><b style="color: #007bff;">Enter</b> Untuk melanjutkan pembayaran setelah memasukkan total pembayaran</p>
+                              <p><b style="color: #007bff;">Backspace</b> Untuk kembali ke halaman meja</p>
+                              <p><b style="color: #acb0c3;">--------------------------------------</b></p>
+                              <p><i style="color: #acb0c3;">Saat Muncul Halaman Konfirmasi</i></p>
+                              <p><b style="color: #007bff;">Enter</b> Untuk melanjutkan pembayaran di tampilan konfirmasi</p>
+                              <p><b style="color: #007bff;">Backspace</b> Untuk menutup konfirmasi pembayaran</p>
+                            </section>
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            
 @endsection
 
 @section('js-table')

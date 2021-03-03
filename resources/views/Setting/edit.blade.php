@@ -5,7 +5,7 @@
     <h3>Pengaturan</h3>
   </div>
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);">Aplikasi</a></li>
     <li class="breadcrumb-item"><a href="{{ url('/setting') }}">Pengaturan</a></li>
     <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">Ubah Pengaturan</a></li>
   </ol>

@@ -134,4 +134,14 @@ class SettingController extends Controller
 		return view('Setting.backupdb');
 	}
 
+	public function aboutus()
+	{
+		return view('Setting.aboutUs');
+	}
+
+	public function hotkey()
+	{
+		return view('Setting.hotKeys');
+	}
+
 }

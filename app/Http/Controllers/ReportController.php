@@ -18,12 +18,11 @@ class ReportController extends Controller
 		$inputs = $request->all();
 		$data = new \stdClass;
 		$user = ReportRepository::getName();
-		// $inputs->user = 0;
-		// dd($inputs);
+
 		if($inputs){
 			$data = ReportRepository::grid($inputs);
 			$data->sub = ReportRepository::get($inputs);
-			// dd($data);
+			
 		}else{
 			$data->sub['total'] = '0';
 		}

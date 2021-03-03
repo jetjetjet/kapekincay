@@ -54,7 +54,7 @@
               </div>
               <div class="col-md-12 mb-3">
                   <label for="floo">Detail Pengeluaran</label>
-                  <textarea rows="3" name="expensedetail" {{ isset($data->expenseexecutedat) ? 'readonly' : '' }} class="form-control" placeholder="Detail">{{ old('expensedetail', $data->expensedetail) }}</textarea>
+                  <textarea rows="3" required name="expensedetail" {{ isset($data->expenseexecutedat) ? 'readonly' : '' }} class="form-control" placeholder="Detail">{{ old('expensedetail', $data->expensedetail) }}</textarea>
               </div>
             </div>
             <div class="float-right">
