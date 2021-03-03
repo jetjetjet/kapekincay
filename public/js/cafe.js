@@ -146,6 +146,14 @@ Mousetrap.bind('esc', function(){
     });
 
 // end bukalaci
+
+// to board
+Mousetrap.bind('/', function(){
+  const url = $('#board').val()
+  window.location.href = url;
+})
+
+//end board
 let formatter = new Intl.NumberFormat();
 
 function cloneModal($idModal){
