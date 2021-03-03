@@ -49,8 +49,12 @@ class OrderRepository
   public static function orderGrid($filters)
   {
     $q = DB::select(DB::raw("
-      select o.orderstatus, 
-        case when o.orderstatus = 'PAID' or o.orderstatus = 'VOIDED' then true
+      select o.orderstatus,".
+      DB::raw($filters['is_kasir'])
+      .",".
+      DB::raw($filters['is_pelayan'])
+      ."
+        ,case when o.orderstatus = 'PAID' or o.orderstatus = 'VOIDED' then true
               when o.orderstatus is null then true else false end as boardstatus, 
         o.id as orderid, 
         boards.id as boardid, 
