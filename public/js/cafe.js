@@ -7,6 +7,7 @@ $.ajaxSetup({
 //ping printer
 Mousetrap.bind('p', function(){
   const url = $('#ping').val()
+  $('.spinHotkeys').removeClass('d-none')
   $.ajax({
     url: url,
     type: "post",
@@ -27,10 +28,12 @@ Mousetrap.bind('p', function(){
           type: 'error',
           padding: '2em'
         })
-      }         
-      },
-      error:function(error){
       }
+      $('.spinHotkeys').addClass('d-none')
+    },
+    error:function(error){
+      $('.spinHotkeys').addClass('d-none')
+    }
     })
 })
 //endping
@@ -68,6 +71,7 @@ Mousetrap.bind('esc', function(){
     }).then(function(result) {
       console.log(result)
       if (result.value) {
+        $('.spinHotkeys').removeClass('d-none')
         const url = $('#bukalaci').val()
         $.post( url,{'pass':result.value}, function (data){         
           if (data.status == 'success'){
@@ -83,6 +87,7 @@ Mousetrap.bind('esc', function(){
               padding: '2em',
               })
           }
+          $('.spinHotkeys').addClass('d-none')
         });
       }
     });

@@ -45,6 +45,12 @@
     <!--  END NAVBAR  -->
 
     <!--  BEGIN MAIN CONTAINER  -->
+    <div class="mx-auto d-none pt-2 spinHotkeys" style="width: 200px;"> 
+      <div class="spinner-border" role="status">
+        <span style="margin: 2 0 0 0" class="sr-only">Loading...</span>
+      </div>
+      <!-- <span class="badge mb-2 outline-badge-dark"> Proses... </span> -->
+    </div>
     <div class="main-container" id="container">
 			<div class="overlay"></div>
       <input type='hidden' id='bukalaci' value="{{url('/open/drawerauth')}}">
