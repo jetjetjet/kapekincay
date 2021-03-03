@@ -42,13 +42,13 @@ class Cetak
       $printer->text(self::getSetting()['Alamat']."\n");
       $printer->text("================================\n");
       /* Title of receipt */
-      $printer->text("Daftar Pesanan\n");
       $printer -> setTextSize(2, 1);
       $printer->text($data->invoice . "\n");
       $printer -> setTextSize(1, 1);
-      $printer->text($data->orderType . " - No.". $data->noTable . "\n");
+      $printer->text($data->orderType . "\n Meja ". $data->noTable . "\n");
       $printer->setEmphasis(false);
   
+      $printer->text("Daftar Pesanan\n");
       $printer->text("--------------------------------\n");
       // Body
       $printer->setJustification(Printer::JUSTIFY_LEFT);

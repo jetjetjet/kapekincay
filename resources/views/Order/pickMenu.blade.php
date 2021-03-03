@@ -224,7 +224,7 @@ input[type=number] {
                     <tr>
                       <th width="40%">Menu</th>
                       <th>Harga</th>
-                      <th style="width:100px" class="text-center">qty</th>
+                      <th width="20%" class="text-center">qty</th>
                       <th>Total</th>
                       <th>Cttn</th>
                       <th></th>
@@ -267,10 +267,15 @@ input[type=number] {
                 <a href="{{url('/order/meja/view')}}" type="button" id='back' class="btn btn-warning mt-2">Kembali</a>
               </div>
               <div class="float-right">
-                <a href="" type="button" id="print" class="btn btn-success mt-2">Cetak</a>
+                @if(isset($data->id) && Perm::can(['order_pelayan']))
+                  <a href="" type="button" id="print" class="btn btn-success mt-2">Cetak</a>
+                @endif
                 @if(Perm::can(['order_simpan']))
                   <a href="" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Meja</a>
-                  <a type="button" id="prosesOrder" class="btn btn-primary mt-2">Simpan</a>
+                  <a type="button" class="btn btn-primary mt-2 prosesOrder">Simpan</a>
+                @endif
+                @if(Perm::can(['order_pelayan']) && !isset($data->id))
+                  <a type="button" id="saveAndPrint" data-print="1" class="btn btn-primary mt-2 prosesOrder">Simpan & Cetak</a>
                 @endif
               </div>
             @else
@@ -366,6 +371,7 @@ input[type=number] {
 
 @section('js-body')
 <script>
+  let totalPrice = 0;
   $(document).ready(function (){
     //hotkeys
       //modal-tambah
@@ -457,9 +463,36 @@ input[type=number] {
     let $targetContainer = $('#detailOrder');
     setupTableGrid($targetContainer);
 
-    $('#prosesOrder').on('click', function(){
-      $('#prosesOrder').attr('dissabled');
-      $('#orderMenuForm').submit();
+    $('.prosesOrder').on('click', function(){
+      if(totalPrice <= 0){
+        toast({
+            type: 'error',
+            title: 'total jumlah pesanan tidak boleh 0 / Pesanan tidak ada!',
+            padding: '2em',
+          });
+      } else {
+        let print = $(this).attr('data-print');
+        $('.prosesOrder').attr('dissabled');
+        if(print){
+          let form = $('#orderMenuForm');
+          let url = "{{ url('order/api-save') }}";
+    
+          $.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(),
+            success: function(data)
+            {
+              window.location.href = data;
+              setTimeout(() => {
+                window.location.href = "{{ url('/order/meja/view') }}"
+              }, 1000);
+            }
+         });
+        } else{
+          $('#orderMenuForm').submit();
+        }
+      }
     })
     
     $('#orderType').on('change',function(){
@@ -619,9 +652,7 @@ input[type=number] {
 
   function caclculatedOrder(){
     let gridRow = $('#detailOrder').find('[id^=dtl][id$="[odmenutext]"]').closest('tr');
-    
-    let totalPrice = 0;
-
+    totalPrice = 0;
     gridRow.each(function(){
       let price = $(this).find('[name^=dtl][name$="[odtotalprice]"]').val();
       totalPrice += Number(price);
@@ -631,14 +662,14 @@ input[type=number] {
   }
 
   function initMeja(val){
-    // let type = $('#orderType').val();
     if(val == "TAKEAWAY"){
       $('.divMeja').addClass('d-none');
       $('#headerOrder').addClass('d-none');
-      // $modal.find('.cariMeja').select2().val(null).trigger('change');
+      $('#saveAndPrint').addClass('d-none');
     } else {
       $('.divMeja').removeClass('d-none')
       $('#headerOrder').removeClass('d-none');
+      $('#saveAndPrint').removeClass('d-none');
     }
   }
 

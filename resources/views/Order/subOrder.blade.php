@@ -26,7 +26,7 @@
     <input type="hidden" name="dtl[{{ $rowIndex }}][odmenuid]" value="{{$menuid}}" class=" text-right"/>
     <input type="hidden" name="dtl[{{ $rowIndex }}][index]" value="{{ $rowIndex }}" class=" text-right"/>
   </td>
-  <td>
+  <td class="text-center">
     @if((isset($rowIndex) && $sub->oddelivered) || !empty($data->ordervoidedat))
       <input type="hidden" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}">
       <p class="text-center">{{$menuQty}}</p>
@@ -59,7 +59,7 @@
       <button type="button" id="dtl[{{ $rowIndex }}][deleteRow]" title="Hapus Pesanan" style="border:none; background:transparent" remove-row>
         <span class="badge badge-danger">H <i class="far fa-times-circle"></i></span>
       </button>
-      @if(isset($rowIndex) && !$sub->oddelivered)
+      @if(isset($rowIndex) && !$sub->oddelivered && Perm::can(['order_pelayan']))
         <button type="button" title="Pesanan Selesai Diantar" id="dtl[{{ $rowIndex }}][delivRow]" style="border:none; background:transparent" deliver-row>
           <span class="badge badge-info">S <i class="far fa-check-square"></i></span>
         </button>
