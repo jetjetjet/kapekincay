@@ -2,11 +2,11 @@
 
 @section('breadcumb')
   <div class="title">
-    <h3>Laporan</h3>
+    <h3>Laporan Transaksi</h3>
   </div>
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data</a></li>
-    <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">Laporan</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);">Laporan</a></li>
+    <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">Laporan Transaksi</a></li>
   </ol>
 @endsection
 

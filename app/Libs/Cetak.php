@@ -94,14 +94,16 @@ class Cetak
       // $printer->text("Cafe&Resto\n");
       // $printer->text("Syifa Donat\n");
       // // // gambar
-      $tux = EscposImage::load(public_path('images/asd.png'),true);     
+      $tux = EscposImage::load(public_path('images/asd.jpg'),true);     
       $printer -> graphics($tux);
-      $printer -> feed();
+      // $printer -> feed();
       $printer->selectPrintMode();
       $printer->text(self::getSetting()['Alamat']."\n");
-      $printer->text(self::getSetting()['Telp']."\n");
+      $printer->text('Telp. '.self::getSetting()['Telp']."\n");
+      if(self::getSetting()['headerkasir'] != null){
       $printer->text(self::getSetting()['headerkasir']."\n");
-      
+      }
+
       $printer->feed();
       /* Title of receipt */
       $printer->setEmphasis(true);
@@ -114,7 +116,6 @@ class Cetak
       }
       $printer->text("Tanggal       : ". $data->date . "\n");
       $printer->setEmphasis(false);
-      $printer->feed(1);
   
       // Body
       $printer->setJustification(Printer::JUSTIFY_LEFT);
@@ -147,10 +148,11 @@ class Cetak
   
       /* Footer */
       $printer->feed(1);
+      if(self::getSetting()['footerkasir'] != null){
       $printer->setJustification(Printer::JUSTIFY_CENTER);
       $printer->text(self::getSetting()['footerkasir']."\n");
       $printer->feed(1);
-
+      }
       /* Lisence*/ 
       // $printer -> setFont(Printer::FONT_B);
       // $jam = now()->format('d/m/Y h:i:s');
@@ -159,8 +161,9 @@ class Cetak
 
       $printer -> cut();
       $printer->close();
-// dd($jam);
+
     }catch(\Exception $e){
+      dd($e);
       $printer = false;
     }
   }

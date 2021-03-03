@@ -1,7 +1,7 @@
 @extends('Layout.index')
 
 @section('css-body')
-
+  <link href="{{ url('/') }}/assets/css/pages/privacy/privacy.css" rel="stylesheet" type="text/css" />
   <link href="{{ url('/') }}/assets/css/apps/notes.css" rel="stylesheet" type="text/css" />
 @endsection
 

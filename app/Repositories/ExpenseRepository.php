@@ -49,7 +49,7 @@ class ExpenseRepository
           ]);
   
           $respon['status'] = 'success';
-          array_push($respon['messages'], 'Data Pelanggan berhasil diubah');
+          array_push($respon['messages'], 'Data Pengeluaran berhasil diubah');
           
         } else {
           $data = Expense::create([
@@ -64,7 +64,7 @@ class ExpenseRepository
           ]);
   
           $respon['status'] = 'success';
-          array_push($respon['messages'], 'Data Pelanggan berhasil ditambah');
+          array_push($respon['messages'], 'Data Pengeluaran berhasil ditambah');
         }
       } catch(\Exception $e){
         dd($e);

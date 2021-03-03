@@ -47,7 +47,8 @@ class ExpenseController extends Controller
 		$respon = Helpers::$responses;
 		
 		$rules = array(
-			'expensename' => 'required'
+			'expensename' => 'required',
+			'expensedetail' => 'required'
 		);
 
 		$inputs = $request->all();
