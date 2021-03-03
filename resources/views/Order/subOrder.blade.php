@@ -13,6 +13,8 @@
 
 ?>
 
+
+
 <tr class="subitem">
   <td>
     <p id="dtl[{{ $rowIndex }}][odmenutext]">{{$menuText}}</p>
@@ -22,13 +24,16 @@
     <input type="hidden" name="dtl[{{ $rowIndex }}][odprice]" value="{{$menuPrice}}" class=" text-right"/>
     <input type="hidden" name="dtl[{{ $rowIndex }}][id]" value="{{ isset($rowIndex) && isset($sub->id) ? $sub->id : null }}" class=" text-right"/>
     <input type="hidden" name="dtl[{{ $rowIndex }}][odmenuid]" value="{{$menuid}}" class=" text-right"/>
+    <input type="hidden" name="dtl[{{ $rowIndex }}][index]" value="{{ $rowIndex }}" class=" text-right"/>
   </td>
   <td>
-    @if(isset($rowIndex) && $sub->oddelivered)
+    @if((isset($rowIndex) && $sub->oddelivered) || !empty($data->ordervoidedat))
       <input type="hidden" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}">
       <p class="text-center">{{$menuQty}}</p>
     @else
-      <input type="number" class="text-right subQty" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}" style="width: 35px;" class="tPrice" sub-input >
+      <span class="input-number-decrement" counter-down>–</span>
+        <input type="number" class="input-number subQty" min="0" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}" sub-input >
+      <span class="input-number-increment" counter-up>+</span> 
     @endif
   </td>
   <td>
@@ -38,7 +43,7 @@
     </div>
   </td>
   <td>
-    @if(isset($rowIndex) && $sub->oddelivered)
+    @if((isset($rowIndex) && $sub->oddelivered) || !empty($data->ordervoidedat))
       <p class="text-center">{{ $menuRemark }}</p>
       <input type="hidden" value="{{$menuRemark}}" name="dtl[{{ $rowIndex }}][odremark]" style="width: 60px;">
     @else
@@ -46,8 +51,10 @@
     @endif
   </td>
     <td>
-    @if(isset($rowIndex) && $sub->oddelivered)
+    @if((isset($rowIndex) && $sub->oddelivered))
       <p class="text-center"><i class="far fa-check-square"></i></p>
+    @elseif(!empty($data->ordervoidedat))
+      <p class="text-center"><i class="far fa-closed"></i></p>
     @else
       <button type="button" id="dtl[{{ $rowIndex }}][deleteRow]" title="Hapus Pesanan" style="border:none; background:transparent" remove-row>
         <span class="badge badge-danger">H <i class="far fa-times-circle"></i></span>
