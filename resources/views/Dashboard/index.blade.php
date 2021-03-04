@@ -321,10 +321,10 @@
 				},
 				series: [{
 					name: 'Pendapatan',
-					data: data.chart.chartExpense.split(',')
+					data: data.chart.chartIncome.split(',')
 				}, {
 					name: 'Pengeluaran',
-					data: data.chart.chartIncome.split(',')
+					data: data.chart.chartExpense.split(',')
 				}],
 				xaxis: {
 					categories: data.chart.chartTgl.split(','),                
