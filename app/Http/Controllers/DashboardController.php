@@ -11,65 +11,67 @@ use Auth;
 
 class DashboardController extends Controller
 {
-	public function index()
+	public function index(Request $request)
   {
     $data = new \StdClass();
-    $data->bulan = Carbon::now()->isoFormat('MMMM');
-    $awal = Carbon::now()->startOfMonth();
-    $akhir = $awal->copy()->endOfMonth();
-
-    //Chart
-    if(Auth::user()->can(['laporan_lihat'])){
-      $filter = Array('awal' => $awal->toDateString(), 'akhir' => $akhir->toDateString());
-      $range = range($awal->format('d'), $akhir->format('d'));
-      $yM = $awal->format('Y-m');
-      $data->chart = OrderRepository::orderChart($filter, $range, $yM );
+    $data->thn = Array();
+    $thn = Carbon::now()->format('Y');
+    $crThn = 2021 - $thn;
+    array_push($data->thn,$thn-0);
+    for($i=0; $i<$crThn; $i++){
+      $thn = $thn - 1;
+      array_push($data->thn,$thn);
     }
     
+    $blnNow = Carbon::now()->format('m');
+    $data->bln = Array();
+    $bln = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    foreach($bln as $key  => $val){
+      $anka = $key + 1;
+      $temp = new \StdClass();
+      $temp->bln = $val;
+      $temp->val = strlen($anka) == 1 ? 0 . $anka:$key;;
+      $temp->skrg = $blnNow == $key + 1 ? true:false;
+      array_push($data->bln, $temp);
+    }
+
     //Shift
     if(Auth::user()->can(['shift_simpan'])){
       $shift = new \StdClass();
-      $getShift = ShiftRepository::shiftDashboard(Auth::user()->getAuthIdentifier());
+      $getShift = ShiftRepository::shiftDashboard(Auth::user()->getAuthIdentifier(), Auth::user()->getAuthIdentifier() == 1);
       $getShiftActive = ShiftRepository::shiftDashboardActive();
       
       $shift->data = $getShift;
-      $shift->url = '/shift' . ($getShift['status'] == 'NEW' ? '/detail' : "/close/".$getShift['data']->id); 
+      $shift->url = '/shift' . ($getShift['can_close'] == false ? '/detail' : "/close/".$getShift['data']->id); 
       $shift->active = $getShiftActive;
 
       $data->shift = $shift;
     }
-    
-    //Meja
-    $meja  = OrderRepository::orderGrid(null);
-    $sumMeja = new \StdClass();
-    $sumMeja->kosong = 0;
-    $sumMeja->terisi = 0;
-    foreach($meja as $m){
-      if($m->boardstatus){
-        $sumMeja->kosong += 1;
-      }else{
-        $sumMeja->terisi += 1;
-      }
-    }
-    $sumMeja->total = $sumMeja->terisi +$sumMeja->kosong;
-    $data->countMeja = $sumMeja;
-
-    //Menu
-    $filterMenu = Array( 
-      1 => "orderdate::date between ". $awal->toDateString() . "::date and " . $akhir->toDateString() . "::date"
-    );
-    $data->topMenu = MenuRepository::topMenu(null);
     return view('Dashboard.index')->with('data', $data);
   }
 
-  public function getChart()
+  public function getChart(Request $request)
   {
-    $data = new \StdClass();
-    $data->bulan = Carbon::now()->isoFormat('MMMM');
-    $awal = Carbon::now()->startOfMonth();
-    $akhir = $awal->copy()->endOfMonth();
-    
+    $data = Array();
+    $bln = isset($request->bulan) ? $request->bulan : Carbon::now()->format('m');
+    $thn = isset($request->tahun) ? $request->tahun : Carbon::now()->format('Y');
+    $filter = $thn . '-' . $bln;
+    $parse = Carbon::parse($filter); 
+    $data['blnAktif'] = $parse->isoFormat('MMMM');
 
-    return response()->json($chart);
+    $awal = $parse->startOfMonth()->toDateString();
+    $akhir = $parse->endOfMonth()->toDateString();
+    $filter = Array('awal' => $awal, 'akhir' => $akhir);
+    $range = range($parse->startOfMonth()->format('d'), $parse->endOfMonth()->format('d'));
+    $yM = $parse->endOfMonth()->format('Y-m');
+    $data['chart'] = OrderRepository::orderChart($filter, $range, $yM );
+
+    //Menu
+    $filterMenu = Array( 
+      1 => "odcreatedat::date between '". $awal . "'::date and '" . $akhir . "'::date"
+    );
+    $data['topMenu'] = MenuRepository::topMenu($filterMenu);
+
+    return response()->json($data);
   }
 }

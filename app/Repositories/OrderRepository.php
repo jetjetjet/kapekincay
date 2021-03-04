@@ -126,9 +126,9 @@ class OrderRepository
       array_push($exp,$totalExp ? $totalExp->total:0);
     }
     
-    $data->chartIncome = implode("','", $inc);
-    $data->chartExpense = implode("','", $exp);
-    $data->chartTgl = implode("','", $range);
+    $data->chartIncome = implode(",", $inc);
+    $data->chartExpense = implode(",", $exp);
+    $data->chartTgl = implode(",", $range);
     return $data;
   }
 

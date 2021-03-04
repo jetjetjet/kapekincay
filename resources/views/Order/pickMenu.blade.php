@@ -153,7 +153,7 @@ input[type=number] {
                   <div>
                     <a class="{{$mkn['menuavaible'] != true ? 'card' : 'menuCard'}}" data-id="{{$mkn['id']}}" data-menutext="{{$mkn['menuname']}}" data-price="{{$mkn['menuprice']}}">
                       <div class="category-tile">
-                        <img width="120" height="120" src="{{ isset($mkn->menuimg) ? asset($mkn->menuimg) : asset('default') }}" alt="Lunch">
+                        <img width="120" height="120" src="{{ isset($mkn->menuimg) ? asset($mkn->menuimg) : asset('/public/images/fnb.jpg') }}" onerror="this.onerror=null;this.src='{{asset('/images/fnb.jpg')}}';" >
                         <span>{{$mkn['menuname']}} {{$mkn['menuavaible'] != true ? " - Stok Kosong" : ""}}</span>
                       </div>
                     </a>
@@ -164,14 +164,14 @@ input[type=number] {
               </div>
               <div class="tab-pane fade" id="justify-right-pills-profile" role="tabpanel" aria-labelledby="justify-right-pills-profile-tab">
                 @foreach($menu['Minuman'] as $min)
-                  <div class="text-div"><h4><span>{{$cat['nama']}}</span></h4></div>
+                  <div class="text-div"><h4><span>{{$min['nama']}}</span></h4></div>
                   <section class="row">
-                  @foreach($min['pilihan'] as $mkn)
+                  @foreach($min['pilihan'] as $item)
                   <div>
-                    <a class="{{$mkn['menuavaible'] != true ? 'card' : 'menuCard'}}" data-id="{{$mkn['id']}}" data-menutext="{{$mkn['menuname']}}" data-price="{{$mkn['menuprice']}}">
+                    <a class="{{$item['menuavaible'] != true ? 'card' : 'menuCard'}}" data-id="{{$item['id']}}" data-menutext="{{$item['menuname']}}" data-price="{{$item['menuprice']}}">
                       <div class="category-tile">
-                        <img width="120" height="120" src="{{ isset($mkn->menuimg) ? asset($mkn->menuimg) : asset('default') }}" alt="Lunch">
-                        <span>{{$mkn['menuname']}} {{$mkn['menuavaible'] != true ? " - Stok Kosong" : ""}}</span>
+                        <img width="120" height="120" src="{{ isset($item->menuimg) ? asset($item->menuimg) : asset('/public/images/fnb.jpg') }}" onerror="this.onerror=null;this.src='{{asset('/images/fnb.jpg')}}';">
+                        <span>{{$item['menuname']}} {{$item['menuavaible'] != true ? " - Stok Kosong" : ""}}</span>
                       </div>
                     </a>
                   </div>

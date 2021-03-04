@@ -82,7 +82,7 @@ class ShiftRepository
     return $respon;
   }
 
-  public static function getclosedit($respon, $id)
+  public static function getclosedit($respon, $id, $loginid)
   {
     $data = new \stdClass;
     $respon['data'] = Shift::getFields($data);
@@ -112,6 +112,9 @@ class ShiftRepository
       if($respon['data'] == null){
         $respon['status'] = 'error';
         array_push($respon['messages'],'Data tidak ditemukan!');
+      } elseif($loginid != $respon['data']->shiftuserid && $loginid != 1) {
+        $respon['status'] = 'error';
+        array_push($respon['messages'],'Data tidak sesuai!');
       }
      
     }
@@ -155,7 +158,6 @@ class ShiftRepository
         array_push($respon['messages'], 'Shift berhasil ditambah');
       }
     } catch(\Exception $e){
-      dd($e);
       $respon['status'] = 'error';
       array_push($respon['messages'], 'Error');
     }
@@ -170,6 +172,7 @@ class ShiftRepository
       ->where('id', $id)
       ->first();
     try{
+      if($data->shiftcreatedby == $loginid || $loginid == 1){
         $data = $data->update([
           'shiftclose' => now()->toDateTimeString(),
           'shiftendcash' => $inputs['shiftendcash'],
@@ -180,9 +183,12 @@ class ShiftRepository
         ]);
         $respon['status'] = 'success';
         array_push($respon['messages'], 'Shift berhasil ditutup');
+      } else {
+        $respon['status'] = 'error';
+        array_push($respon['messages'], 'Tutup shift ditolak! User tidak sesuai.');
+      }
 
     } catch(\Exception $e){
-      dd($e);
       $respon['status'] = 'error';
       array_push($respon['messages'], 'Error');
     }
@@ -231,17 +237,21 @@ class ShiftRepository
     return true;
   }
 
-  public static function shiftDashboard($loginid)
+  public static function shiftDashboard($loginid, $isAdmin)
   {
-    $text = Array('status'=> 'NEW', 'data' => null);
+    $text = Array('data' => null, 'can_close' => false);
     $cekShift = Shift::where('shiftactive',1)
-      ->whereRaw("( shiftstart::date = now()::date and shiftstart is not null ) and shiftclose is null")
-      ->where('shiftcreatedby', $loginid)
-      ->select('id', 'shiftstart', 'shiftclose')
+      ->whereRaw("( shiftstart::date = now()::date and shiftstart is not null ) and shiftclose is null");
+      
+    if(!$isAdmin)
+      $cekShift = $cekShift->where('shiftcreatedby', $loginid);
+
+      $cekShift = $cekShift->select('id', 'shiftstart', 'shiftclose')
       ->first();
     if($cekShift != null){
       $text['data'] = $cekShift;
-      $text['status'] = 'AVAILABLE';  
+      $text['status'] = 'AVAILABLE';
+      $text['can_close'] = true;
     }
     return $text;
   }

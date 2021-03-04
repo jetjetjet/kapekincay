@@ -27,7 +27,7 @@ class AuditTrailRepository
         'path' => $path,
         'action' => $action,
         'status' => $result['status'],
-        'messages' => $result['errorMessages'] ?? null,
+        'messages' => $result['messages'][0] ?? null,
         'createdby' => $loginid,
         'createdat' => DB::raw("now()")
       ]);

@@ -46,7 +46,7 @@ class ShiftController extends Controller
 	public function getEdit(Request $request, $id = null)
 	{
 		$respon = Helpers::$responses;
-		$results = ShiftRepository::getclosedit($respon, $id);
+		$results = ShiftRepository::getclosedit($respon, $id, Auth::user()->getAuthIdentifier());
 
 		if($results['status'] == 'error'){
 			$request->session()->flash($results['status'], $results['messages']);
@@ -59,7 +59,8 @@ class ShiftController extends Controller
 	public function getClose(Request $request, $id = null)
 	{
 		$respon = Helpers::$responses;
-		$results = ShiftRepository::getclosedit($respon, $id);
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = ShiftRepository::getclosedit($respon, $id, $loginid);
 
 		if($results['status'] == 'error'){
 			$request->session()->flash($results['status'], $results['messages']);
@@ -114,6 +115,7 @@ class ShiftController extends Controller
 		}
 
 		$results = ShiftRepository::save($respon, $inputs, Auth::user()->getAuthIdentifier());
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Simpan', Auth::user()->getAuthIdentifier());
 	
     //cek
 

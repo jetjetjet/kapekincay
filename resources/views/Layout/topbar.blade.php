@@ -2,7 +2,7 @@
 	<header class="header navbar navbar-expand-sm">
 		<a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></a>
 		<div class="nav-logo align-self-center">
-			<a class="navbar-brand" href="{{url('/')}}"><img alt="logo" src="{{ url('/') }}/assets/img/90x90.jpg"> <span class="navbar-brand-name">{{ session('cafeName') }}</span></a>
+			<a class="navbar-brand" href="{{url('/')}}"><span class="navbar-brand-name">{{ session('cafeName') }}</span></a>
 		</div>
 		<ul class="navbar-item topbar-navigation">
 			<!-- BEGIN TOPBAR -->
@@ -164,7 +164,7 @@
 								<h6 style="margin-bottom: .3rem !important;"><span>Halo,</span> {{ session('username') }}</h6>
 						</div>
 						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-						<img src="{{ url('/') }}/assets/img/90x90.jpg" class="img-fluid" alt="admin-profile">
+						<img src="{{ asset('/images/avatar.png') }}" class="img-fluid">
 					</div>
 				</a>
 					<div class="dropdown-menu position-absolute animated fadeInUp" aria-labelledby="userProfileDropdown">
