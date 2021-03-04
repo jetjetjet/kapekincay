@@ -87,7 +87,7 @@ class Cetak
     // dd($jam);
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100);
+      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100, 2);
       $printer = new Printer($connector, $profile);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
       // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
@@ -163,7 +163,6 @@ class Cetak
       $printer->close();
 
     }catch(\Exception $e){
-      dd($e);
       $printer = false;
     }
   }
@@ -172,14 +171,14 @@ class Cetak
   {
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100);
+      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100, 2);
       $printer = new Printer($connector, $profile);
       $printer -> pulse();
       $printer->close();
       $respon['status'] = 'success';
     }catch(\Exception $e){
       $printer = false;
-      array_push($respon['messages'], 'Periksa Kertas/Koneksi Di Printer');
+      array_push($respon['messages'], 'Periksa Koneksi Printer anda');
       $respon['status'] = "error";
     }
     return $respon;
@@ -189,7 +188,7 @@ class Cetak
   {
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100);
+      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100, 2);
       $printer = new Printer($connector, $profile);
       $printer->close();
       $respon['status'] = 'success';

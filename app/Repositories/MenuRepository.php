@@ -9,10 +9,12 @@ class MenuRepository
   public static function grid($perms)
   {
     return Menu::where('menuactive', '1')
-    ->select('id',
+    ->join('menucategory', 'menus.menumcid', '=', 'menucategory.id')
+    ->select('menus.id',
       'menuname', 
       'menutype', 
-      DB::raw("to_char(menuprice, '999G999G999G999D99')as menuprice"), 
+      'menuprice', 
+      'mcname',
       DB::raw("CASE WHEN menus.menuavaible = true THEN 'Tersedia' ELSE 'Kosong' END as menuavaible"),
       DB::raw($perms['save']),
       DB::raw($perms['delete']))

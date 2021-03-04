@@ -56,7 +56,7 @@
         <tbody>
           @foreach($data as $key=>$row)
           <tr>
-            <td>{{$row['id']}}</td>
+            <td>{{$key + 1}}</td>
             <td>{{$row['tanggal']}}</td>
             <td>{{$row['orderinvoice']}}</td>
             <td>{{$row['ordertypetext']}}</td>
