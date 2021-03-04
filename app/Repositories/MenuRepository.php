@@ -139,10 +139,9 @@ class MenuRepository
     if($filters){
       foreach($filters as $f)
       {
-        $detailOrder = $detailOrder->whereRaw($f[0]);
+        $detailOrder = $detailOrder->whereRaw($f);
       }
     }
-
     $data = Menu::joinSub($detailOrder, 'od', function ($join) {
         $join->on('menus.id', '=', 'od.odmenuid');})
       ->select(

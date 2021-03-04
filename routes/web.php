@@ -38,6 +38,7 @@ Route::get('/dapur/lists', [App\Http\Controllers\DapurController::class, 'getLis
 Route::group(array('middleware' => 'auth'), function ()
 {
   Route::get('/', [DashboardController::class, 'index']);
+  Route::get('/dash', [DashboardController::class, 'getChart']);
 
   Route::get('/log', [AuditTrailController::class, 'index'])->middleware('can:log_lihat');
   Route::get('/log/grid', [AuditTrailController::class, 'grid'])->middleware('can:log_lihat');
