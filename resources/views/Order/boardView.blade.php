@@ -217,9 +217,11 @@
 
                 return '<a href="' + url + '"><span class="badge badge-primary">' +  data.orderinvoice + '</span></a>';
               }
-
-              url = "{{url('/order')}}" + "?idMeja=" +data.boardid+ "&mejaTeks=Meja No." + data.boardnumber+ " - Lantai "+data.boardfloor;
-              return '<a href="' + url + '"><span class="badge badge-danger">Pesanan Baru</span></a>';
+              if(data.is_pelayan){url = "{{url('/order')}}" + "?idMeja=" +data.boardid+ "&mejaTeks=Meja No." + data.boardnumber+ " - Lantai "+data.boardfloor;
+                return '<a href="' + url + '"><span class="badge badge-danger">Pesanan Baru</span></a>';
+              }else{
+                return '<span class="badge badge-warning">Meja Kosong</span>';
+              }
             }
           }
         ],
