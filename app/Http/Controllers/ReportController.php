@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Validator;
 
 use App\Libs\Helpers;
-use App\Repositories\UserRepository;
 use App\Repositories\ReportRepository;
 use Auth;
 class ReportController extends Controller
@@ -29,4 +28,20 @@ class ReportController extends Controller
 		return view('Report.index')->with('data', $data)->with('user', $user);
 	}
 
+	public function exIndex(Request $request)
+	{
+		$inputs = $request->all();
+		$data = new \stdClass;
+		
+
+		if($inputs){
+			$data = ReportRepository::gridEx($inputs);
+			$data->sub = ReportRepository::getEx($inputs);
+			
+		}else{
+			$data->sub['total'] = '0';
+		}
+		// dd($data);
+		return view('Report.exRep')->with('data', $data);
+	}
 }

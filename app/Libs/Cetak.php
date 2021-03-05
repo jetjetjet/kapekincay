@@ -23,6 +23,7 @@ class Cetak
       "Alamat" => SettingRepository::getAppSetting('Alamat'),
       "footerkasir" => SettingRepository::getAppSetting('FooterStrukKasir'),
       "headerkasir" => SettingRepository::getAppSetting('HeaderStrukKasir'),
+      "logoApp" => SettingRepository::getAppSetting('logoApp'),
     );
   }
 
@@ -94,7 +95,7 @@ class Cetak
       // $printer->text("Cafe&Resto\n");
       // $printer->text("Syifa Donat\n");
       // // // gambar
-      $tux = EscposImage::load(public_path('images/asd.jpg'),true);     
+      $tux = EscposImage::load(public_path(self::getSetting()['logoApp']),true);     
       $printer -> graphics($tux);
       // $printer -> feed();
       $printer->selectPrintMode();

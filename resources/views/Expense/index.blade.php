@@ -100,7 +100,7 @@
                 if(data.expenseexecutedat == null){
                   return '<span class="badge badge-warning">Draft</span>';  
                 }else{
-                  return '<span class="badge badge-success">Dilaksanakan</span>';
+                  return '<span class="badge badge-success">Selesai</span>';
                 }
               }
           },

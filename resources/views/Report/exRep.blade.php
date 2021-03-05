@@ -2,17 +2,17 @@
 
 @section('breadcumb')
   <div class="title">
-    <h3>Laporan Transaksi</h3>
+    <h3>Laporan Pengeluaran</h3>
   </div>
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);">Laporan</a></li>
-    <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">Laporan Transaksi</a></li>
+    <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">Laporan Pengeluaran</a></li>
   </ol>
 @endsection
 
 @section('content-form')
   <div class="widget-content widget-content-area br-6">
-    <form class="needs-validation" method="get" novalidate action="{{ url('/laporan/') }}">
+    <form class="needs-validation" method="get" novalidate action="{{ url('/laporan/pengeluaran') }}">
       <div class="form-row">     
         <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
         <div class="col-md-6 mb-1">
@@ -22,23 +22,13 @@
         <div class="col-md-6 mb-1">
           <h4>Tanggal Akhir</h4>
           <input id="end" value="{{request('enddate')}}" name="enddate" class="form-control flatpickr flatpickr-input date">
-        </div>  
-        <div class="col-md-6 mb-1">
-          <h4>Karyawan</h4>
-          <select id='user' class="form-control select2" name="user">
-            <option value="Semua">Semua Karyawan</option>
-            @foreach($user as $u)
-              <option value="{{$u->id}}" {{ request('user') == $u->id ? 'selected' : ''}}>{{$u->username}}</option>
-            @endforeach
-          </select>
         </div>
-        <div class="col-md-6 mb-1">
+        <div class="col-md-12 mb-1">
           <h4>Status</h4>
           <select id='status' class="form-control" name="status">
             <option value="Semua">Semua</option>
-              <option value="PAID" {{ request('status') == 'PAID' ? 'selected' : ''}}>Lunas</option>
-              <option value="Diproses" {{ request('status') == 'Diproses' ? 'selected' : ''}}>Diproses</option>
-              <option value="VOIDED" {{ request('status') == 'VOIDED' ? 'selected' : ''}}>Dibatalkan</option>
+              <option value="1" {{ request('status') == '1' ? 'selected' : ''}}>Dilaksanakan</option>
+              <option value="0" {{ request('status') == '0' ? 'selected' : ''}}>Draft</option>
           </select>
         </div> 
       </div>
@@ -54,29 +44,32 @@
         <thead>
           <tr>
             <th>No</th>
+            <th>Nama</th>
             <th>Tanggal</th>
-            <th>No. Invoice</th>
-            <th>Tipe Pesanan</th>
-            <th>Harga</th>
-            <th>Status</th>
+            <th>Jumlah</th>
             <th>Karyawan</th>
+            <th>Status</th>
+            <th>Diselesaikan oleh</th>
+            <th>Tanggal Diselesaikan</th>
           </tr>
         </thead>
         <tbody>
           @foreach($data as $key=>$row)
           <tr>
             <td>{{$key + 1}}</td>
+            <td><a href="{{url('/pengeluaran/detail')}}/{{$row['id']}}">{{$row['expensename']}}</a></td>
             <td>{{$row['tanggal']}}</td>
-            <td>{{$row['orderinvoice']}}</td>
-            <td>{{$row['ordertypetext']}}</td>
-            <td>{{number_format($row['orderprice'])}}</td>
-            <td>{{$row['orderstatuscase']}}</td>
-            <td>{{$row['username']}}</td>
+            <td>{{number_format($row['expenseprice'])}}</td>
+            <td>{{$row['create']}}</td>
+            <td>{{$row['status']}}</td>
+            <td>{{$row['execute']}}</td>
+            <td>{{$row['tanggalend']}}</td>
           </tr>
           @endforeach
         </tbody>
         <tfoot>
           <tr>
+            <th></th>
             <th></th>
             <th></th>
             <th></th>
@@ -156,10 +149,9 @@ $('#grid').DataTable( {
                         $(win.document.body)
                           .prepend(
                               "<br><h2><b>{{session('cafeName')}}</b></h2><hr>"+
-                              "<h2 style='color:#1b55e2'>Laporan Transaksi</h2>"+
+                              "<h2 style='color:#1b55e2'>Laporan Pengeluaran</h2>"+
                               "<div class='form-row'>"+
-                              "<div class='col-md-6 float-left'><h4>Karyawan : <b>{{request('user')}}</b></h4></div>"+
-                              "<div class='col-md-6'><h4 class='text-right'>{{request('startdate')}}/{{request('enddate')}}</h4></div>"+
+                              "<div class='col-md-12'><h4 class='text-right'>{{request('startdate')}}/{{request('enddate')}}</h4></div>"+
                               "</div>"
                           );
                       }
