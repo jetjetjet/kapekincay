@@ -94,7 +94,7 @@
                 @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
                   <button id="print" class="btn btn-success mt-2">Cetak</button>
                 @endif
-                @if(!($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID'))
+                @if(!($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID') && $data->ordertype == 'TAKEAWAY' || Perm::can(['order_pelayan']))
                   <a href="{{ url('/order').'/'.$data->id }}" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Pesanan</a>
                   <!-- <a href="" type="button" id="drawer" class="btn btn-success mt-2">Buka Laci</a> -->
                   @if(Perm::can(['order_pembayaran']))
