@@ -115,7 +115,7 @@
     {
       var passOne = $("#pass1").val();
       var passTwo = $("#pass2").val();
-      console.log(passOne, passTwo)
+      //console.log(passOne, passTwo)
       if(passOne == passTwo){
         $('#passbutt').removeAttr('disabled');
       } else {
@@ -142,7 +142,7 @@
         type: "post",
         data: { id: id, _token: token, userpassword: p1, userpass2: p2 },
         success: function(result){
-          console.log(result);
+          //console.log(result);
           var msg = result.messages[0];
           if(result.status == 'success'){
             toast({

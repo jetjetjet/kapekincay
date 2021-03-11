@@ -40,6 +40,7 @@ class AuthCafe
     'pengeluaran_simpan',
     'pengeluaran_hapus',
     'pengeluaran_proses',
+    'pengaturan_notif',
 
     'shift_lihat',
     'shift_simpan',

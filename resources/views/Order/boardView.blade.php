@@ -84,10 +84,9 @@
       if(notif){
         ws.send('Ok')
       }
-      console.log(ws.Open)
-      console.log(ws.readyState)
+      //console.log(ws.Open)
+      //console.log(ws.readyState)
       ws.onmessage = function(e) { 
-        console.log(e)
         grid.ajax.reload();
         @if(Perm::can(['order_lihatBungkus']))
           gridBungkus.ajax.reload();

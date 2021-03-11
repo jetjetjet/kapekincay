@@ -169,7 +169,7 @@
         $('#kembalian').html('Kembalian : <b>0</b>');
         $('#drawer').attr('disabled', true);
       }
-      console.log(price, pay, change )
+      //console.log(price, pay, change )
     }
 
 
@@ -240,7 +240,7 @@
         url: "{{url('/open/drawer') }}",
         type: "post",
         success: function(result){
-          console.log(result);
+          //console.log(result);
           var msg = result.messages[0];
           if(result.status == 'success'){
             $('#orderMenuForm').submit();
@@ -260,7 +260,7 @@
         url: "{{url('/open/drawer') }}",
         type: "post",
         success: function(result){
-          console.log(result);
+          //console.log(result);
           var msg = result.messages[0];
           if(result.status == 'success'){
             $('#konfirm').modal('show');

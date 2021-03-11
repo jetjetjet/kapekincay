@@ -75,6 +75,7 @@
         <ul class="navbar-item flex-row ml-auto">
         </ul>
 
+        <span id="notiferror" class="badge badge-danger">Notif Error</span> &nbsp; &nbsp;
         <ul class="navbar-item flex-row nav-dropdowns">
           <a href="{{ url('/')}}" type="button" style="float-right" class="btn btn-info">Kembali Ke Aplikasi</a>
         </ul>
@@ -106,11 +107,18 @@
   <!-- END GLOBAL MANDATORY SCRIPTS -->
   <script>
     $(document).ready(function (){
-      let ws = new WebSocket('ws://192.168.100.26:8910/kapews');
+      const pMaster = "{{ session('ipserver') }}";
+      let ws = new WebSocket('ws://'+ pMaster +':8910/kapews');
       ws.onmessage = function(e) { 
-        console.log(e.data);
         table.ajax.reload(); 
       };
+      ws.onopen = function(e) {
+        $('#notiferror').addClass('d-none')
+      }
+      
+      ws.onerror = function(e) { 
+        $('#notiferror').removeClass('d-none')
+      }
 
       let table = $('#example').DataTable({
         'paging':   false,

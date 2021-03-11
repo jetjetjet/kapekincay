@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="ipws" content="{{ session('ipserver') }}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
     <title>{{ session('cafeName') ?? '' }} v.0.0.1</title>
@@ -157,18 +158,22 @@
     <script src="{{ url('/') }}/plugins/font-icons/feather/feather.min.js"></script>
     <script src="{{ url('/') }}/plugins/sweetalerts/sweetalert2.min.js"></script>
     <script>
-      let ws = new WebSocket('ws://192.168.100.26:8910/kapews');
+      const pMaster = getIPWS();
+      let ws = new WebSocket('ws://'+ pMaster +':8910/kapews');
       ws.onopen = function(e) {
+        $('#notiferror').addClass('d-none')
         localStorage.setItem("notif", "1");
         ws.send('Ok')
       }
-      ws.onerror = function(e) { 
+      ws.onerror = function(e) {
         localStorage.removeItem("notif");
-        alert(1)
+        $('#notiferror').removeClass('d-none')
       }
 			// $(document).ready(function() {
-			// 	feather.replace();
-			// 	App.init();
+      //   let a = getIPWS();
+      //   //console.log('ip',a)
+			// 	// feather.replace();
+			// 	// App.init();
 			// });
     </script>
     <script src="{{ url('/') }}/assets/js/custom.js"></script>

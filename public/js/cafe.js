@@ -4,6 +4,11 @@ $.ajaxSetup({
   }
 });
 
+function getIPWS()
+{
+  return $('meta[name="ipws"]').attr('content')
+}
+
 //ping printer
 Mousetrap.bind('p', function(){
   const url = $('#ping').val()
@@ -12,7 +17,7 @@ Mousetrap.bind('p', function(){
     url: url,
     type: "post",
     success: function(result){
-      console.log(result);
+      //console.log(result);
       var msg = result.messages[0];
       if(result.status == 'success'){
         swal({
@@ -69,7 +74,7 @@ Mousetrap.bind('esc', function(){
       }
     }
     }).then(function(result) {
-      console.log(result)
+      //console.log(result)
       if (result.value) {
         $('.spinHotkeys').removeClass('d-none')
         const url = $('#bukalaci').val()
@@ -123,7 +128,7 @@ Mousetrap.bind('esc', function(){
         }
       }
       }).then(function(result) {
-        console.log(result)
+        //console.log(result)
         if (result.value) {
           const url = $('#bukalaci').val()
           $.post( url,{'pass':result.value}, function (data){         
@@ -334,7 +339,7 @@ function showPopupOrder(paramBody, actFn){
       $modal.find('#menuPopupPrice').html(paramBody['price']);
       
       let inputQty = $modal.find('#menuPopupQty');
-      console.log(inputQty)
+      //console.log(inputQty)
       inputNumber(inputQty);
       $modal.modal({
           backdrop: 'static',
@@ -588,7 +593,7 @@ function showPopupForm($btn, options, title, $popup, postUrl, getPostDataFn, suc
   var modal = showModal(title, content, options, function (e)
   {
     var $form = e.modalBody.find('form');
-    // console.log($form)
+    // //console.log($form)
     // if (!$form.valid()) return;
 
     var url = typeof postUrl === 'function' ? postUrl($form) : postUrl,
@@ -608,7 +613,7 @@ function showPopupForm($btn, options, title, $popup, postUrl, getPostDataFn, suc
           data.postData = postData;
           failCallbackFn(data);
         } else {
-          console.log('e',data);
+          //console.log('e',data);
         }
       } else {
         successCallbackFn(data);

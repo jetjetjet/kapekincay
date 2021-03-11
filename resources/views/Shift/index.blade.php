@@ -157,7 +157,7 @@
         const url = "{{ url('shift/hapus') . '/' }}" + rowData.id;
         const title = 'Hapus Shift';
         const pesan = 'Alasan hapus?'
-        console.log(rowData, url)
+        //console.log(rowData, url)
         gridDeleteInput(url, title, pesan, grid);
       });
     });

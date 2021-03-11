@@ -132,7 +132,7 @@
         const url = "{{ url('menu/hapus') . '/' }}" + rowData.id;
         const title = 'Hapus Menu';
         const pesan = 'Apakah anda yakin ingin menghapus menu ini?'
-        console.log(rowData, url)
+        //console.log(rowData, url)
         gridDeleteRow(url, title, pesan, grid);
       });
     });

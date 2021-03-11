@@ -149,6 +149,9 @@
 									@if(Perm::can(['pengaturan_lihat']))
 										<li><a href="{{ url('/setting') }}">Pengaturan</a></li>
 									@endif
+									@if(Perm::can(['pengaturan_notif']))
+										<li><a href="{{ url('/setting/notif') }}">Notifikasi</a></li>
+									@endif
 									<li><a href="{{ url('/setting/aboutus') }}">Tentang kami</a></li>
 									<li><a href="{{ url('/setting/hotkey') }}">Tombol Pintas</a></li>
 								</ul>
@@ -158,6 +161,8 @@
 			</div>
 		</ul>
 		<ul class="navbar-item flex-row ml-auto"></ul>
+		
+		<span id="notiferror" class="badge badge-danger d-none">Notif Error</span>
 		<ul class="navbar-item flex-row nav-dropdowns">
 
 			<li class="nav-item dropdown user-profile-dropdown order-lg-0 order-1">

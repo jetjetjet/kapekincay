@@ -103,7 +103,7 @@
         const url = "{{ url('cust/hapus') . '/' }}" + rowData.id;
         const title = 'Hapus Data Pelanggan';
         const pesan = 'Apakah anda yakin ingin menghapus data ini?'
-        console.log(rowData, url)
+        //console.log(rowData, url)
         gridDeleteRow(url, title, pesan, grid);
       });
     });

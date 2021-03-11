@@ -60,6 +60,7 @@ class LoginController extends Controller
 		$request->session()->put('cafeName', $cafeName);
 		$request->session()->put('username', Auth::user()->getUserName());
 		$request->session()->put('userid', Auth::user()->getAuthIdentifier());
+		$request->session()->put('ipserver', gethostbyname($_SERVER['SERVER_NAME']));
 		return redirect()->intended(); 
 	}
 		
