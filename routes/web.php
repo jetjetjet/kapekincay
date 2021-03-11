@@ -82,6 +82,8 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('/setting/detail/{id?}', [SettingController::class, 'getById'])->middleware('can:pengaturan_lihat');
   Route::get('/setting/aboutus', [SettingController::class, 'aboutus']);
   Route::get('/setting/hotkey', [SettingController::class, 'hotkey']);
+  Route::get('/setting/notif', [SettingController::class, 'initSocket']);
+  Route::get('/setting/start-notif', [SettingController::class, 'startSocket']);
   Route::get('/setting/backupdb', [SettingController::class, 'backupDb'])->middleware('can:pengaturan_backupdb');
   Route::post('/setting/simpan', [SettingController::class, 'save'])->middleware('can:pengaturan_edit');
   
