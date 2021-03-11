@@ -169,12 +169,6 @@
         localStorage.removeItem("notif");
         $('#notiferror').removeClass('d-none')
       }
-			// $(document).ready(function() {
-      //   let a = getIPWS();
-      //   //console.log('ip',a)
-			// 	// feather.replace();
-			// 	// App.init();
-			// });
     </script>
     <script src="{{ url('/') }}/assets/js/custom.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->

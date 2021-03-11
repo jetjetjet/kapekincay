@@ -80,10 +80,6 @@
   <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
   <script>
     $(document).ready(function (){
-      let notif = localStorage.getItem("lastname") ?? 0;
-      if(notif){
-        ws.send('Ok')
-      }
       //console.log(ws.Open)
       //console.log(ws.readyState)
       ws.onmessage = function(e) { 
@@ -92,6 +88,13 @@
           gridBungkus.ajax.reload();
         @endif
       };
+
+      let notif = localStorage.getItem("notif") ?? false;
+      setTimeout(() => {
+        if(notif){
+          ws.send('Ok')
+        }
+      }, 2000);
       //shortcut
       Mousetrap.bind('enter', function() {
         $('#bgks').trigger('click')

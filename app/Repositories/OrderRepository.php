@@ -368,7 +368,6 @@ class OrderRepository
           ]);
       $respon['success'] = true;
     } catch(Exception $e){
-      dd('delDetail',$e);
       throw new Exception('rollbacked');
     }
     return $respon;
@@ -431,6 +430,19 @@ class OrderRepository
           }
         }
       }
+
+      $doubleCek = OrderDetail::where('odactive', '1')
+        ->where('odorderid', $idHeader)
+        ->where('oddelivered', '0')
+        ->first();
+      if($doubleCek == null){
+        Order::where('orderactive', '1')
+          ->where('id', $idHeader)
+          ->update([
+            'orderstatus' => 'COMPLETED'
+          ]);
+      }
+
       $respon['success'] = true;
     }catch(\Exception $e){
       dd('errDetailSave', $e);

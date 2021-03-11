@@ -608,9 +608,11 @@ input[type=number] {
           });
           // location.reload();
           if(data.status == 'success'){
+            let notif = localStorage.getItem("notif") ?? false;
+            if(notif){
+              ws.send('Ok')
+            }
             location.reload();
-            // $row.find('[id^=dtl][id$="[delivRow]"]').addClass('d-none');
-            // $row.find('[id^=dtl][id$="[deleteRow]"]').addClass('d-none');
           }
       });
     })

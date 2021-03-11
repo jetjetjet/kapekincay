@@ -107,6 +107,19 @@
   <script src="{{ url('/') }}/js/cafe.js"></script>
   <script src="{{ url('/') }}/assets/js/forms/bootstrap_validation/bs_validation_script.js"></script>
   <script src="{{ url('/') }}/plugins/sweetalerts/sweetalert2.min.js"></script>
+  <script>
+      const pMaster = "{{ session('ipserver') }}";
+      let ws = new WebSocket('ws://'+ pMaster +':8910/kapews');
+      ws.onopen = function(e) {
+        $('#notiferror').addClass('d-none')
+        localStorage.setItem("notif", "1");
+        ws.send('Ok')
+      }
+      ws.onerror = function(e) {
+        localStorage.removeItem("notif");
+        $('#notiferror').removeClass('d-none')
+      }
+    </script>
   @yield('js-body')
 </body>
 </html>

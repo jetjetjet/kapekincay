@@ -168,8 +168,8 @@
               'data': null,
               'render': function(data, type, full, meta){
                 let sub = data.subOrder,
-                  makanan = "<br>Makanan<ol>",
-                  minuman = "</ol>Minuman<ol>";
+                  makanan = "<br>Makanan<ul>",
+                  minuman = "</ul>Minuman<ul>";
                 sub.forEach(function(e){
                   let temp = "";
                   temp += "<li> " + e.odmenutext + " x<b>" + e.odqty+"</b>";
@@ -182,7 +182,7 @@
                     : minuman += temp
                 })
                   
-              return makanan + minuman + "</ol>";
+              return makanan + minuman + "</ul>";
               }
             }
         ],
