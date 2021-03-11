@@ -80,6 +80,16 @@
   <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
   <script>
     $(document).ready(function (){
+      ws.onopen = function(e) { 
+        ws.send('Ok');
+      }
+      
+      ws.onmessage = function(e) { 
+        grid.ajax.reload();
+        @if(Perm::can(['order_lihatBungkus']))
+          gridBungkus.ajax.reload();
+        @endif
+      };
       //shortcut
       Mousetrap.bind('enter', function() {
         $('#bgks').trigger('click')
@@ -100,10 +110,6 @@
         let msg = data
         console.log(msg)
         if(msg.message == "ok"){
-          grid.ajax.reload();
-          @if(Perm::can(['order_lihatBungkus']))
-            gridBungkus.ajax.reload();
-          @endif
         }
       });
       @if(Perm::can(['order_lihatBungkus']))

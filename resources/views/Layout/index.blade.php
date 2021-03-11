@@ -157,10 +157,11 @@
     <script src="{{ url('/') }}/plugins/font-icons/feather/feather.min.js"></script>
     <script src="{{ url('/') }}/plugins/sweetalerts/sweetalert2.min.js"></script>
     <script>
-			$(document).ready(function() {
-				feather.replace();
-				App.init();
-			});
+      let ws = new WebSocket('ws://localhost:8910/kapews');
+			// $(document).ready(function() {
+			// 	feather.replace();
+			// 	App.init();
+			// });
     </script>
     <script src="{{ url('/') }}/assets/js/custom.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->

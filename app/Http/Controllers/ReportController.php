@@ -32,7 +32,6 @@ class ReportController extends Controller
 	{
 		$inputs = $request->all();
 		$data = new \stdClass;
-		
 
 		if($inputs){
 			$data = ReportRepository::gridEx($inputs);
@@ -43,5 +42,20 @@ class ReportController extends Controller
 		}
 		// dd($data);
 		return view('Report.exRep')->with('data', $data);
+	}
+
+	public function shiftReport(Request $request)
+	{
+		$inputs = $request->all();
+		$data = new \stdClass;
+		if($inputs){
+			$data = ReportRepository::shiftReport($inputs);
+			$data->sub = ReportRepository::getEx($inputs);
+			
+		}else{
+			$data->sub['total'] = '0';
+		}
+		// dd($data);
+		return view('Report.shiftReport')->with('data', $data);
 	}
 }

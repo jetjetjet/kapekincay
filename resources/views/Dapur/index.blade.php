@@ -104,46 +104,38 @@
   <script src="{{ url('/') }}/plugins/table/datatable/datatables.js"></script>
   <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
   <!-- END GLOBAL MANDATORY SCRIPTS -->
-
   <script>
     $(document).ready(function (){
-      var pusher = new Pusher('631e0080537b4cc8a0c3', {
-        cluster: 'ap1'
-      });
+      let ws = new WebSocket('ws://localhost:8910/kapews');
+      ws.onmessage = function(e) { 
+        console.log(e.data);
+        table.ajax.reload(); 
+      };
 
-      var channel = pusher.subscribe('dapur');
-      channel.bind('ch-dapur', function(data) {
-        let msg = data
-        console.log(msg)
-        if(msg.message == "ok"){
-          table.ajax.reload();
-        }
-      });
-
-      var table = $('#example').DataTable({
+      let table = $('#example').DataTable({
         'paging':   false,
         'ordering': false,
         "ajax": {
-            url: "{{ url('/dapur/lists') }}",
-            dataSrc: ''
+          url: "{{ url('/dapur/lists') }}",
+          dataSrc: ''
         },
         'dom':
-            // "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'<'float-md-right ml-2'B>f>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+          // "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'<'float-md-right ml-2'B>f>>" +
+          "<'row'<'col-sm-12'tr>>" +
+          "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         'buttons': [, {
-            'text': '<i class="fa fa-id-badge fa-fw" aria-hidden="true"></i>',
-            'action': function (e, dt, node) {
+          'text': '<i class="fa fa-id-badge fa-fw" aria-hidden="true"></i>',
+          'action': function (e, dt, node) {
 
-              $(dt.table().node()).toggleClass('cards');
-              //  $('.fa', node).toggleClass(['fa-table', 'fa-id-badge']);
+            $(dt.table().node()).toggleClass('cards');
+            //  $('.fa', node).toggleClass(['fa-table', 'fa-id-badge']);
 
-              dt.draw('page');
-            },
-            'className': 'btn-sm',
-            'attr': {
-              'title': 'Change views',
-            }
+            dt.draw('page');
+          },
+          'className': 'btn-sm',
+          'attr': {
+            'title': 'Change views',
+          }
         }],
         'select': 'single',
         'columns': [
@@ -152,9 +144,9 @@
               'data': null,
               'className': 'text-center',
               'render': function(data, type, full, meta){
-                  data = "<b>" + data.orderinvoice+ "</b><p>"+data.orderboardtext+"</p>";
-                  
-                  return data;
+                data = "<b>" + data.orderinvoice+ "</b><p>"+data.orderboardtext+"</p>";
+                
+                return data;
               }
             },
             {
@@ -167,20 +159,20 @@
             },{
               'data': null,
               'render': function(data, type, full, meta){
-                  let sub = data.subOrder,
-                    makanan = "<br>Makanan<ol>",
-                    minuman = "</ol>Minuman<ol>";
-                  sub.forEach(function(e){
-                    let temp = "";
-                    temp += "<li> " + e.odmenutext + " x<b>" + e.odqty+"</b>";
-                    e.odremark != null 
-                      ? temp += "<br>" + e.odremark + "</li>"
-                      : temp += "</li>"
-                    
-                    e.odmenutype == 'Makanan'
-                      ? makanan += temp
-                      : minuman += temp
-                  })
+                let sub = data.subOrder,
+                  makanan = "<br>Makanan<ol>",
+                  minuman = "</ol>Minuman<ol>";
+                sub.forEach(function(e){
+                  let temp = "";
+                  temp += "<li> " + e.odmenutext + " x<b>" + e.odqty+"</b>";
+                  e.odremark != null 
+                    ? temp += "<br>" + e.odremark + "</li>"
+                    : temp += "</li>"
+                  
+                  e.odmenutype == 'Makanan'
+                    ? makanan += temp
+                    : minuman += temp
+                })
                   
               return makanan + minuman + "</ol>";
               }

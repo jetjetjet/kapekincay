@@ -6,6 +6,9 @@ use App\Models\Setting;
 use Illuminate\Http\Request;
 
 use Validator;
+use App\Libs\KapeWs;
+use Ratchet\App;
+use Ratchet\Server\EchoServer;
 
 use Illuminate\Support\Facades\Hash;
 use App\Libs\Helpers;
@@ -151,4 +154,15 @@ class SettingController extends Controller
 		return view('Setting.hotKeys');
 	}
 
+	public function initSocket()
+	{
+		return view('Setting.initSocket');
+	}
+
+	public function startSocket()
+	{
+		$app = new App('localhost', 8910);
+		$app->route('/kapews', new KapeWs, array('*'));
+    $app->run();
+	}
 }
