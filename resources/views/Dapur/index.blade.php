@@ -106,7 +106,7 @@
   <!-- END GLOBAL MANDATORY SCRIPTS -->
   <script>
     $(document).ready(function (){
-      let ws = new WebSocket('ws://localhost:8910/kapews');
+      let ws = new WebSocket('ws://192.168.100.26:8910/kapews');
       ws.onmessage = function(e) { 
         console.log(e.data);
         table.ajax.reload(); 

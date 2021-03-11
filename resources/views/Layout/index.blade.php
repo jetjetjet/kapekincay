@@ -157,7 +157,15 @@
     <script src="{{ url('/') }}/plugins/font-icons/feather/feather.min.js"></script>
     <script src="{{ url('/') }}/plugins/sweetalerts/sweetalert2.min.js"></script>
     <script>
-      let ws = new WebSocket('ws://localhost:8910/kapews');
+      let ws = new WebSocket('ws://192.168.100.26:8910/kapews');
+      ws.onopen = function(e) {
+        localStorage.setItem("notif", "1");
+        ws.send('Ok')
+      }
+      ws.onerror = function(e) { 
+        localStorage.removeItem("notif");
+        alert(1)
+      }
 			// $(document).ready(function() {
 			// 	feather.replace();
 			// 	App.init();

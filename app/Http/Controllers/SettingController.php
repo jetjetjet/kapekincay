@@ -161,7 +161,8 @@ class SettingController extends Controller
 
 	public function startSocket()
 	{
-		$app = new App('localhost', 8910);
+		$server_ip = gethostbyname($_SERVER['SERVER_NAME']);
+		$app = new App($server_ip, 8910, '0.0.0.0');
 		$app->route('/kapews', new KapeWs, array('*'));
     $app->run();
 	}

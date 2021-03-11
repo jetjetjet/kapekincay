@@ -80,11 +80,14 @@
   <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
   <script>
     $(document).ready(function (){
-      ws.onopen = function(e) { 
-        ws.send('Ok');
+      let notif = localStorage.getItem("lastname") ?? 0;
+      if(notif){
+        ws.send('Ok')
       }
-      
+      console.log(ws.Open)
+      console.log(ws.readyState)
       ws.onmessage = function(e) { 
+        console.log(e)
         grid.ajax.reload();
         @if(Perm::can(['order_lihatBungkus']))
           gridBungkus.ajax.reload();
@@ -101,17 +104,7 @@
         $('#gridBungkus_previous').trigger('click')
       });
 
-      var pusher = new Pusher('631e0080537b4cc8a0c3', {
-        cluster: 'ap1'
-      });
 
-      var channel = pusher.subscribe('meja');
-      channel.bind('ch-meja', function(data) {
-        let msg = data
-        console.log(msg)
-        if(msg.message == "ok"){
-        }
-      });
       @if(Perm::can(['order_lihatBungkus']))
         let gridBungkus = $('#gridBungkus').DataTable({
           ajax: "{{ url('order/grid/bungkus') }}",
