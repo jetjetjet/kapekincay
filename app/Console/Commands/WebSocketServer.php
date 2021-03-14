@@ -4,6 +4,9 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use App\Libs\KapeWs;
+use Ratchet\App;
+use Ratchet\Server\EchoServer;
 
 class WebSocketServer extends Command
 {
