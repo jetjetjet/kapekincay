@@ -164,8 +164,8 @@
 			</div>
 		</ul>
 		<ul class="navbar-item flex-row ml-auto"></ul>
-		
-		<span id="notiferror" class="badge badge-danger d-none">Notif Error</span>
+		<span id="notiferror" class="badge badge-danger d-none">Notif Error</span> &nbsp;&nbsp;
+		<a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a>
 		<ul class="navbar-item flex-row nav-dropdowns">
 
 			<li class="nav-item dropdown user-profile-dropdown order-lg-0 order-1">

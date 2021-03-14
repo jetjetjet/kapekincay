@@ -169,6 +169,9 @@
         localStorage.removeItem("notif");
         $('#notiferror').removeClass('d-none')
       }
+      $(document).ready(function (){
+        feather.replace();
+      })
     </script>
     <script src="{{ url('/') }}/assets/js/custom.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
