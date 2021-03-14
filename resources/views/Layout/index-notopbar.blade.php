@@ -103,7 +103,7 @@
   <script src="{{ url('/') }}/plugins/select2/custom-select2.js"></script>
   <script src="{{ url('/') }}/assets/js/custom.js"></script>
   <script src="{{ url('/') }}/assets/js/app.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.6.5/mousetrap.min.js"></script>
+  <script src="{{ url('/') }}/js/mousetrap.min.js"></script>
   <script src="{{ url('/') }}/js/cafe.js"></script>
   <script src="{{ url('/') }}/assets/js/forms/bootstrap_validation/bs_validation_script.js"></script>
   <script src="{{ url('/') }}/plugins/sweetalerts/sweetalert2.min.js"></script>

@@ -153,7 +153,7 @@
     <script src="{{ url('/') }}/bootstrap/js/bootstrap.min.js"></script>
     <script src="{{ url('/') }}/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="{{ url('/') }}/assets/js/app.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.6.5/mousetrap.min.js"></script>
+    <script src="{{ url('/') }}/js/mousetrap.min.js"></script>
     <script src="{{ url('/') }}/js/cafe.js"></script>
     <script src="{{ url('/') }}/plugins/font-icons/feather/feather.min.js"></script>
     <script src="{{ url('/') }}/plugins/sweetalerts/sweetalert2.min.js"></script>

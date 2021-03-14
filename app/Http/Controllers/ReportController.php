@@ -48,14 +48,11 @@ class ReportController extends Controller
 	{
 		$inputs = $request->all();
 		$data = new \stdClass;
+		$user = ReportRepository::getName();
 		if($inputs){
-			$data = ReportRepository::shiftReport($inputs);
-			$data->sub = ReportRepository::getEx($inputs);
-			
-		}else{
-			$data->sub['total'] = '0';
+			$data = ReportRepository::getShiftReport($inputs);
 		}
 		// dd($data);
-		return view('Report.shiftReport')->with('data', $data);
+		return view('Report.shiftReport')->with('data', $data)->with('user', $user);
 	}
 }

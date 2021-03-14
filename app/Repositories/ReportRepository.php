@@ -105,27 +105,44 @@ class ReportRepository
 
   public static function getShiftReport($filter)
   {
-    $q = DB::table('shift as s')
+    $q = DB::table('shifts as s')
       ->join('orders as o', 'orderpaidby', 'shiftcreatedby')
       ->join('users as u', 'u.id','shiftcreatedby')
       ->where('shiftactive', '1')
       ->where('orderactive', '1')
-      ->whereRaw("shiftcreatedat::date between '". $filter->awal . "'::date and '" . $filter->akhir . "'::date")
-      ->groupByRaw('shiftcreatedby', 'shiftcreatedat::date', 'username', 'orderstatus')
+      ->whereRaw("shiftcreatedat::date between '". $filter['startdate'] . "'::date and '" . $filter['enddate'] . "'::date")
+      ->groupBy(DB::raw("shiftcreatedby, shiftcreatedat::date, username, orderstatus"))
       ->orderBy('shiftcreatedat', 'DESC');
     
-    if($filter->status == "PAID"){
+    if($filter['status'] == "PAID"){
       $q = $q->where('orderstatus', 'PAID');
-    } elseif($filter->status == 'INPROG'){
+    } else if($filter['status'] == 'INPROG'){
       $q = $q->where('orderstatus', 'ADDITIONAL')
         ->orWhere('orderstatus', 'PROCEED');
-    } elseif($filter->status == "VOID"){
+    } else if($filter['status'] == "VOIDED"){
       $q = $q->where('orderstatus', 'VOID');
     }
 
-    if($filter->userid){
-      $q = $q->where('shiftcreatedby', $filter->userid);
+    if($filter['user'] != "ALL"){
+      $q = $q->where('shiftcreatedby', $filter['user']);
     }
+    $getRow = $q->select(
+      'shiftcreatedby',
+			'username',
+			DB::raw("s.shiftcreatedat::date"),
+      DB::raw("sum(shiftstartcash) as kertasawal"),
+      DB::raw("sum(shiftstartcoin) as koinawal"),
+      DB::raw("(sum(shiftstartcash) + sum(shiftstartcoin)) as totalstart"),
+      DB::raw("sum(shiftendcash) as kertasakhir"),
+      DB::raw("sum(shiftendcoin) as koinakhir"),
+      DB::raw("(sum(shiftendcash) + sum(shiftendcoin)) as totalakhir"),
+      DB::raw("((sum(shiftendcash) + sum(shiftendcoin))-(sum(shiftstartcash) + sum(shiftstartcoin))) as selisih"),
+      DB::raw("sum(orderprice) as totalorder")
+    )->get();
+
+    $data = new \StdClass();
+    $data->data = $getRow;
+    return $data;
   }
 
 }

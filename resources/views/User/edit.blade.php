@@ -78,35 +78,35 @@
     </div>
   </div>
   <div class="modal fade" data-keyboard="false" data-backdrop="static" id="cpass">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                  <h4 class="modal-title" align="center"><b>Ganti Kata Sandi</b></h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    
-                      <div class="box-body">
-                        <div class="form-group">
-                          <label for="exampleInputEmail1">Kata sandi baru</label> 
-                          <input type="password" class="form-control" id="pass1" placeholder="Ketik kata sandi baru" required>
-                        </div>
-                        <div class="form-group">
-                          <label for="exampleInputEmail1">Ketik ulang kata sandi baru</label> 
-                          <input type="password" class="form-control" id="pass2" name="valid" placeholder="Ketik ulang" required>
-                        </div>
-                      </div>
-                      <div class="modal-footer" id="footer" class="incorrect">
-                        <button type="button" class="btn btn-danger mt-2" data-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary mt-2" id="passbutt" disabled>Simpan</button>
-                      </div>
-                      
-                  </div>
-                </div>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+        <h4 class="modal-title" align="center"><b>Ganti Kata Sandi</b></h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          
+            <div class="box-body">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Kata sandi baru</label> 
+                <input type="password" class="form-control" id="pass1" placeholder="Ketik kata sandi baru" required>
+              </div>
+              <div class="form-group">
+                <label for="exampleInputEmail1">Ketik ulang kata sandi baru</label> 
+                <input type="password" class="form-control" id="pass2" name="valid" placeholder="Ketik ulang" required>
               </div>
             </div>
+            <div class="modal-footer" id="footer" class="incorrect">
+              <button type="button" class="btn btn-danger mt-2" data-dismiss="modal">Tutup</button>
+              <button type="submit" class="btn btn-primary mt-2" id="passbutt" disabled>Simpan</button>
+            </div>
+            
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 
 @section('js-form')

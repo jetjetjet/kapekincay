@@ -77,9 +77,16 @@
             </div> -->
             <div class="form-group mb-2">
               <label for="IpPrinter">Ip Printer Kasir</label>
-              <input type="text" class="form-control" value="{{ old('IpPrinter')}}" name="IpPrinter" id="IpPrinter" placeholder="192.168.192.168" required>
+              <input type="text" class="form-control" value="{{ old('IpPrinter')}}" name="IpPrinter" id="IpPrinter" placeholder="0.0.0.0" required>
               <div class="invalid-feedback">
                 Ip Printer harus diisi!
+              </div>
+            </div>
+            <div class="form-group mb-2">
+              <label for="IpServer">Ip Server</label>
+              <input type="text" class="form-control" value="{{ old('IpServer')}}" name="IpServer" id="IpServer" placeholder="0.0.0.0" required>
+              <div class="invalid-feedback">
+                Ip Server harus diisi!
               </div>
             </div>
             <div class="form-group mb-2">

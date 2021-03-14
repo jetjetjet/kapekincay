@@ -14,8 +14,8 @@ use App\Repositories\MenuRepository;
 use App\Repositories\AuditTrailRepository;
 use App\Repositories\ShiftRepository;
 use App\Repositories\SettingRepository;
-use App\Events\OrderProceed;
-use App\Events\BoardEvent;
+// use App\Events\OrderProceed;
+// use App\Events\BoardEvent;
 use Auth;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -24,6 +24,13 @@ class OrderController extends Controller
   public function index()
 	{
 		return view('Order.index');
+	}
+
+	public function indexCustomer(Request $request)
+	{
+		$respon = Helpers::$responses;
+    $menu = MenuRepository::getMenu();
+    return view('Order.orderCustomer')->with('menu', $menu);
 	}
 
   public function getGridaway(Request $request)
@@ -107,10 +114,10 @@ class OrderController extends Controller
     $results = OrderRepository::save($respon, $id, $inputs, $loginid);
 		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Buat Pesanan', $loginid);
 
-    if($results['status'] == "success"){
-      event(new OrderProceed('ok'));
-      event(new BoardEvent('ok'));
-		}
+    // if($results['status'] == "success"){
+    //   event(new OrderProceed('ok'));
+    //   event(new BoardEvent('ok'));
+		// }
 		$data = OrderRepository::getOrderReceipt($results['id']);
 		$cetak = Cetak::print($data);
 		// return response()->json($results);
@@ -125,15 +132,27 @@ class OrderController extends Controller
     $results = OrderRepository::save($respon, $id, $inputs, $loginid);
 		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Buat Pesanan', $loginid);
 
-    if($results['status'] == "success"){
-      event(new OrderProceed('ok'));
-      event(new BoardEvent('ok'));
-		}
+    // if($results['status'] == "success"){
+    //   event(new OrderProceed('ok'));
+    //   event(new BoardEvent('ok'));
+		// }
 
     $request->session()->flash($results['status'], $results['messages']);
 
 		return redirect('/order/meja/view');
   }
+
+	public function saveCust(Request $request)
+	{
+    $respon = Helpers::$responses;
+		$inputs = $request->all();
+		
+    $results = OrderRepository::save($respon, $id, $inputs, 2);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Buat Pesanan', 2);
+    $request->session()->flash($results['status'], $results['messages']);
+		
+		return redirect('/order/meja/view');
+	}
 
   public function getDetail(Request $request, $idOrder)
 	{
@@ -145,7 +164,7 @@ class OrderController extends Controller
   public function deliver(Request $request, $id, $idSub){
     $respon = Helpers::$responses;
 		$results = OrderRepository::deliver($respon, $id, $idSub, Auth::user()->getAuthIdentifier());
-    event(new OrderProceed('ok'));
+    // event(new OrderProceed('ok'));
 
 		return response()->json($results);
   }
@@ -190,10 +209,10 @@ class OrderController extends Controller
 		$results = OrderRepository::paid($respon, $id, $loginid, $inputs);
 		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Bayar Pesanan', $loginid);
 
-		if($results['status'] == "success"){
-			event(new BoardEvent('ok'));
-			event(new OrderProceed('ok'));
-		}
+		// if($results['status'] == "success"){
+		// 	event(new BoardEvent('ok'));
+		// 	event(new OrderProceed('ok'));
+		// }
 		self::orderReceiptkasir($id, $request);
 		$request->session()->flash($results['status'], $results['messages']);
 

@@ -3,11 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Ratchet\Server\IoServer;
-use Ratchet\Http\HttpServer;
-use Ratchet\WebSocket\WsServer;
-use React\EventLoop\Factory;
-use App\Http\Controllers\WebSocketController;
+use Illuminate\Support\Facades\Artisan;
 
 class WebSocketServer extends Command
 {
@@ -42,14 +38,9 @@ class WebSocketServer extends Command
      */
     public function handle()
     {
-        $server = IoServer::factory(
-             new HttpServer(
-                 new WsServer(
-                     new WebSocketController()
-                 )
-             ),
-             8090
-        );
-        $server->run();
+        $server_ip = gethostbyname(gethostname());
+		$app = new App($server_ip, 8910, '0.0.0.0');
+		$app->route('/kapews', new KapeWs, array('*'));
+        $app->run();
     }
 }

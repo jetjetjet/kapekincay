@@ -31,9 +31,11 @@ Route::get('logout', [LoginController::class, 'getLogoff']);
 Route::post('login', [LoginController::class, 'postLogin']);
 Route::get('init-app', [SettingController::class, 'initAppSetup']);
 Route::get('setup-cafe', [SettingController::class, 'indexSetup']);
+Route::get('/order-cust',[OrderController::class, 'indexCustomer']);
+Route::get('/dapur/lists', [App\Http\Controllers\DapurController::class, 'getLists']);
+Route::get('/meja/cariTersedia/{id?}', [BoardController::class, 'searchAvailable']);
 Route::post('init-setting-setup', [SettingController::class, 'postSettingSetup']);
 Route::get('/dapur', [App\Http\Controllers\DapurController::class, 'index']);
-Route::get('/dapur/lists', [App\Http\Controllers\DapurController::class, 'getLists']);
 
 Route::group(array('middleware' => 'auth'), function ()
 {
@@ -58,11 +60,11 @@ Route::group(array('middleware' => 'auth'), function ()
 
   Route::get('/laporan', [ReportController::class, 'index'])->middleware('can:laporan_lihat');
   Route::get('/laporan/pengeluaran', [ReportController::class, 'exIndex'])->middleware('can:laporan_lihat');
+  Route::get('/laporan-shift', [ReportController::class, 'shiftReport'])->middleware('can:laporan_lihat');
   
   Route::get('/meja', [BoardController::class, 'index'])->middleware('can:meja_lihat');
   Route::get('/meja/grid', [BoardController::class, 'getLists'])->middleware('can:meja_lihat');
   Route::get('/meja/detail/{id?}', [BoardController::class, 'getById'])->middleware('can:meja_lihat');
-  Route::get('/meja/cariTersedia/{id?}', [BoardController::class, 'searchAvailable']);
   Route::post('/meja/simpan', [BoardController::class, 'save'])->middleware('can:meja_simpan');
   Route::post('/meja/hapus/{id}', [BoardController::class, 'deleteById'])->middleware('can:meja_hapus');
 

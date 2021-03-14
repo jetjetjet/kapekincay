@@ -27,7 +27,12 @@ class SettingController extends Controller
 
 	public function indexSetup()
 	{
-		return view('Setting.settingCafe');
+		$bool = is_bool(env('APP_FRESH')) ? env('APP_FRESH') : false;
+		if($bool){
+			return view('Setting.settingCafe');
+		} else {
+			return redirect('/');
+		}
 	}
 
 	public function getLists(Request $request)
@@ -89,6 +94,11 @@ class SettingController extends Controller
 
 	public function initAppSetup(Request $request)
 	{
+		$bool = is_bool(env('APP_FRESH')) ? env('APP_FRESH') : false;
+		if(!$bool){
+			return redirect('/');
+		}
+		
 		try{
 			$init = Artisan::call('migrate:fresh --seed');
 			
