@@ -124,6 +124,9 @@
 									@if(Perm::can(['laporan_lihat']))
 										<li><a href="{{ url('/laporan') }}">Laporan Transaksi</a></li>
 									@endif
+									@if(Perm::can(['laporan_lihat']))
+										<li><a href="{{ url('/laporan-shift') }}">Laporan Shift</a></li>
+									@endif
 									@if(Perm::can(['log_lihat']))
 										<li><a href="{{ url('/log') }}">Log</a></li>
 									@endif

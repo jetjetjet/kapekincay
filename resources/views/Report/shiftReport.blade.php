@@ -46,7 +46,7 @@
         <button class="btn btn-primary mt-2" id="sub" type="submit">Cari</button>
       </div>
     </form>
-  @if($data)
+  @if(isset($data->data))
     <div class="table-responsive mb-4 mt-4">
       <hr>
       <h3 style="color:#1b55e2">Hasil Pencarian</h3>
