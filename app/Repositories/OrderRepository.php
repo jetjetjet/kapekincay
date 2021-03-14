@@ -152,10 +152,11 @@ class OrderRepository
   {
     return Order::where('orderactive', '1')
     ->where('ordertype', 'DINEIN')
+    ->join('boards', 'orderboardid' ,'=', 'boards.id')
     ->select(
       'id',
       'orderinvoice', 
-      'orderboardid', 
+      'boardnumber', 
       // 'ordercustname', 
       DB::raw("CASE WHEN orders.ordertype = 'DINEIN' THEN 'Makan ditempat' ELSE 'Bungkus' END as ordertypetext"), 
       'orderdate',
