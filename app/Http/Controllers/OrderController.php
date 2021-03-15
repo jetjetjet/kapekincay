@@ -177,8 +177,8 @@ class OrderController extends Controller
 		$results = OrderRepository::delete($respon, $id, $loginid);
 		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Hapus Pesanan', $loginid);
 
-		if($results['status'] == "success")
-			event(new BoardEvent('ok'));
+		// if($results['status'] == "success")
+		// 	event(new BoardEvent('ok'));
 
 		return response()->json($results);
 	}
@@ -193,8 +193,8 @@ class OrderController extends Controller
 		$results = OrderRepository::void($respon, $id, $loginid, $inputs);
 		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Batalkan Pesanan', $loginid);
 
-		if($results['status'] == "success")
-			event(new BoardEvent('ok'));
+		// if($results['status'] == "success")
+		// 	event(new BoardEvent('ok'));
 
 		return response()->json($results);
 	}

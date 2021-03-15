@@ -182,7 +182,7 @@
             searchText: true
           },
           { 
-              data: 'orderboardid',
+              data: 'orderboardtext',
               searchText: true
           },
           { 

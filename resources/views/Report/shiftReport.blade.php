@@ -12,7 +12,7 @@
 
 @section('content-form')
   <div class="widget-content widget-content-area br-6">
-    <form class="needs-validation" method="get" novalidate action="{{ url('/laporan-shift') }}">
+    <form id="formsub" class="needs-validation" method="get" novalidate action="{{ url('/laporan-shift') }}">
       <div class="form-row">     
         <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
         <div class="col-md-6 mb-1">
@@ -26,18 +26,19 @@
         <div class="col-md-6 mb-1">
           <h4>Karyawan</h4>
           <select id='user' class="form-control select2" name="user">
-            <option value="ALL">Semua Karyawan</option>
+            <option value="ALL">Semua</option>
             @foreach($user as $u)
               <option value="{{$u->id}}" {{ request('user') == $u->id ? 'selected' : ''}}>{{$u->username}}</option>
             @endforeach
           </select>
+          <input type="hidden" id='domkar' name="reqkar">
         </div>
         <div class="col-md-6 mb-1">
           <h4>Status Pesanan</h4>
           <select id='status' class="form-control" name="status">
             <option value="ALL">Semua</option>
             <option value="PAID" {{ request('status') == 'PAID' ? 'selected' : ''}}>Lunas</option>
-            <option value="INPROG" {{ request('status') == 'Diproses' ? 'selected' : ''}}>Diproses</option>
+            <option value="INPROG" {{ request('status') == 'INPROG' ? 'selected' : ''}}>Diproses</option>
             <option value="VOIDED" {{ request('status') == 'VOIDED' ? 'selected' : ''}}>Dibatalkan</option>
           </select>
         </div> 
@@ -91,17 +92,6 @@
 
 @section('js-form')
   <script>
-    var chg = function(){
-      var str = $('#start').val()
-      var end = $('#end').val()
-      flatpickr($('#end'), {
-        minDate:str
-      });
-      flatpickr($('#start'), {
-        maxDate:end
-      });
-    }
-
     $(document).ready(function (){
       $('#user').select2({
         tags: false,
@@ -124,6 +114,11 @@
         defaultDate: "{{ request('startdate') != null ? request('startdate') : 'today' }}"
       });
 
+      $('#formsub').on('submit', function(){
+        let us = $( "#user option:selected" ).text();
+        $('#domkar').val(us)
+      })
+
       $('#grid').DataTable( {
         dom: '<"row"<"col-md-12"<"row"<"col-md-6"B> > ><"col-md-12"rt> >',
         buttons: {
@@ -139,9 +134,9 @@
                   $(win.document.body)
                     .prepend(
                       "<br><h2><b>{{session('cafeName')}}</b></h2><hr>"+
-                      "<h2 style='color:#1b55e2'>Laporan Transaksi</h2>"+
+                      "<h2 style='color:#1b55e2'>Laporan Shift</h2>"+
                       "<div class='form-row'>"+
-                      "<div class='col-md-6 float-left'><h4>Karyawan : <b>{{request('user')}}</b></h4></div>"+
+                      "<div class='col-md-6 float-left'><h4 id='kar'>Karyawan : <b>{{request('reqkar')}}</b></h4></div>"+
                       "<div class='col-md-6'><h4 class='text-right'>{{request('startdate')}}/{{request('enddate')}}</h4></div>"+
                       "</div>"
                     );

@@ -72,6 +72,7 @@ class OrderRepository
             orderinvoice from orders 
           where orderactive = '1' 
           and orderboardid is not null 
+          and orderpaid = '0'
           and ordervoid is null order by ordercreatedat desc) 
         a) as o 
       on boards.id = o.orderboardid 
@@ -154,9 +155,9 @@ class OrderRepository
     ->where('ordertype', 'DINEIN')
     ->join('boards', 'orderboardid' ,'=', 'boards.id')
     ->select(
-      'id',
+      'orders.id',
       'orderinvoice', 
-      'boardnumber', 
+      DB::raw("concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor) as orderboardtext"),
       // 'ordercustname', 
       DB::raw("CASE WHEN orders.ordertype = 'DINEIN' THEN 'Makan ditempat' ELSE 'Bungkus' END as ordertypetext"), 
       'orderdate',

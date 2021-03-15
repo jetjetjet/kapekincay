@@ -12,7 +12,7 @@
 
 @section('content-form')
   <div class="widget-content widget-content-area br-6">
-    <form class="needs-validation" method="get" novalidate action="{{ url('/laporan/') }}">
+    <form id="formsub" class="needs-validation" method="get" novalidate action="{{ url('/laporan/') }}">
       <div class="form-row">     
         <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
         <div class="col-md-6 mb-1">
@@ -26,11 +26,12 @@
         <div class="col-md-6 mb-1">
           <h4>Karyawan</h4>
           <select id='user' class="form-control select2" name="user">
-            <option value="Semua">Semua Karyawan</option>
+            <option value="Semua">Semua</option>
             @foreach($user as $u)
               <option value="{{$u->id}}" {{ request('user') == $u->id ? 'selected' : ''}}>{{$u->username}}</option>
             @endforeach
           </select>
+          <input type="hidden" id='domkar' name="reqkar">
         </div>
         <div class="col-md-6 mb-1">
           <h4>Status</h4>
@@ -101,18 +102,6 @@
 
 @section('js-form')
   <script>
-    var chg = function(){
-      var str = $('#start').val()
-      var end = $('#end').val()
-      flatpickr($('#end'), {
-      minDate:str
-    });
-    flatpickr($('#start'), {
-      maxDate:end
-    });
-    }
-
-
     $(document).ready(function (){
 
       $('#user').select2({
@@ -134,12 +123,10 @@
       maxDate: "today",
       defaultDate: "{{ request('startdate') != null ? request('startdate') : 'today' }}"
     });
-// $('#start').change(function(){
-// chg()
-// })
-// $('#end').change(function(){
-// chg()
-// })
+$('#formsub').on('submit', function(){
+  let us = $( "#user option:selected" ).text();
+  $('#domkar').val(us)
+})
 
 $('#grid').DataTable( {
             dom: '<"row"<"col-md-12"<"row"<"col-md-6"B> > ><"col-md-12"rt> >',
@@ -158,7 +145,7 @@ $('#grid').DataTable( {
                               "<br><h2><b>{{session('cafeName')}}</b></h2><hr>"+
                               "<h2 style='color:#1b55e2'>Laporan Transaksi</h2>"+
                               "<div class='form-row'>"+
-                              "<div class='col-md-6 float-left'><h4>Karyawan : <b>{{request('user')}}</b></h4></div>"+
+                              "<div class='col-md-6 float-left'><h4 id='kar'>Karyawan : <b>{{request('reqkar')}}</b></h4></div>"+
                               "<div class='col-md-6'><h4 class='text-right'>{{request('startdate')}}/{{request('enddate')}}</h4></div>"+
                               "</div>"
                           );
