@@ -82,19 +82,19 @@
     $(document).ready(function (){
       //console.log(ws.Open)
       //console.log(ws.readyState)
-      // ws.onmessage = function(e) { 
-      //   grid.ajax.reload();
-      //   @if(Perm::can(['order_lihatBungkus']))
-      //     gridBungkus.ajax.reload();
-      //   @endif
-      // };
+      ws.onmessage = function(e) { 
+        grid.ajax.reload();
+        @if(Perm::can(['order_lihatBungkus']))
+          gridBungkus.ajax.reload();
+        @endif
+      };
 
-      // let notif = localStorage.getItem("notif") ?? false;
-      // setTimeout(() => {
-      //   if(notif){
-      //     ws.send('Ok')
-      //   }
-      // }, 2000);
+      let notif = localStorage.getItem("notif") ?? false;
+      setTimeout(() => {
+        if(notif){
+          ws.send('Ok')
+        }
+      }, 2000);
       //shortcut
       Mousetrap.bind('enter', function() {
         $('#bgks').trigger('click')
