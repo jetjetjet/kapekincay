@@ -397,23 +397,23 @@ input[type=number] {
         })
       //modal-tambah
     //endhotkeys
-    const query = window.location.search.substring(1);
-    const urlParams = new URLSearchParams(query);
-    const urlMeja = urlParams.get('idMeja');
-    const urlMejaTeks = urlParams.get('mejaTeks');
-    const urlType = urlParams.get('type');
+    // const query = window.location.search.substring(1);
+    // const urlParams = new URLSearchParams(query);
+    // const urlMeja = urlParams.get('idMeja');
+    // const urlMejaTeks = urlParams.get('mejaTeks');
+    // const urlType = urlParams.get('type');
 
-    if(urlType){
-      setTimeout(() => {
-        $('[name="ordertype"]').val(urlType).change();
-      }, 0);
-    }
+    // if(urlType){
+    //   setTimeout(() => {
+    //     $('[name="ordertype"]').val(urlType).change();
+    //   }, 0);
+    // }
 
-    if(urlMeja && urlMejaTeks)
-    {
-      $('[name="orderboardid"]').val(urlMeja);
-      $('[name="orderboardtext"]').val(urlMejaTeks);
-    }
+    // if(urlMeja && urlMejaTeks)
+    // {
+    //   $('[name="orderboardid"]').val(urlMeja);
+    //   $('[name="orderboardtext"]').val(urlMejaTeks);
+    // }
     
     initMeja($('#orderType').val());
 
