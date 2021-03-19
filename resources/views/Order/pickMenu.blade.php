@@ -261,7 +261,7 @@ input[type=number] {
                 @if(Perm::can(['order_hapus']) && ($data->orderstatus == 'PROCEED' || $data->orderstatus == 'ADDITIONAL'))
                   <a href="" id="deleteOrder" type="button" class="btn btn-danger mt-2">Hapus</a>
                 @endif
-                @if(Perm::can(['order_void']) && ($data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED' || $data->orderstatus == 'PAID'))
+                @if(Perm::can(['order_batal']) && ($data->ordertype == 'DINEIN') && ($data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'COMPLETED' || $data->orderstatus == 'PAID'))
                   <a href="" id="void" type="button" class="btn btn-danger mt-2">Batalkan Pesanan</a>
                 @endif
                 <a href="{{url('/order/meja/view')}}" type="button" id='back' class="btn btn-warning mt-2">Kembali</a>
