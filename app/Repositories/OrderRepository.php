@@ -275,11 +275,32 @@ class OrderRepository
       ->get();
   }
 
+  private static function cekMejaStatus($boardid)
+  {
+    $q = DB::table('boards as b')
+      ->join('orders as o', 'orderboardid', 'b.id')
+      ->where('orderactive', '1')
+      ->where('b.id', $boardid)
+      // ->whereRaw("(orderpaid is null)")
+      ->whereNotIn('orderstatus', ['PAID', 'VOIDED'])
+      ->count();
+    return $q;
+  }
+
   public static function save($respon, $id, $inputs, $loginid)
   {
     $respon['success'] = false;
     $id = $id != null ? $id : $inputs['id'] ;
     $details = $inputs['dtl'];
+
+    $cekMeja = self::cekMejaStatus($inputs['orderboardid']);
+    if($cekMeja > 0){
+      $respon['status'] = "double";
+      array_push($respon['messages'], 'Pesanan sudah dibuat/Meja sudah terisi.');
+
+      return $respon;
+    }
+    
     try{
       DB::transaction(function () use (&$respon, $id, $inputs, $loginid)
       {
