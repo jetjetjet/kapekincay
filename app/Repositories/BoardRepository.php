@@ -37,7 +37,7 @@ class BoardRepository
     return $respon;
   }
 
-  public static function getAvailable($id)
+  public static function getAvailable($id, $searchQ)
   {
     $data =  Board::leftJoin('orders', function($q){
       $q->whereRaw("orderactive = '1'")
@@ -49,6 +49,10 @@ class BoardRepository
       
       if($id)
         $data = $data->where('boards.id', $id);
+
+      if($searchQ){
+        $data = $data->whereRaw("upper(concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor)) like upper('%" . $searchQ ."%')");
+      }
 
       return $data->select('boards.id', 
         DB::raw("concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor) as text"))
