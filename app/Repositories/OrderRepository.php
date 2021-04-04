@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Models\Order;
 use App\Models\OrderDetail;
+use Illuminate\Support\Facades\Log;
 use DB;
 use Carbon\Carbon;
 use Exception;
@@ -300,7 +301,7 @@ class OrderRepository
 
       return $respon;
     }
-    
+
     try{
       DB::transaction(function () use (&$respon, $id, $inputs, $loginid)
       {
@@ -317,7 +318,8 @@ class OrderRepository
         $respon['status'] = 'success';
       });
     } catch (\Exception $e) {
-      dd('master',$e);
+      // $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+      // Log::channel('errorKape')->error(trim($eMsg));
       $respon['status'] = error;
     }
     return $respon;
@@ -368,7 +370,8 @@ class OrderRepository
         array_push($respon['messages'], 'Pesanan berhasil diubah.');
       }
     } catch (\Exception $e) {
-      dd('saveHead', $e);
+      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+      Log::channel('errorKape')->error("OrderHeader_" . trim($eMsg));
       throw new Exception('rollbacked');
     }
     return $respon;
@@ -391,6 +394,8 @@ class OrderRepository
           ]);
       $respon['success'] = true;
     } catch(Exception $e){
+      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+      Log::channel('errorKape')->error("OrderRemoveMissingRow_" . trim($eMsg));
       throw new Exception('rollbacked');
     }
     return $respon;
@@ -468,7 +473,8 @@ class OrderRepository
 
       $respon['success'] = true;
     }catch(\Exception $e){
-      dd('errDetailSave', $e);
+      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+      Log::channel('errorKape')->error("OrderDetailSave_" . trim($eMsg));
       throw new Exception('rollbacked');
       $respon['success'] = false;
     }
@@ -581,7 +587,8 @@ class OrderRepository
       $respon['status'] = 'success';
       array_push($respon['messages'], 'Menu sudah diantar');
     }catch(\Exception $e){
-      // DB::rollback();
+      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+      Log::channel('errorKape')->error("OrderDeliver_" . trim($eMsg));
       $respon['status'] = 'error';
       array_push($respon['messages'], 'Kesalahan! Tidak dapat memproses.');
     }
@@ -622,6 +629,8 @@ class OrderRepository
       $respon['status'] = 'success';
       array_push($respon['messages'], 'Pesanan berhasil dihapus');
     }catch(\Exception $e){
+      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+      Log::channel('errorKape')->error("OrderDelete_" . trim($eMsg));
       $ext = "";
       DB::rollback();
       $respon['status'] = 'error';
@@ -654,8 +663,8 @@ class OrderRepository
       $respon['status'] = 'success';
       array_push($respon['messages'], 'Pesanan Dibatalkan');
     }else{
-    $respon['status'] = 'error';
-    array_push($respon['messages'], 'Kesalahan');
+      $respon['status'] = 'error';
+      array_push($respon['messages'], 'Kesalahan');
     }
     
     return $respon;
@@ -694,8 +703,8 @@ class OrderRepository
       $respon['status'] = 'success';
       array_push($respon['messages'], 'Pesanan Dibayar');
     }else{
-    $respon['status'] = 'error';
-    array_push($respon['messages'], 'Kesalahan');
+      $respon['status'] = 'error';
+      array_push($respon['messages'], 'Kesalahan');
     }
     return $respon;
   }

@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use App\Models\Role;
 use App\Models\UserRoles;
 
@@ -78,8 +79,9 @@ class RoleRepository
 
         $respon['status'] = 'success';
       });
-    }catch(\Exception $ex){
-      dd($ex);
+    }catch(\Exception $e){
+      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+      Log::channel('errorKape')->error("RoleSave_" .trim($eMsg));
       $respon['status'] = 'error';
       array_push($respon['messages'], 'Kesalahan! tidak dapat memproses perintah.');
     }

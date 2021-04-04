@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\Setting;
+use Illuminate\Support\Facades\Log;
 use DB;
 
 class SettingRepository
@@ -59,7 +60,8 @@ class SettingRepository
           array_push($respon['messages'], 'Pengaturan berhasil diubah');
       
       } catch(\Exception $e){
-        dd($e);
+        $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+        Log::channel('errorKape')->error("SettingSave_" .trim($eMsg));
         $respon['status'] = 'error';
         array_push($respon['messages'], 'Error');
       }
@@ -99,6 +101,8 @@ class SettingRepository
         $respon['status'] = 'success';
         array_push($respon['messages'], 'Setting Aplikasi berhasil.');
       }catch(\Exception $e){
+        $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+        Log::channel('errorKape')->error("InitApp_" .trim($eMsg));
         $respon['status'] = 'error';
         array_push($respon['messages'], 'Error');
       }

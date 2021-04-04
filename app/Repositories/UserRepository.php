@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use App\Models\User;
 
 class UserRepository
@@ -98,7 +99,8 @@ class UserRepository
         array_push($respon['messages'], 'Data User berhasil ditambah.');
       }
     } catch(\Exception $e){
-      dd($e);
+      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+      Log::channel('errorKape')->error("UserSave_" .trim($eMsg));
       $respon['status'] = 'error';
       array_push($respon['messages'], 'Kesalahan! tidak dapat memproses perintah.');
     }

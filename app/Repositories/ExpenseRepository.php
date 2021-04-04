@@ -67,7 +67,8 @@ class ExpenseRepository
           array_push($respon['messages'], 'Data Pengeluaran berhasil ditambah');
         }
       } catch(\Exception $e){
-        dd($e);
+        $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+        Log::channel('errorKape')->error(trim($eMsg));
         $respon['status'] = 'error';
         array_push($respon['messages'], 'Error');
       }

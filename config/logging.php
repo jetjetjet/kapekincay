@@ -43,7 +43,13 @@ return [
 
         'single' => [
             'driver' => 'single',
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path('logs/kape.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
+        'errorKape' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/errorkape.log'),
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 

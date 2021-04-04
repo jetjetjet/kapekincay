@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\Board;
+use Illuminate\Support\Facades\Log;
 use DB;
 
 class BoardRepository
@@ -67,7 +68,7 @@ class BoardRepository
     $floor = $inputs['boardfloor'];
 
     $cek = Board::where('boardactive', '1')
-      ->where('boardnumber', $number)
+      ->where('boardnumbers', $number)
       ->where('boardfloor', $floor)->first();
     
     if($cek != null){
@@ -101,7 +102,8 @@ class BoardRepository
           array_push($respon['messages'], 'Data Meja baru berhasil ditambahkan.');
         }
       } catch(\Exception $e){
-        dd($e);
+        $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+        Log::channel('errorKape')->error("TableSave_" . trim($eMsg));
         $respon['status'] = 'error';
         array_push($respon['messages'], 'Error');
       }
