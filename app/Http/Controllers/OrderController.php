@@ -77,6 +77,8 @@ class OrderController extends Controller
     $respon = Helpers::$responses;
     $results = OrderRepository::getOrder($respon, $id);
 
+		$dd($results);
+
 		if($results['status'] == 'error'){
 			$request->session()->flash($results['status'], $results['messages']);
 			return redirect()->action([OrderController::class, 'orderView']);
