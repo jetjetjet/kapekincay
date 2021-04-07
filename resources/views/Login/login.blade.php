@@ -25,7 +25,9 @@
   <!--  END LOADER -->
 
   <div class="form-container outer">
-  <a type="button" href="{{url('/dapur')}}" class="mt-1 btn btn-success float-md-left">Dapur</a>
+  <div class="float-right mr-2">
+    <a type="button" href="{{url('/dapur')}}" class="mt-1 btn btn-success float-md-left">Dapur</a>
+  </div>
     <div class="form-form">
       <div class="form-form-wrap">
         <div class="form-container">

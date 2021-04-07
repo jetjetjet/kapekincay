@@ -7,6 +7,7 @@ use Validator;
 
 use App\Libs\Helpers;
 use App\Repositories\OrderRepository;
+use App\Repositories\SettingRepository;
 use Auth;
 
 use App\Models\Order;
@@ -17,7 +18,8 @@ class DapurController extends Controller
 {
   public function index()
   {
-    return view('Dapur.index');
+    $ipserver = SettingRepository::getAppSetting('IPServer') ?? '127.0.0.1';
+    return view('Dapur.index')->with('ipserver', $ipserver);
   }
 
   public function getLists(Request $request)

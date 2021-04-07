@@ -114,12 +114,10 @@ class OrderController extends Controller
     $results = OrderRepository::save($respon, $id, $inputs, $loginid);
 		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Buat Pesanan', $loginid);
 
-    // if($results['status'] == "success"){
-    //   event(new OrderProceed('ok'));
-    //   event(new BoardEvent('ok'));
-		// }
-		$data = OrderRepository::getOrderReceipt($results['id']);
-		$cetak = Cetak::print($data);
+    if($results['status'] == "success"){
+			$data = OrderRepository::getOrderReceipt($results['id']);
+			$cetak = Cetak::print($data);
+		}
 		// return response()->json($results);
 	}
 
@@ -132,12 +130,11 @@ class OrderController extends Controller
     $results = OrderRepository::save($respon, $id, $inputs, $loginid);
 		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Buat Pesanan', $loginid);
 
-    // if($results['status'] == "success"){
-    //   event(new OrderProceed('ok'));
-    //   event(new BoardEvent('ok'));
-		// }
-
     $request->session()->flash($results['status'], $results['messages']);
+		
+    if($results['status'] == "double"){
+      return redirect()->back()->withErrors($results['messages'])->withInput($inputs);
+		}
 
 		return redirect('/order/meja/view');
   }

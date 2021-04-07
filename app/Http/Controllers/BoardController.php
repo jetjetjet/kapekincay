@@ -43,7 +43,8 @@ class BoardController extends Controller
 
 	public function searchAvailable(Request $request, $id = null)
 	{
-		$data = BoardRepository::getAvailable($id);
+		$q = $request->has('q') ? $request->q : null;
+		$data = BoardRepository::getAvailable($id, $q);
 		
 		return response()->json($data);
 	}

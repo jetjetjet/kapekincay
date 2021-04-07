@@ -4,6 +4,7 @@ namespace App\Repositories;
 use App\Models\Shift;
 use DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class ShiftRepository
 {
@@ -158,6 +159,8 @@ class ShiftRepository
         array_push($respon['messages'], 'Shift berhasil ditambah');
       }
     } catch(\Exception $e){
+      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+      Log::channel('errorKape')->error("ShiftSave_" .trim($eMsg));
       $respon['status'] = 'error';
       array_push($respon['messages'], 'Error');
     }
@@ -189,6 +192,8 @@ class ShiftRepository
       }
 
     } catch(\Exception $e){
+      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+      Log::channel('errorKape')->error("ShiftClose_" .trim($eMsg));
       $respon['status'] = 'error';
       array_push($respon['messages'], 'Error');
     }

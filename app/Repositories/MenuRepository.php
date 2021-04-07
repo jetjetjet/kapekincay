@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\Menu;
+use Illuminate\Support\Facades\Log;
 use DB;
 
 class MenuRepository
@@ -96,6 +97,8 @@ class MenuRepository
         array_push($respon['messages'], 'Data Menu berhasil ditambah');
       }
     } catch(\Exception $e){
+      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+      Log::channel('errorKape')->error("MenuSave_" .trim($eMsg));
       $respon['status'] = 'error';
       array_push($respon['messages'], 'Error');
     }

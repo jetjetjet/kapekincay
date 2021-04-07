@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\Board;
+use Illuminate\Support\Facades\Log;
 use DB;
 
 class BoardRepository
@@ -37,7 +38,7 @@ class BoardRepository
     return $respon;
   }
 
-  public static function getAvailable($id)
+  public static function getAvailable($id, $searchQ)
   {
     $data =  Board::leftJoin('orders', function($q){
       $q->whereRaw("orderactive = '1'")
@@ -49,6 +50,10 @@ class BoardRepository
       
       if($id)
         $data = $data->where('boards.id', $id);
+
+      if($searchQ){
+        $data = $data->whereRaw("upper(concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor)) like upper('%" . $searchQ ."%')");
+      }
 
       return $data->select('boards.id', 
         DB::raw("concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor) as text"))
@@ -63,7 +68,7 @@ class BoardRepository
     $floor = $inputs['boardfloor'];
 
     $cek = Board::where('boardactive', '1')
-      ->where('boardnumber', $number)
+      ->where('boardnumbers', $number)
       ->where('boardfloor', $floor)->first();
     
     if($cek != null){
@@ -97,7 +102,8 @@ class BoardRepository
           array_push($respon['messages'], 'Data Meja baru berhasil ditambahkan.');
         }
       } catch(\Exception $e){
-        dd($e);
+        $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+        Log::channel('errorKape')->error("TableSave_" . trim($eMsg));
         $respon['status'] = 'error';
         array_push($respon['messages'], 'Error');
       }

@@ -103,11 +103,11 @@
   <script src="{{ url('/') }}/bootstrap/js/popper.min.js"></script>
   <script src="{{ url('/') }}/bootstrap/js/bootstrap.min.js"></script>
   <script src="{{ url('/') }}/plugins/table/datatable/datatables.js"></script>
-  <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+  <!-- <script src="https://js.pusher.com/7.0/pusher.min.js"></script> -->
   <!-- END GLOBAL MANDATORY SCRIPTS -->
   <script>
     $(document).ready(function (){
-      const pMaster = "{{ session('ipserver') }}";
+      const pMaster = "{{ $ipserver }}";
       let ws = new WebSocket('ws://'+ pMaster +':8910/kapews');
       ws.onmessage = function(e) { 
         table.ajax.reload(); 
