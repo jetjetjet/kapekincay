@@ -59,7 +59,7 @@
                         <h3>Total :<b> {{ number_format($data->orderprice,0) }}</b></h3>
                         @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
                         
-                        @elseif($data->getstat == null && $data->orderstatus == 'COMPLETED' || $data->ordertype == 'TAKEAWAY')
+                        @elseif($data->orderstatus == 'COMPLETED' || $data->ordertype == 'TAKEAWAY')
                           <input autofocus type="number" class="form-control text-right mousetrap" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang">
                           <h3 id="kembalian">Kembalian :</h3>                       
                         @else      
