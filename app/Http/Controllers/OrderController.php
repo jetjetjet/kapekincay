@@ -77,7 +77,7 @@ class OrderController extends Controller
     $respon = Helpers::$responses;
     $results = OrderRepository::getOrder($respon, $id);
 
-		$dd($results);
+		dd($results);
 
 		if($results['status'] == 'error'){
 			$request->session()->flash($results['status'], $results['messages']);
