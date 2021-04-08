@@ -69,7 +69,7 @@
                     <div class="form-group col-md-3">
                       @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')                                           
                         <h4>Status Pesanan : <b>{{$data->orderstatuscase}}</b></h4>                     
-                      @elseif($data->orderstatus == 'COMPLETED' && $data->getstat == null || $data->ordertype == 'TAKEAWAY')
+                      @elseif($data->orderstatus == 'COMPLETED'|| $data->ordertype == 'TAKEAWAY')
                         <h4>Jenis Pembayaran</h4>
                         <select class="form-control mousetrap" id="type" name="orderpaymentmethod">
                           <option value="Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Tunai' ? ' selected' : '' }}> Tunai</option>
