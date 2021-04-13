@@ -59,7 +59,7 @@
                         <h3>Total :<b> {{ number_format($data->orderprice,0) }}</b></h3>
                         @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
                         
-                        @elseif($data->getstat == null && $data->orderstatus == 'COMPLETED' || $data->ordertype == 'TAKEAWAY')
+                        @elseif($data->orderstatus == 'COMPLETED' || $data->ordertype == 'TAKEAWAY')
                           <input autofocus type="number" class="form-control text-right mousetrap" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang">
                           <h3 id="kembalian">Kembalian :</h3>                       
                         @else      
@@ -69,7 +69,7 @@
                     <div class="form-group col-md-3">
                       @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')                                           
                         <h4>Status Pesanan : <b>{{$data->orderstatuscase}}</b></h4>                     
-                      @elseif($data->orderstatus == 'COMPLETED' && $data->getstat == null || $data->ordertype == 'TAKEAWAY')
+                      @elseif($data->orderstatus == 'COMPLETED'|| $data->ordertype == 'TAKEAWAY')
                         <h4>Jenis Pembayaran</h4>
                         <select class="form-control mousetrap" id="type" name="orderpaymentmethod">
                           <option value="Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Tunai' ? ' selected' : '' }}> Tunai</option>

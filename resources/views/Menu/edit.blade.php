@@ -70,7 +70,7 @@
                     @endif
                   </select>
                   <div class="input-group-append" style="margin-bottom:auto">
-                    <button class="btn btn-info btn-flat" id="newCate" type="button">Tambah Baru</button>
+                    <button class="btn btn-info btn-flat mt-1" id="newCate" type="button">Tambah Baru</button>
                   </div>
                 </div>
               </div>
