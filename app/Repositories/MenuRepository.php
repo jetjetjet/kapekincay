@@ -184,12 +184,44 @@ class MenuRepository
   public static function getMenu()
   {
     $tempdata = Array('Makanan'=>Array(), 'Minuman'=>Array());
+    $promo = DB::table('promo as p')
+      ->join('subpromo as sp', 'sppromoid', 'p.id')
+      ->where('promoactive', '1')
+      ->where('spactive', '1')
+      ->whereRaw("promoend::timestamp without time zone > now()::timestamp without time zone")
+      ->whereRaw("promostart::timestamp without time zone < now()::timestamp without time zone")
+      ->select(
+        'p.id as promoid',
+        'spmenuid',
+        'promoname',
+        'promodiscount',
+        DB::raw("to_char(promostart, 'dd-mm-yyyy HH24:MI:SS') as promostart"),
+        DB::raw("to_char(promoend, 'dd-mm-yyyy HH24:MI:SS') as promoend"),
+      );
+
+
     $getCat = Menu::join('menucategory as mc', 'mc.id', 'menumcid')
+      ->leftJoinSub($promo, 'promo', function ($join) {
+        $join->on('menus.id', '=', 'promo.spmenuid');
+      })
       ->where('mcactive', '1')
       ->where('menuactive', '1')
-      ->select('menus.id','menuname', 'menuimg', 'menuprice', 'menuavaible', 'menutype', 'menumcid', 'mcname')
+      ->select(
+        'menus.id',
+        'menuname', 
+        'menuimg', 
+        'menuprice as menupriceraw', 
+        'menuavaible', 
+        'menutype', 
+        'menumcid', 
+        'mcname',
+        'promoname',
+        'promodiscount',
+        'promostart',
+        'promoend',
+        'promoid',
+        DB::raw("(menuprice - COALESCE(promodiscount, 0)) as menuprice"))
       ->get();
-      
     foreach($getCat as $data )
     {
       if($data->menutype == 'Makanan'){
@@ -225,7 +257,18 @@ class MenuRepository
     $model->menuimg = null;
     $model->menuavaible= null;
 
-
     return $model;
+  }
+
+  public static function search($cari)
+  {
+    return Menu::join('menucategory as mc', 'mc.id', 'menumcid')
+      ->whereRaw('UPPER(menuname) LIKE UPPER(\'%'. $cari .'%\')')
+      ->where('menuactive', '1')
+      ->where('menuavaible', '1')
+      ->select('menus.id', 'mcname as menucategory', 'menuname as text', 'menutype', 'menuprice')
+      ->orderby('menuname', 'ASC')
+      ->limit(5)
+      ->get();
   }
 }

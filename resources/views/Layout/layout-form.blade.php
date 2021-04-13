@@ -13,8 +13,6 @@
   <link href="{{ url('/') }}/plugins/file-upload/file-upload-with-preview.min.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/assets/css/forms/switches.css">
 
-  <link href="{{ url('/') }}/assets/css/tables/table-basic.css" rel="stylesheet" type="text/css" />
-
   <style>
     /* SELECT2 MODAL */
     .select2-close-mask{

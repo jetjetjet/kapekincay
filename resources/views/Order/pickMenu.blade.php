@@ -151,7 +151,16 @@ input[type=number] {
                   <section class="row">
                   @foreach($cat['pilihan'] as $mkn)
                   <div>
-                    <a class="{{$mkn['menuavaible'] != true ? 'card' : 'menuCard'}}" data-id="{{$mkn['id']}}" data-menutext="{{$mkn['menuname']}}" data-price="{{$mkn['menuprice']}}">
+                    <a class="{{$mkn['menuavaible'] != true ? 'card' : 'menuCard'}}" 
+                      data-id="{{$mkn['id']}}" 
+                      data-menutext="{{$mkn['menuname']}}" 
+                      data-price="{{$mkn['menuprice']}}"
+                      data-priceraw="{{$mkn['menupriceraw']}}"
+                      data-promo="{{$mkn['promodiscount']}}"
+                      data-promotext="{{$mkn['promoname']}}"
+                      data-promoend="{{$mkn['promoend']}}"
+                      data-promoid="{{$mkn['promoid']}}"
+                    >
                       <div class="category-tile">
                         <img width="120" height="120" src="{{ isset($mkn->menuimg) ? asset($mkn->menuimg) : asset('/public/images/fnb.jpg') }}" onerror="this.onerror=null;this.src='{{asset('/images/fnb.jpg')}}';" >
                         <span>{{$mkn['menuname']}} {{$mkn['menuavaible'] != true ? " - Stok Kosong" : ""}}</span>
@@ -168,7 +177,16 @@ input[type=number] {
                   <section class="row">
                   @foreach($min['pilihan'] as $item)
                   <div>
-                    <a class="{{$item['menuavaible'] != true ? 'card' : 'menuCard'}}" data-id="{{$item['id']}}" data-menutext="{{$item['menuname']}}" data-price="{{$item['menuprice']}}">
+                    <a class="{{$item['menuavaible'] != true ? 'card' : 'menuCard'}}" 
+                      data-id="{{$item['id']}}" 
+                      data-menutext="{{$item['menuname']}}" 
+                      data-promo="{{$item['promodiscount']}}"
+                      data-promotext="{{$item['promoname']}}"
+                      data-promoend="{{$item['promoend']}}"
+                      data-price="{{$item['menuprice']}}"
+                      data-priceraw="{{$item['menupriceraw']}}"
+                      data-promoid="{{$item['promoid']}}"
+                    >
                       <div class="category-tile">
                         <img width="120" height="120" src="{{ isset($item->menuimg) ? asset($item->menuimg) : asset('/public/images/fnb.jpg') }}" onerror="this.onerror=null;this.src='{{asset('/images/fnb.jpg')}}';">
                         <span>{{$item['menuname']}} {{$item['menuavaible'] != true ? " - Stok Kosong" : ""}}</span>
@@ -337,11 +355,15 @@ input[type=number] {
                 <td class="text-left">Harga</td>
                 <td class="text-primary" id="menuPopupPrice"></td>
               </tr>
+              <tr id="rowPromo" class="d-none">
+                <td class="text-left">Promo</td>
+                <td class="text-primary" id="menuPopupPromo"></td>
+              </tr>
               <tr>
                 <td class="text-left">Jumlah</td>
                 <td class="text-primary" >
                   <span id="keymin" class="input-number-decrement-sm">–</span>
-                    <input type="number" id="menuPopupQty" name="menuPopupQty" class="input-number-sm text-right" value="1" min="0">
+                    <input type="number" id="menuPopupQty" name="menuPopupQty" class="input-number-sm text-right" value="1" min="1">
                   <span id="keyplus" class="input-number-increment-sm">+</span> 
                   <!-- <input type="number" class="form-control form-control-sm text-right" id="menuPopupQty" name="menuPopupQty" class="menuPopupQty text-right"/> -->
                 </td>
@@ -424,7 +446,11 @@ input[type=number] {
       $.get(url, function (data) {
           window.location.href = data;  // main action
       }).fail(function () {
-          alert("ajax error");
+        toast({
+            type: 'error',
+            title: 'Gagal Cetak Struk!',
+            padding: '2em',
+          });
       })
     });
 
@@ -546,17 +572,30 @@ input[type=number] {
       $('.menuCard').on('click', function(){
         let menuPrice = $(this).attr('data-price'),
             menuText = $(this).attr('data-menutext'),
-            menuId = $(this).attr('data-id');
+            menuId = $(this).attr('data-id'),
+            priceRaw = $(this).attr('data-priceraw');
+        
+        let promo = $(this).attr('data-promo'),
+            promoId = $(this).attr('data-promoid'),
+            promoText = $(this).attr('data-promotext'),
+            promoEnd = $(this).attr('data-promoend');
 
         let bodyPopup = {
           'text' : menuText,
-          'price' : menuPrice
+          'price' : menuPrice,
+          'priceRaw': priceRaw,
+          'promo': promo,
+          'promoText': promoText,
+          'promoEnd': promoEnd
         };
         
         showPopupOrder(bodyPopup, function(){
           $("#addToTableMenu").attr("data-pMenuText",menuText);
           $("#addToTableMenu").attr("data-pMenuPrice",menuPrice);
+          $("#addToTableMenu").attr("data-pMenuPriceRaw",priceRaw);
           $("#addToTableMenu").attr("data-pId",menuId);
+          $("#addToTableMenu").attr("data-pPromo",promo);
+          $("#addToTableMenu").attr("data-pPromoId",promoId);
 
           $('#addToTableMenu').trigger('click');
         });
@@ -571,21 +610,32 @@ input[type=number] {
     // Setups add grid. 
     $targetContainer.registerAddRow($('.row-template'), $('.add-row'));
     $targetContainer.on('row-added', function (e, $row){
-    let rowMenuText = $("#addToTableMenu").attr('data-pMenuText'),
-        rowMenuPrice = $("#addToTableMenu").attr('data-pMenuPrice'),
-        rowId = $("#addToTableMenu").attr('data-pId'),
-        qty = $('#uiModalInstance').find('#menuPopupQty').val(),
-        remark = $('#uiModalInstance').find('#menuRemark').val(),
-        tprice = qty*rowMenuPrice;
-      $row.find('[id^=dtl][id$="[odmenutext]"]').html(rowMenuText);
+      let rowMenuText = $("#addToTableMenu").attr('data-pMenuText'),
+          rowMenuPrice = $("#addToTableMenu").attr('data-pMenuPrice'),
+          rowMenuPriceRaw = $("#addToTableMenu").attr('data-pMenuPriceRaw'),
+          rowId = $("#addToTableMenu").attr('data-pId'),
+          rowPromo = $("#addToTableMenu").attr('data-pPromo'),
+          rowPromoId = $("#addToTableMenu").attr('data-pPromoId'),
+          qty = $('#uiModalInstance').find('#menuPopupQty').val(),
+          remark = $('#uiModalInstance').find('#menuRemark').val(),
+          tprice = qty*rowMenuPrice;
+      
+      let promoTeks = '';
+      if(rowPromo){
+        promoTeks = '<span class="badge outline-badge-info"> Promo </span>&nbsp;'
+      }
+
+      $row.find('[id^=dtl][id$="[odmenutext]"]').html(promoTeks + rowMenuText);
       $row.find('[id^=dtl][id$="[odprice]"]').html(formatter.format(rowMenuPrice));
       $row.find('[id^=dtl][id$="[odtotalprice]"]').html(formatter.format(tprice));
       $row.find('[name^=dtl][name$="[odtotalprice]"]').val(tprice);
       $row.find('[id^=dtl][id$="[odremark]"]').html(remark);
       $row.find('[name^=dtl][name$="[odmenuid]"]').val(rowId);
+      $row.find('[name^=dtl][name$="[odpromoid]"]').val(rowPromoId);
       $row.find('[name^=dtl][name$="[odmenutext]"]').val(rowMenuText);
       $row.find('[name^=dtl][name$="[odqty]"]').val(qty);
       $row.find('[name^=dtl][name$="[odprice]"]').val(rowMenuPrice);
+      $row.find('[name^=dtl][name$="[odpriceraw]"]').val(rowMenuPriceRaw);
       $row.find('[name^=dtl][name$="[odremark]"]').val(remark);
       window.setTimeout(() => {
         caclculatedOrder()        

@@ -58,8 +58,14 @@ class Cetak
       $printer->setEmphasis(false);
       if($data->detail){
         foreach($data->detail as $item){
-          $printer->text($item->text."\n");
-          $printer->text(self::getAsString($item->qty . " x " . number_format($item->price,0), number_format($item->totalPrice,0))); // for 58mm Font A
+          $rPrice = $item->promo ? $item->priceraw : $item->price;
+          $rPriceTotal = $item->promo  ? $item->totalPriceraw : $item->totalPrice;
+          $printer->text($item->text . "\n");
+          $printer->text(self::getAsString($item->qty . " x " . number_format($rPrice,0), number_format($rPriceTotal,0))); // for 58mm Font A
+          
+          if($item->promo){
+            $printer->text(self::getAsString( "Promo @" . number_format($item->promodiscount,0), number_format(($item->qty * $item->promodiscount),0))); // for 58mm Font A
+          }
         }
       }
   
@@ -85,7 +91,7 @@ class Cetak
   public static function printKasir($data, $inputs)
   {
     
-    // dd($jam);
+    // dd($data);
     try{
       $profile = CapabilityProfile::load("simple");
       $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100, 2);

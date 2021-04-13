@@ -355,9 +355,23 @@ function showPopupOrder(paramBody, actFn){
   // });
   $modal.on('show.bs.modal', function (){
       // Draws text.
+      let pricePromoText = '';
+      if(paramBody['promo']){
+        pricePromoText = '&nbsp;<span class="badge outline-badge-info"> Harga Normal ' + paramBody['priceRaw'] +'</span>';
+        $modal.find('#rowPromo').removeClass('d-none')
+        $modal.find('#menuPopupPromo').html(paramBody['promo'] + '<p><span class="badge outline-badge-info"> Promo '
+          + paramBody['promoText'] + ' s/d '+ paramBody['promoEnd'] +'</span></p>');
+      }
+
       $modal.find('.modal-title').html('Tambah');
       $modal.find('#menuPopupText').html(paramBody['text']);
-      $modal.find('#menuPopupPrice').html(paramBody['price']);
+      $modal.find('#menuPopupPrice').html(paramBody['price'] + pricePromoText);
+
+      if(paramBody['promo']){
+        $modal.find('#rowPromo').removeClass('d-none')
+        $modal.find('#menuPopupPromo').html(paramBody['promo'] + '<p><span class="badge outline-badge-info"> Promo '
+          + paramBody['promoText'] + ' s/d '+ paramBody['promoEnd'] +'</span></p>');
+      }
       
       let inputQty = $modal.find('#menuPopupQty');
       //console.log(inputQty)

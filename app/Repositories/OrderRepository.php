@@ -256,9 +256,21 @@ class OrderRepository
 
   public static function getSubOrder($idOrder)
   {
+    $promo = DB::table('promo as p')
+      ->join('subpromo as sp', 'sppromoid', 'p.id')
+      ->select(
+        'p.id as promoid',
+        'spmenuid',
+        'promodiscount'
+      );
+
     return OrderDetail::join('menus',function($q){
       $q->whereRaw("menuactive = '1'")
         ->whereRaw("menus.id = odmenuid");})
+      ->leftJoinSub($promo, 'promo', function ($join) {
+        $join->on('menus.id', '=', 'promo.spmenuid');
+        $join->on('odpromoid', '=', 'promoid');
+      })
       ->where('odactive', '1')
       ->where('odorderid', $idOrder)
       ->select(
@@ -271,7 +283,12 @@ class OrderRepository
         DB::raw("CASE WHEN oddelivered = true then 'Sudah Diantar' ELSE 'Sedang Diproses' END as oddelivertext"),
         'oddelivered',
         'odremark',
-        'odindex'
+        'odindex',
+        'odispromo',
+        'odpromoid',
+        'odpriceraw',
+        'odtotalpriceraw',
+        'promodiscount'
         )
       ->get();
   }
@@ -295,7 +312,7 @@ class OrderRepository
     $details = $inputs['dtl'];
 
     $cekMeja = self::cekMejaStatus($inputs['orderboardid']);
-    if($cekMeja > 0){
+    if($cekMeja > 0 && !$id){
       $respon['status'] = "double";
       array_push($respon['messages'], 'Pesanan sudah dibuat/Meja sudah terisi.');
 
@@ -395,7 +412,7 @@ class OrderRepository
       $respon['success'] = true;
     } catch(Exception $e){
       $eMsg = $e->getMessage() ?? "NOT_RECORDED";
-      Log::channel('errorKape')->error("OrderRemoveMissingRow_" . trim($eMsg));
+      Log::channel('errorKape')->error("DeleteSubOrder_" . trim($eMsg));
       throw new Exception('rollbacked');
     }
     return $respon;
@@ -415,9 +432,13 @@ class OrderRepository
               'odqty' => $dtl['odqty'],
               'odprice' => $dtl['odprice'],
               'odtotalprice' => ($dtl['odprice'] * $dtl['odqty']),
+              'odpriceraw' => $dtl['odpriceraw'],
+              'odtotalpriceraw' => ($dtl['odpriceraw'] * $dtl['odqty']),
               'odremark' => $dtl['odremark'],
               'oddelivered' => '0',
               'odindex' => $key,
+              'odispromo' => isset($dtl['odpromoid']) ? '1' : '0',
+              'odpromoid' => $dtl['odpromoid'] ?? null,
               'odactive' => '1',
               'odcreatedat' => now()->toDateTimeString(),
               'odcreatedby' => $loginid
@@ -438,8 +459,12 @@ class OrderRepository
               'odqty' => $dtl['odqty'],
               'odprice' => $dtl['odprice'],
               'odtotalprice' => ($dtl['odprice'] * $dtl['odqty']),
+              'odpriceraw' => $dtl['odpriceraw'],
+              'odtotalpriceraw' => ($dtl['odpriceraw'] * $dtl['odqty']),
               'odremark' => $dtl['odremark'],
               'odindex' => $key,
+              'odispromo' => isset($dtl['odpromoid']) ? '1' : '0',
+              'odpromoid' => $dtl['odpromoid'] ?? null,
               'odmodifiedat' => now()->toDateTimeString(),
               'odmodifiedby' => $loginid
             ]);
@@ -449,6 +474,10 @@ class OrderRepository
               'odqty' => $dtl['odqty'],
               'odprice' => $dtl['odprice'],
               'odtotalprice' => ($dtl['odprice'] * $dtl['odqty']),
+              'odpriceraw' => $dtl['odpriceraw'],
+              'odtotalpriceraw' => ($dtl['odpriceraw'] * $dtl['odqty']),
+              'odispromo' => isset($dtl['odpromoid']) ? '1' : '0',
+              'odpromoid' => $dtl['odpromoid'] ?? null,
               'odremark' => $dtl['odremark'],
               'odindex' => $key,
               'odactive' => '0',
@@ -722,6 +751,7 @@ class OrderRepository
         DB::raw("case when ordertype = 'DINEIN' then 'Makan Ditempat' else 'Bungkus' end as ordertype"),
         DB::raw("boardnumber || ' - Lantai ' || boardfloor as boardnumber")
       )->first();
+      
     if($order != null){
       $dataOrder->invoice = $order->orderinvoice;
       $dataOrder->price = $order->orderprice;
@@ -736,7 +766,11 @@ class OrderRepository
         $temp->text = $sub->odmenutext;
         $temp->qty = $sub->odqty;
         $temp->price = $sub->odprice;
+        $temp->promo = $sub->odispromo;
         $temp->totalPrice = $sub->odtotalprice;
+        $temp->priceraw = $sub->odpriceraw;
+        $temp->totalPriceraw = $sub->odtotalpriceraw;
+        $temp->promodiscount = $sub->promodiscount;
   
         array_push($dataOrder->detail, $temp);
       }

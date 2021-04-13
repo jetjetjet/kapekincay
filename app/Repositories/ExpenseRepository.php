@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\Expense;
+use Illuminate\Support\Facades\Log;
 use DB;
 
 class ExpenseRepository
@@ -68,7 +69,7 @@ class ExpenseRepository
         }
       } catch(\Exception $e){
         $eMsg = $e->getMessage() ?? "NOT_RECORDED";
-        Log::channel('errorKape')->error(trim($eMsg));
+        Log::channel('errorKape')->error("ExpenseSave_".trim($eMsg));
         $respon['status'] = 'error';
         array_push($respon['messages'], 'Error');
       }

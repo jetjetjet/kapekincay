@@ -113,4 +113,12 @@ class MenuController extends Controller
 		$results = MenuRepository::menuapi($respon);
 		return response()->json($results);
 	}
+
+	public function searchMenu(Request $request)
+  {
+		$cari = $request->q ?? "";
+		$data = MenuRepository::search($cari);
+		
+		return response()->json($data);
+  }
 }
