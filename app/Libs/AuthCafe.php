@@ -23,7 +23,7 @@ class AuthCafe
 
     'menu_lihat',
     'menu_simpan',
-    'menu_hapus',    
+    'menu_hapus',
 
     'order_lihat',
     'order_lihatBungkus',
@@ -41,6 +41,10 @@ class AuthCafe
     'pengeluaran_hapus',
     'pengeluaran_proses',
     'pengaturan_notif',
+
+    'promo_lihat',
+    'promo_simpan',
+    'promo_hapus',
 
     'shift_lihat',
     'shift_simpan',
