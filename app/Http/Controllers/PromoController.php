@@ -52,6 +52,10 @@ class PromoController extends Controller
 		);
 		
 		$inputs = $request->all();
+
+		// Subs.
+		$inputs['sub'] = $this->mapRowsX(isset($inputs['sub']) ? $inputs['sub'] : null);
+		
 		$validator = validator::make($inputs, $rules);
 
 		if ($validator->fails()){
@@ -63,6 +67,10 @@ class PromoController extends Controller
 		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Simpan Pengeluaran', $loginid);
 		//cek
 		$request->session()->flash($results['status'], $results['messages']);
+		if($results['status'] == "error"){
+			return redirect()->back()->withInput($inputs);
+		}
+
 		return redirect()->action([PromoController::class, 'getById'], ['id' => $results['id']]);
 	}
 

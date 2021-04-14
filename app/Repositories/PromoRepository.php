@@ -4,6 +4,8 @@ namespace App\Repositories;
 use App\Models\Promo;
 use App\Models\SubPromo;
 use Illuminate\Support\Facades\Log;
+
+use Exception;
 use DB;
 
 class PromoRepository
@@ -61,9 +63,9 @@ class PromoRepository
           'mcname as menucategory',
           'menutype',
           'menuavaible',
-          'menuprice')
+          'menuprice',
+          DB::raw("menuprice - ". $header->promodiscount ." as menupromo "))
         ->get();
-      
       $respon['data'] = $header;
 
     } else {
@@ -87,62 +89,71 @@ class PromoRepository
 
         if($id != null){
           $valid = self::removeMissingDetails($respon, $id, $inputs['sub'], $loginid);
+          if (!$valid['success']) return $respon;
         }
 
         $valid = self::saveSubPromo($respon, $id, $inputs['sub'], $loginid);
         if (!$valid['success']) return $respon;
-
         $respon['status'] = 'success';
+        $respon['success'] = true;
       });
     } catch (\Exception $e) {
-      $respon['status'] = error;
+      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+      Log::channel('errorKape')->error("PromoSave_" .trim($eMsg));
+      
+      $respon['messages'] = $e->getMessage() == "emptysubmenu" 
+        ? ["Gagal menyimpan Promo! Terdapat Sub Menu kosong"]
+        : ["Gagal menyimpan Promo!"];
+      
+      $respon['status'] = "error";
     }
     return $respon;
   }
 
   private static function savePromo(&$respon, $id, $inputs, $loginid)
   {
-    try{
-      $data = "";
-      if($id == null){
-        $data = Promo::create([
+    $data = "";
+    $respon['success'] = false;
+    if($id == null){
+      $data = Promo::create([
+        'promoname' => $inputs['promoname'],
+        'promodetail' => $inputs['promodetail'],
+        'promostart' => $inputs['promostart'].":00",
+        'promoend' => $inputs['promoend'] .":00",
+        'promodiscount' => $inputs['promodiscount'],
+        'promoactive' => '1',
+        'promocreatedat' => now()->toDateTimeString(),
+        'promocreatedby' => $loginid
+      ]);
+
+      if($data->id != null){
+        $respon['id'] = $data->id;
+        $respon['success'] = true;
+        $respon['messages'] = ['Promo berhasil ditambah'];
+        // array_push($respon['messages'], 'Promo berhasil ditambah');
+      } else {
+        throw new Exception('error_save');
+      }
+    } else {
+      $data = Promo::where('promoactive', '1')
+        ->where('id',$id)
+        ->update([
           'promoname' => $inputs['promoname'],
           'promodetail' => $inputs['promodetail'],
-          'promostart' => $inputs['promostart'].":00",
-          'promoend' => $inputs['promoend'] .":00",
+          'promostart' => $inputs['promostart'],
+          'promoend' => $inputs['promoend'],
           'promodiscount' => $inputs['promodiscount'],
-          'promoactive' => '1',
-          'promocreatedat' => now()->toDateTimeString(),
-          'promocreatedby' => $loginid
-        ]);
-
-        if($data->id != null){
-          $respon['id'] = $data->id;
-          $respon['success'] = true;
-          array_push($respon['messages'], 'Promo berhasil ditambah');
-        } else {
-          throw new Exception('rollback');
-        }
-      } else {
-        $data = Promo::where('promoactive', '1')
-          ->where('id',$id)
-          ->update([
-            'promoname' => $inputs['promoname'],
-            'promodetail' => $inputs['promodetail'],
-            'promostart' => $inputs['promostart'],
-            'promoend' => $inputs['promoend'],
-            'promodiscount' => $inputs['promodiscount'],
-            'promomodifiedat' => now()->toDateTimeString(),
-            'promomodifiedby' => $loginid]);
-            
+          'promomodifiedat' => now()->toDateTimeString(),
+          'promomodifiedby' => $loginid]);
+      if($data >= 1){
         $respon['id'] = $id;
         $respon['success'] = true;
-        array_push($respon['messages'], 'Promo berhasil diubah.');
+      } else {
+        throw new Exception('error_update');
       }
-    } catch (\Exception $e) {
-      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
-      Log::channel('errorKape')->error("PromoHdrSave_" .trim($eMsg));
-      throw new Exception('rollbacked');
+      
+      $respon['messages'] = ['Promo berhasil diubah.'];
+      // array_push($respon['messages'], 'Promo berhasil diubah.');
     }
     return $respon;
   }
@@ -150,24 +161,27 @@ class PromoRepository
   private static function removeMissingDetails(&$respon, $id, $details, $loginid)
   {
     $ids = Array();
+    $respon['success'] = true;
     foreach($details as $dt){
-      array_push($ids,$dt['id'] != null ? $dt['id'] :0);
+      array_push($ids,$dt->id != null ? $dt->id : 0);
     }
-    try{
-      $data = SubPromo::where('spactive', '1')
-        ->where('sppromoid', $id)
-        ->whereNotIn('id', $ids)
-        ->update([
-          'spactive' => '0',
-          'spmodifiedby' => $loginid,
-          'spmodifiedat' => now()->toDateTimeString()
-          ]);
+
+    $data = SubPromo::where('spactive', '1')
+      ->where('sppromoid', $id)
+      ->whereNotIn('id', $ids)
+      ->update([
+        'spactive' => '0',
+        'spmodifiedby' => $loginid,
+        'spmodifiedat' => now()->toDateTimeString()
+        ]);
+
+    if($data >= 0){
+      $respon['id'] = $id;
       $respon['success'] = true;
-    } catch(Exception $e){
-      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
-      Log::channel('errorKape')->error("DeleteSubPromo_" . trim($eMsg));
-      throw new Exception('rollbacked');
+    } else {
+      throw new Exception('error_deleteRows');
     }
+    
     return $respon;
   }
 
@@ -175,35 +189,46 @@ class PromoRepository
   {
     $idHeader = $id != null ? $id : $respon['id'];
     $detRow = "";
-    try{
-      foreach ($subs as $key=>$sub){
-        if (!isset($sub['id'])){
+    $respon['success'] = false;
+
+    foreach ($subs as $sub){
+      if(isset($sub->spmenuid)){
+        if (!isset($sub->id)){
           $detRow = SubPromo::create([
             'sppromoid' => $idHeader,
-            'spmenuid' => $sub['spmenuid'],
-            'spindex' => $key,
+            'spmenuid' => $sub->spmenuid,
+            'spindex' => $sub->index,
             'spactive' => '1',
             'spcreatedat' => now()->toDateTimeString(),
             'spcreatedby' => $loginid
           ]);
+
+          if($detRow == null){
+            throw new Exception('error_savesub');
+            return $respon;
+          }
         } else {
           $detRow = SubPromo::where('spactive', '1')
-            ->where('id', $sub['id'])
+            ->where('id', $sub->id)
             ->update([
-              'spmenuid' => $sub['spmenuid'],
-              'spindex' => $key,
+              'spmenuid' => $sub->spmenuid,
+              'spindex' => $sub->index,
               'spmodifiedat' => now()->toDateTimeString(),
               'spmodifiedby' => $loginid]);
-        }
-      }
 
-      $respon['success'] = true;
-    }catch(\Exception $e){
-      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
-      Log::channel('errorKape')->error("SubPromoSave_" . trim($eMsg));
-      throw new Exception('rollbacked');
-      $respon['success'] = false;
+          if($detRow >= 1){
+            $respon['success'] = true;
+          } else {
+            throw new Exception('error_update');
+            return $respon;
+          }
+        }
+      } else {
+        throw new Exception('emptysubmenu');
+      }
     }
+    
+    $respon['success'] = true;
     return $respon;
   }
 

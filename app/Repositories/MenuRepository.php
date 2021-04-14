@@ -199,7 +199,6 @@ class MenuRepository
         DB::raw("to_char(promoend, 'dd-mm-yyyy HH24:MI:SS') as promoend"),
       );
 
-
     $getCat = Menu::join('menucategory as mc', 'mc.id', 'menumcid')
       ->leftJoinSub($promo, 'promo', function ($join) {
         $join->on('menus.id', '=', 'promo.spmenuid');
@@ -262,13 +261,35 @@ class MenuRepository
 
   public static function search($cari)
   {
+    $promo = self::searchPromo();
+    
     return Menu::join('menucategory as mc', 'mc.id', 'menumcid')
+      ->leftJoinSub($promo, 'promo', function ($join) {
+        $join->on('menus.id', '=', 'promo.spmenuid');
+      })
       ->whereRaw('UPPER(menuname) LIKE UPPER(\'%'. $cari .'%\')')
       ->where('menuactive', '1')
       ->where('menuavaible', '1')
+      ->whereNull('promoid')
       ->select('menus.id', 'mcname as menucategory', 'menuname as text', 'menutype', 'menuprice')
       ->orderby('menuname', 'ASC')
       ->limit(5)
       ->get();
+  }
+
+  public static function searchPromo()
+  {
+    return DB::table('promo as p')
+      ->join('subpromo as sp', 'sppromoid', 'p.id')
+      ->where('promoactive', '1')
+      ->where('spactive', '1')
+      ->whereRaw("promoend::timestamp without time zone > now()::timestamp without time zone")
+      ->whereRaw("promostart::timestamp without time zone < now()::timestamp without time zone")
+      ->select(
+        'p.id as promoid',
+        'spmenuid',
+        'promodiscount'
+      );
+
   }
 }

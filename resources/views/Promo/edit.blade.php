@@ -7,7 +7,7 @@
   </div>
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);">Master Data</a></li>
-    <li class="breadcrumb-item"><a href="{{ url('/pengeluaran') }}">Promo</a></li>
+    <li class="breadcrumb-item"><a href="{{ url('/promo') }}">Promo</a></li>
     <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">{{ empty($data->id) ? 'Tambah' : 'Ubah'}} Promo</a></li>
   </ol>
 @endsection
@@ -15,6 +15,8 @@
 @section('content-form')
 <?php
   $canEdit = isset($data->editable) ? ($data->editable && Perm::can(['promo_simpan'])) : false;
+  $subs = isset($data->id) ? $data->sub : old('sub', []);
+  // dd($subs);
 ?>
   <!-- <div class="widget-content widget-content-area br-6">
     <div class="row"> -->
@@ -23,7 +25,7 @@
         <b>Harga menu promo tidak boleh minus!</b>
       </div>
       <div class="alert alert-light-danger mb-4 d-none pembulatanPromo" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="alert"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        <button type="button" class="close" data-dismiss="alert" min="500" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="alert"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
         <b>Potongan promo harus kelipatan dari 500!</b>
       </div>
       <div id="flStackForm" class="col-lg-12 layout-spacing layout-top-spacing">
@@ -99,7 +101,7 @@
                       </tr>
                   </thead>
                   <tbody>
-                    @foreach ($data->sub as $sub)
+                    @foreach ($subs as $sub)
                       @include('Promo.sub', Array('rowIndex' => $loop->index))
                     @endforeach
                   </tbody>
@@ -109,7 +111,7 @@
               <div class="float-right">
                 <a href="{{ url('/promo') }}" type="button" class="btn btn-danger mt-2" type="submit">{{ !$canEdit ? 'Kembali' : 'Batal' }}</a>
                 @if($canEdit)
-                  <button class="btn btn-primary mt-2" id="sub" type="submit">Simpan</button>
+                  <button class="btn btn-primary mt-2" id="saveBtn" type="submit">Simpan</button>
                 @endif
               </div>
           </form>
@@ -128,7 +130,7 @@
   
   $(document).ready(function (){
 
-    @if(isset($data->id) && $canEdit)
+    @if(old('promostart',$data->promostart) && $canEdit)
       $('#promoend').removeAttr('disabled')
     @endif
 
@@ -145,10 +147,9 @@
       altformat: "Y-m-d H:i",
       dateFormat: "d-m-Y H:i",
       minDate: "today",
-      defaultDate: "{{isset($data->promostart) ? $data->promostart : 'today'}}",
+      defaultDate: "{{ old('promostart',$data->promostart) ?? 'today'}}",
       time_24hr: true,
       onChange: function (selectedDates, dateStr, instance) {
-        // alert(dateStr);
         endPicker.set("minDate", dateStr);
         $('#promoend').removeAttr('disabled')
       }
@@ -159,7 +160,7 @@
       altinput: true,
       altformat: "Y-m-d H:i",
       dateFormat: "d-m-Y H:i",
-      defaultDate: "{{isset($data->promoend) ? $data->promoend : 'today'}}",
+      defaultDate: "{{ old('promoend',$data->promoend) ?? 'today'}}",
       minDate: "{{isset($data->promostart) ? $data->promostart : 'today'}}",
       time_24hr: true
     });
@@ -167,8 +168,9 @@
     $('#promodiscount').on('change', function (e) {
       let promoVal = $(this).val();
       let pembulatan = Math.floor(promoVal % 500)
-      if(pembulatan != 0){
+      if(pembulatan != 0 ){
         $('.pembulatanPromo').removeClass('d-none')
+        $("#saveBtn").attr("disabled", "disabled");
         $('html, body').animate({scrollTop:0}, '300')
       } else {
         $('.pembulatanPromo').addClass('d-none')
@@ -179,35 +181,10 @@
           $(this).find('[id^=sub][id$="[menuPromo]"]').html(formatter.format(calcRow));
           $(this).find('[name^=sub][name$="[menuPromo]"]').val(calcRow);
         })
+        $('#saveBtn').removeAttr('disabled');
       }
     })
 
-    // $('#menusearch').on('select2:select', function (e) {
-    //   let data = e.params.data;
-    //   $('#menucategory').val(data.category)
-    //   $('#menuprice').val(data.price)
-    //   $('#menutype').val(data.type)
-    //   $('#menuprice').trigger('requestUpdateMask');
-    //   // $('#menumcsearch').attr('data-has-changed', '1');
-    // });
-
-    // $('#menusearch').on('select2:clearing', function (e) {
-    //   $('#menucategory').val(null)
-    //   $('#menutype').val(null)
-    //   $('#menuprice').val(0)
-    //   $('#menuprice').trigger('requestUpdateMask');
-    // });
-
-    // $('#promodiscount').on('change',function(e){
-    //   let promoVal = $(this).val();
-    //   let menuPriceB = $('#menuprice').val();
-    //   if(promoVal != null && menuPriceB != null){
-    //     let promoPrice = menuPriceB - promoVal
-        
-    //     $('#promoprice').val(promoPrice);
-    //     $('#promoprice').trigger('requestUpdateMask');
-    //   }
-    // })
     // Fetch all the forms we want to apply custom Bootstrap validation styles to
     var forms = document.getElementsByClassName('needs-validation');
     // Loop over them and prevent submission
@@ -239,7 +216,7 @@
             event.preventDefault();
             event.stopPropagation();
           }else if (form.checkValidity() === true){
-            $('#sub').attr('disabled', true);
+            // $("#saveBtn").attr("disabled", "disabled");
           }
           form.classList.add('was-validated');
         }
@@ -278,23 +255,18 @@
       let dt = e.params.data;
       let promoPrice = dt.price - $('#promodiscount').val();
 
+      $targetContainer.find('[name^=sub][name$="[menuname]"]').val(dt.text);
       $targetContainer.find('[id^=sub][id$="[menuType]"]').html(dt.type);
+      $targetContainer.find('[name^=sub][name$="[menutype]"]').val(dt.type);
       $targetContainer.find('[id^=sub][id$="[menuCategory]"]').html(dt.category);
-      $targetContainer.find('[name^=sub][name$="[menuPrice]"]').val(dt.price);
+      $targetContainer.find('[name^=sub][name$="[menucategory]"]').val(dt.category);
+      $targetContainer.find('[name^=sub][name$="[menuprice]"]').val(dt.price);
       $targetContainer.find('[id^=sub][id$="[menuPriceText]"]').html(formatter.format(dt.price));
       $targetContainer.find('[id^=sub][id$="[menuPromo]"]').html(formatter.format(promoPrice));
-      $targetContainer.find('[name^=sub][name$="[menuPromo]"]').val(promoPrice);
+      $targetContainer.find('[name^=sub][name$="[menupromo]"]').val(promoPrice);
 
       $targetContainer.find('[id^=sub][id$="[subAvail]"]').removeClass('d-none');
     });
-  }
-  
-  function subSelectKlik(e)
-  {
-    var $tr = $(this).closest('tr,.panel,.rowpanel'),
-      $table = $tr.closest('table,.subitem-container');
-    console.log(1, $table)
-    setupDetailPromo(tes);
   }
 </script>
 @endsection
