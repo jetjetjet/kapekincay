@@ -137,8 +137,8 @@ class OrderController extends Controller
   {
     $respon = Helpers::$responses;
 		$rules = array(
-			// 'orderboardid' => 'required',
-			'ordertype' => 'required'
+			'ordertype' => 'required',
+			'orderboardid' => 'required_if:ordertype,DINEIN'
 		);
 		
 		$inputs = $request->all();
