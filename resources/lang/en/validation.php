@@ -149,6 +149,12 @@ return [
 
     'attributes' => [
         'ordercustname' => 'Nama Pelanggan',
+        'promoname' => 'Nama Promo',
+        'promostart' => 'Periode Awal Promo',
+        'promoend' => 'Periode Akhir Promo',
+        'promodiscount' => 'Potongan Promo',
+        'orderboardid' => 'Nomor Meja',
+        'ordertype' => 'Jenis Pesanan',
     ],
 
 ];

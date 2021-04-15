@@ -101,6 +101,7 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/order/save/{id?}', [OrderController::class, 'save'])->middleware('can:order_simpan');
   Route::post('/order/api-save/{id?}', [OrderController::class, 'apiSave'])->middleware('can:order_pelayan');
   Route::post('/order/hapus/{id}', [OrderController::class, 'deleteById'])->middleware('can:order_hapus');
+  Route::post('/order/hapus-menu/{id}/{idSub}', [OrderController::class, 'deleteMenuOrder'])->middleware('can:order_hapus');
   Route::post('/order/batal/{id}', [OrderController::class, 'voidById'])->middleware('can:order_batal');
   Route::post('/order/bayar/{id}', [OrderController::class, 'paidById'])->middleware('can:order_pembayaran');
   Route::post('/order/delivered/{id}/{idSub}', [OrderController::class, 'deliver'])->middleware('can:order_simpan');
@@ -121,6 +122,7 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('/promo/detail/{id?}', [PromoController::class, 'getById'])->middleware('can:promo_lihat');
   Route::post('/promo/simpan', [PromoController::class, 'save'])->middleware('can:promo_simpan');
   Route::post('/promo/hapus/{id}', [PromoController::class, 'deleteById'])->middleware('can:promo_hapus');
+  Route::post('/promo/hapus-sub/{idSub}', [PromoController::class, 'deleteSub'])->middleware('can:promo_hapus');
   
   Route::get('/shift', [ShiftController::class, 'index'])->middleware('can:shift_lihat');
   Route::get('/shift/grid', [ShiftController::class, 'getLists'])->middleware('can:shift_lihat');

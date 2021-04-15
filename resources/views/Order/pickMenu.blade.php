@@ -288,7 +288,12 @@ input[type=number] {
                 @if(isset($data->id) && Perm::can(['order_pelayan']))
                   <a href="" type="button" id="print" class="btn btn-success mt-2">Cetak</a>
                 @endif
-                @if(Perm::can(['order_simpan']))
+                <?php 
+                  $canSaveBtn = isset($data->id)
+                  ? $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'PROCEED' ? true : false
+                  : true 
+                ?>
+                @if(Perm::can(['order_simpan']) && $canSaveBtn)
                   <a href="" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Meja</a>
                   <a type="button" class="btn btn-primary mt-2 prosesOrder">Simpan</a>
                 @endif
@@ -642,9 +647,28 @@ input[type=number] {
       }, 0);
     })
     .on('row-removing', function (e, $row){
-      window.setTimeout(() => {
-        caclculatedOrder()        
-      }, 0);
+      let idSub = $row.find('[name^=dtl][name$="[id]"]').val(),
+          validasi2 = $row.find('[name^=dtl][name$="[odprice]"]').val();
+      
+      if(idSub && validasi2){
+        gridDeleteSub("{{ url('order/hapus-menu') . '/' }}" + idSub + "/" + $('#id').val(),
+          'Hapus Menu Pesanan', 
+          'Apakah anda yakin ingin menghapus menu dari pesanan?', 
+          function(data){
+            if (data.status == 'success'){
+              sweetAlert('Data Dihapus', data.messages[0], 'success')
+              window.setTimeout(() => {
+                $row.remove();
+                caclculatedOrder()        
+              }, 0);
+            } else {
+              sweetAlert('Kesalahan!', data.messages[0], 'error')
+            }
+          }
+        )
+      } else {
+        $row.remove();
+      }
     })
     .on('row-delivering', function (e, $row){
       let idSub = $row.find('[name^=dtl][name$="[id]"]').val(),

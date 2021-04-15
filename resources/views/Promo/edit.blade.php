@@ -230,7 +230,23 @@
     $targetContainer.on('row-added', function (e, $row){
       setupDetailPromo($row);
     }).on('row-removing', function (e, $row){
-      
+      let idSub = $row.find('[name^=sub][name$="[id]"]').val();
+      if(idSub){
+        gridDeleteSub("{{ url('promo/hapus-sub') . '/' }}" + idSub,
+          'Hapus Menu Promo', 
+          'Apakah anda yakin ingin menghapus menu dari promo?', 
+          function(data){
+            if (data.status == 'success'){
+              sweetAlert('Data Dihapus', data.messages[0], 'success')
+              $row.remove();
+            } else {
+              sweetAlert('Kesalahan!', data.messages[0], 'error')
+            }
+          }
+        )
+      } else {
+        $row.remove();
+      }
     })
     
     setupDetailPromo($targetContainer);

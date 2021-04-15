@@ -265,6 +265,32 @@ class PromoRepository
     return $respon;
   }
 
+  public static function deleteSub($respon, $id, $loginid)
+  {
+    $data = SubPromo::where('spactive', '1')
+      ->where('id', $id)
+      ->first();
+
+    $cekDelete = false;
+
+    if ($data != null){
+      $data->update([
+        'spactive' => '0',
+        'spmodifiedat' => now()->toDateTimeString(),
+        'spmodifiedby' => $loginid
+      ]);
+
+      $cekDelete = true;
+    }
+
+    $respon['status'] = $data != null && $cekDelete ? 'success': 'error';
+    $data != null && $cekDelete
+      ? array_push($respon['messages'], 'Menu Promo Berhasil Dihapus.') 
+      : array_push($respon['messages'], 'Menu Promo Tidak Ditemukan');
+    
+    return $respon;
+  }
+
   public static function getFields($db)
   {
     $db->id = null;

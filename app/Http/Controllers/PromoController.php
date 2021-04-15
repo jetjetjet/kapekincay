@@ -84,4 +84,15 @@ class PromoController extends Controller
 
 		return response()->json($results);
 	}
+
+	public function deleteSub(Request $request, $idSub)
+	{
+		$respon = Helpers::$responses;
+
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = PromoRepository::deleteSub($respon, $idSub, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Hapus Sub Promo', $loginid);
+
+		return response()->json($results);
+	}
 }

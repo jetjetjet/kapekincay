@@ -258,6 +258,7 @@ class OrderRepository
   {
     $promo = DB::table('promo as p')
       ->join('subpromo as sp', 'sppromoid', 'p.id')
+      ->where('spactive', '1')
       ->select(
         'p.id as promoid',
         'spmenuid',
@@ -421,6 +422,7 @@ class OrderRepository
   public static function saveDetailOrder($respon, $id, $details, $loginid)
   {
     $idHeader = $id != null ? $id : $respon['id'];
+    // dd($details);
     $detRow = "";
     try{
       foreach ($details as $key=>$dtl){
@@ -668,6 +670,33 @@ class OrderRepository
       array_push($respon['messages'], 'Kesalahan!' . $ext);
     }
  
+    return $respon;
+  }
+
+  public static function deleteMenuOrder($respon, $id, $subId, $loginid)
+  {
+    $data = OrderDetail::where('odactive', '1')
+      ->where('odorderid', $subId)
+      ->where('id', $id)
+      ->first();
+
+    $cekDelete = false;
+
+    if ($data != null){
+      $data->update([
+        'odactive' => '0',
+        'odmodifiedat' => now()->toDateTimeString(),
+        'odmodifiedby' => $loginid
+      ]);
+
+      $cekDelete = true;
+    }
+
+    $respon['status'] = $data != null && $cekDelete ? 'success': 'error';
+    $data != null && $cekDelete
+      ? array_push($respon['messages'], 'Menu Pesanan Berhasil Dihapus.') 
+      : array_push($respon['messages'], 'Menu Pesanan Tidak Ditemukan');
+    
     return $respon;
   }
 
