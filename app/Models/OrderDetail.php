@@ -23,6 +23,10 @@ class OrderDetail extends Model
     'odcreatedat',
     'odcreatedby',
     'odmodifiedat',
-    'odmodifiedby'
+    'odmodifiedby',
+    'odispromo',
+    'odpromoid',
+    'odtotalpriceraw',
+    'odpriceraw'
   ];
 }

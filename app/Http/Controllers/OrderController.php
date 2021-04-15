@@ -107,9 +107,24 @@ class OrderController extends Controller
 	}
 
 	public function apiSave(Request $request, $id = null)
-	{$respon = Helpers::$responses;
+	{
     
-    $inputs = $request->all();
+    $respon = Helpers::$responses;
+		$rules = array(
+			'promoname' => 'required',
+			'promostart' => 'required',
+			'promoend' => 'required',
+			'promodiscount' => 'required'
+		);
+		
+		$inputs = $request->all();
+		
+		$validator = validator::make($inputs, $rules);
+
+		if ($validator->fails()){
+			return redirect()->back()->withErrors($validator)->withInput($inputs);
+		}
+
 		$loginid = Auth::user()->getAuthIdentifier();
     $results = OrderRepository::save($respon, $id, $inputs, $loginid);
 		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Buat Pesanan', $loginid);
@@ -124,8 +139,22 @@ class OrderController extends Controller
   public function save(Request $request, $id = null)
   {
     $respon = Helpers::$responses;
-    
-    $inputs = $request->all();
+		$rules = array(
+			'orderboardid' => 'required',
+			'ordertype' => 'required'
+		);
+		
+		$inputs = $request->all();
+
+		// Subs.
+		// $inputs['sub'] = $this->mapRowsX(isset($inputs['sub']) ? $inputs['sub'] : null);
+		
+		$validator = validator::make($inputs, $rules);
+
+		if ($validator->fails()){
+			return redirect()->back()->withErrors($validator)->withInput($inputs);
+		}
+
 		$loginid = Auth::user()->getAuthIdentifier();
     $results = OrderRepository::save($respon, $id, $inputs, $loginid);
 		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Buat Pesanan', $loginid);
@@ -174,8 +203,16 @@ class OrderController extends Controller
 		$results = OrderRepository::delete($respon, $id, $loginid);
 		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Hapus Pesanan', $loginid);
 
-		// if($results['status'] == "success")
-		// 	event(new BoardEvent('ok'));
+		return response()->json($results);
+	}
+
+	public function deleteMenuOrder(Request $request, $id, $idSub)
+	{
+		$respon = Helpers::$responses;
+
+		$loginid = Auth::user()->getAuthIdentifier();
+		$results = OrderRepository::deleteMenuOrder($respon, $id, $idSub, $loginid);
+		AuditTrailRepository::saveAuditTrail($request->path(), $results, 'Hapus Menu Pesanan', $loginid);
 
 		return response()->json($results);
 	}
@@ -230,7 +267,6 @@ class OrderController extends Controller
 		$cetak = Cetak::printkasir($data, $inputs);
 		return redirect('/order/meja/view');
 	}
-
 
 	public function opendrawer(Request $request)
 	{

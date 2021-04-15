@@ -343,6 +343,36 @@ function gridDeleteRow(url, title, message, grid){
   });
 }
 
+function gridDeleteSub(url, title, message, callBackfn){
+  const swalWithBootstrapButtons = swal.mixin({
+    confirmButtonClass: 'btn btn-success btn-rounded',
+    cancelButtonClass: 'btn btn-danger btn-rounded mr-3',
+    buttonsStyling: false,
+  })
+
+  swalWithBootstrapButtons({
+    title: title,
+    text: message,
+    type: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Hapus',
+    cancelButtonText: 'Batal',
+    reverseButtons: true,
+    padding: '2em'
+  }).then(function(result) {
+    if (result.value) {
+      $.post(url, function (data){
+        if(callBackfn)
+          callBackfn(data)
+      });
+    } else if (
+      result.dismiss === swal.DismissReason.cancel
+    ) {
+      sweetAlert('Batal','Data batal dihapus','error')
+    }
+  });
+}
+
 function showPopupOrder(paramBody, actFn){
   // Enables modal on current element.
   $(this).attr('data-toggle', 'modal');
@@ -355,9 +385,23 @@ function showPopupOrder(paramBody, actFn){
   // });
   $modal.on('show.bs.modal', function (){
       // Draws text.
+      let pricePromoText = '';
+      if(paramBody['promo']){
+        pricePromoText = '&nbsp;<span class="badge outline-badge-info"> Harga Normal ' + paramBody['priceRaw'] +'</span>';
+        $modal.find('#rowPromo').removeClass('d-none')
+        $modal.find('#menuPopupPromo').html(paramBody['promo'] + '<p><span class="badge outline-badge-info"> Promo '
+          + paramBody['promoText'] + ' s/d '+ paramBody['promoEnd'] +'</span></p>');
+      }
+
       $modal.find('.modal-title').html('Tambah');
       $modal.find('#menuPopupText').html(paramBody['text']);
-      $modal.find('#menuPopupPrice').html(paramBody['price']);
+      $modal.find('#menuPopupPrice').html(paramBody['price'] + pricePromoText);
+
+      if(paramBody['promo']){
+        $modal.find('#rowPromo').removeClass('d-none')
+        $modal.find('#menuPopupPromo').html(paramBody['promo'] + '<p><span class="badge outline-badge-info"> Promo '
+          + paramBody['promoText'] + ' s/d '+ paramBody['promoEnd'] +'</span></p>');
+      }
       
       let inputQty = $modal.find('#menuPopupQty');
       //console.log(inputQty)
@@ -468,7 +512,7 @@ $('table,.subitem-container')
   var $tr = $(this).closest('tr,.panel,.rowpanel'),
       $table = $tr.closest('table,.subitem-container');
   $table.triggerHandler("row-removing", [$tr]);
-  $tr.remove();
+  // $tr.remove();
   $table.triggerHandler("row-removed", [$tr]);
 
   $table.attr('data-has-changed', '1');

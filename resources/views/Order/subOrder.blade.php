@@ -3,6 +3,7 @@
 
   $menuText = $sub->odmenutext ?? null;
   $menuPrice = $sub->odprice ?? null;
+  $menuPriceRaw = $sub->odpriceraw ?? null;
   $menuid = $sub->odmenuid ?? null;
   $menuQty = $sub->odqty ?? null;
   $menuRemark = $sub->odremark ?? null;
@@ -13,16 +14,16 @@
 
 ?>
 
-
-
 <tr class="subitem">
   <td>
-    <p id="dtl[{{ $rowIndex }}][odmenutext]">{{$menuText}}</p>
+    <p id="dtl[{{ $rowIndex }}][odmenutext]"><span class="badge outline-badge-info {{ isset($rowIndex) && isset($sub->odpromoid) ? '' : 'd-none' }}"> Promo </span>&nbsp;{{$menuText}}</p>
   </td>
   <td>
     <p width="40%" id="dtl[{{ $rowIndex }}][odprice]">{{ number_format($menuPrice,0) }}</p>
     <input type="hidden" name="dtl[{{ $rowIndex }}][odprice]" value="{{$menuPrice}}" class=" text-right"/>
+    <input type="hidden" name="dtl[{{ $rowIndex }}][odpriceraw]" value="{{$menuPriceRaw}}" class=" text-right"/>
     <input type="hidden" name="dtl[{{ $rowIndex }}][id]" value="{{ isset($rowIndex) && isset($sub->id) ? $sub->id : null }}" class=" text-right"/>
+    <input type="hidden" name="dtl[{{ $rowIndex }}][odpromoid]" value="{{ isset($rowIndex) && isset($sub->odpromoid) ? $sub->odpromoid : null }}" class=" text-right"/>
     <input type="hidden" name="dtl[{{ $rowIndex }}][odmenuid]" value="{{$menuid}}" class=" text-right"/>
     <input type="hidden" name="dtl[{{ $rowIndex }}][index]" value="{{ $rowIndex }}" class=" text-right"/>
   </td>
@@ -32,7 +33,7 @@
       <p class="text-center">{{$menuQty}}</p>
     @else
       <span class="input-number-decrement" counter-down>–</span>
-        <input type="number" class="input-number subQty" min="0" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}" sub-input >
+        <input type="number" class="input-number subQty" min="1" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}" sub-input >
       <span class="input-number-increment" counter-up>+</span> 
     @endif
   </td>

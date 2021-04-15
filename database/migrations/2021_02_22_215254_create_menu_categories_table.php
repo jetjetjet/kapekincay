@@ -16,7 +16,7 @@ class CreateMenuCategoriesTable extends Migration
         Schema::create('menucategory', function (Blueprint $table) {
             $table->id();
             $table->string('mcname',100);
-            $table->boolean('mcactive',);
+            $table->boolean('mcactive');
             $table->dateTime('mccreatedat');
             $table->integer('mccreatedby');
             $table->dateTime('mcmodifiedat')->nullable();

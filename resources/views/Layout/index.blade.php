@@ -18,6 +18,7 @@
     <link href="{{ url('/') }}/plugins/sweetalerts/sweetalert2.min.css" rel="stylesheet" type="text/css" />
     <link href="{{ url('/') }}/plugins/sweetalerts/sweetalert.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/assets/css/elements/alert.css">
+    <!-- <link href="{{ url('/') }}/assets/css/tables/table-basic.css" rel="stylesheet" type="text/css" /> -->
     <!-- END GLOBAL MANDATORY STYLES -->
     <style>
       .btnTransparent{

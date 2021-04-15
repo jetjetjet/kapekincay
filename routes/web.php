@@ -16,6 +16,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\PromoController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -45,13 +46,6 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('/log', [AuditTrailController::class, 'index'])->middleware('can:log_lihat');
   Route::get('/log/grid', [AuditTrailController::class, 'grid'])->middleware('can:log_lihat');
   
-  Route::get('/pengeluaran', [ExpenseController::class, 'index'])->middleware('can:pengeluaran_lihat,pengeluaran_simpan');
-  Route::get('/pengeluaran/grid', [ExpenseController::class, 'getLists'])->middleware('can:pengeluaran_lihat');
-  Route::get('/pengeluaran/detail/{id?}', [ExpenseController::class, 'getById'])->middleware('can:pengeluaran_lihat');
-  Route::post('/pengeluaran/simpan', [ExpenseController::class, 'save'])->middleware('can:pengeluaran_simpan');
-  Route::post('/pengeluaran/hapus/{id}', [ExpenseController::class, 'deleteById'])->middleware('can:pengeluaran_hapus');
-  Route::post('/pengeluaran/proses/{id}', [ExpenseController::class, 'proceedById'])->middleware('can:pengeluaran_proses');
-
   Route::get('/jabatan', [RoleController::class, 'index'])->middleware('can:jabatan_lihat');
   Route::get('/jabatan/grid', [RoleController::class, 'getLists'])->middleware('can:jabatan_lihat');
   Route::get('/jabatan/detail/{id?}', [RoleController::class, 'getById'])->middleware('can:jabatan_lihat');
@@ -71,9 +65,10 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::get('/menu', [MenuController::class, 'index'])->middleware('can:menu_lihat');
   Route::get('/menu/grid', [MenuController::class, 'getLists'])->middleware('can:menu_lihat');
   Route::get('/menu/detail/{id?}', [MenuController::class, 'getById'])->middleware('can:menu_lihat,menu_simpan');
+  Route::get('/menu/menuorder', [ MenuController::class, 'menuOrder']);
+  Route::get('/menu/search', [MenuController::class, 'searchMenu']);
   Route::post('/menu/simpan', [MenuController::class, 'save'])->middleware('can:menu_simpan');
   Route::post('/menu/hapus/{id}', [MenuController::class, 'deleteById'])->middleware('can:menu_hapus');
-  Route::get('/menu/menuorder', [ MenuController::class, 'menuOrder']);
   
   Route::get('/menu-category/search', [MenuCategoryController::class, 'search']);
   Route::post('/menu-category/save', [MenuCategoryController::class, 'save'])->middleware('can:menu_simpan');
@@ -106,14 +101,29 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/order/save/{id?}', [OrderController::class, 'save'])->middleware('can:order_simpan');
   Route::post('/order/api-save/{id?}', [OrderController::class, 'apiSave'])->middleware('can:order_pelayan');
   Route::post('/order/hapus/{id}', [OrderController::class, 'deleteById'])->middleware('can:order_hapus');
+  Route::post('/order/hapus-menu/{id}/{idSub}', [OrderController::class, 'deleteMenuOrder'])->middleware('can:order_hapus');
   Route::post('/order/batal/{id}', [OrderController::class, 'voidById'])->middleware('can:order_batal');
   Route::post('/order/bayar/{id}', [OrderController::class, 'paidById'])->middleware('can:order_pembayaran');
   Route::post('/order/delivered/{id}/{idSub}', [OrderController::class, 'deliver'])->middleware('can:order_simpan');
+
+  Route::get('/pengeluaran', [ExpenseController::class, 'index'])->middleware('can:pengeluaran_lihat,pengeluaran_simpan');
+  Route::get('/pengeluaran/grid', [ExpenseController::class, 'getLists'])->middleware('can:pengeluaran_lihat');
+  Route::get('/pengeluaran/detail/{id?}', [ExpenseController::class, 'getById'])->middleware('can:pengeluaran_lihat');
+  Route::post('/pengeluaran/simpan', [ExpenseController::class, 'save'])->middleware('can:pengeluaran_simpan');
+  Route::post('/pengeluaran/hapus/{id}', [ExpenseController::class, 'deleteById'])->middleware('can:pengeluaran_hapus');
+  Route::post('/pengeluaran/proses/{id}', [ExpenseController::class, 'proceedById'])->middleware('can:pengeluaran_proses');
 
   Route::get('/profile/{id}', [UserController::class, 'getProfile']);
   Route::post('/profile/simpan/{id}', [UserController::class, 'saveProfile']);
   Route::post('/profile/ubah-password/{id}', [UserController::class, 'changeProfilePassword']);
 
+  Route::get('/promo', [PromoController::class, 'index'])->middleware('can:promo_lihat,promo_simpan');
+  Route::get('/promo/grid', [PromoController::class, 'getLists'])->middleware('can:promo_lihat');
+  Route::get('/promo/detail/{id?}', [PromoController::class, 'getById'])->middleware('can:promo_lihat');
+  Route::post('/promo/simpan', [PromoController::class, 'save'])->middleware('can:promo_simpan');
+  Route::post('/promo/hapus/{id}', [PromoController::class, 'deleteById'])->middleware('can:promo_hapus');
+  Route::post('/promo/hapus-sub/{idSub}', [PromoController::class, 'deleteSub'])->middleware('can:promo_hapus');
+  
   Route::get('/shift', [ShiftController::class, 'index'])->middleware('can:shift_lihat');
   Route::get('/shift/grid', [ShiftController::class, 'getLists'])->middleware('can:shift_lihat');
   Route::get('/shift/detail/{id?}', [ShiftController::class, 'getById'])->middleware('can:shift_lihat');

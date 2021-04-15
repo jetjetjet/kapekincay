@@ -40,11 +40,23 @@ class BoardRepository
 
   public static function getAvailable($id, $searchQ)
   {
+    $orders = DB::table('orders')
+      ->where('orderactive', '1')
+      ->whereRaw("(orderstatus is null or orderstatus in('PROCEED', 'ADDITIONAL'))")
+      ->whereNotNull("orderboardid")
+      ->select('orderboardid')
+      ->get();
+
+    $orderBoardId = Array();
+    foreach($orders as $order){
+      array_push($orderBoardId, $order->orderboardid);
+    }
+
     $data =  Board::leftJoin('orders', function($q){
-      $q->whereRaw("orderactive = '1'")
-        ->whereRaw('orderboardid = boards.id');})
+        $q->whereRaw("orderactive = '1'")
+          ->whereRaw('orderboardid = boards.id');})
       ->where('boardactive', '1')
-      ->whereRaw("(orderstatus is null or orderstatus = 'DIBAYAR')")
+      ->whereNotIn('boards.id', $orderBoardId)
       ->orderBy('boardfloor', 'asc')
       ->orderBy('boardnumber', 'asc');
       
@@ -55,9 +67,10 @@ class BoardRepository
         $data = $data->whereRaw("upper(concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor)) like upper('%" . $searchQ ."%')");
       }
 
-      return $data->select('boards.id', 
+      return $data->select(
+        DB::raw("distinct on(boardnumber, boardfloor) boards.id"), 
         DB::raw("concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor) as text"))
-    // Board::whereRaw('UPPER(customer_name) LIKE UPPER(\'%'. $cari .'%\')')
+      ->limit(5)
       ->get();
   }
 
