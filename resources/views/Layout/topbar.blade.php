@@ -59,9 +59,6 @@
 									@if(Perm::can(['menu_lihat']))
 										<li><a href="{{ url('/menu') }}">Menu</a></li>
 									@endif
-									@if(Perm::can(['promo_lihat']))
-										<li><a href="{{ url('/promo') }}">Promo</a></li>
-									@endif
 								</ul>
 							</li>
 						@endif

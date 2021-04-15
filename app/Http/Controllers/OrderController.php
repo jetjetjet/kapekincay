@@ -111,10 +111,7 @@ class OrderController extends Controller
     
     $respon = Helpers::$responses;
 		$rules = array(
-			'promoname' => 'required',
-			'promostart' => 'required',
-			'promoend' => 'required',
-			'promodiscount' => 'required'
+			'ordertype' => 'required'
 		);
 		
 		$inputs = $request->all();
@@ -140,7 +137,7 @@ class OrderController extends Controller
   {
     $respon = Helpers::$responses;
 		$rules = array(
-			'orderboardid' => 'required',
+			// 'orderboardid' => 'required',
 			'ordertype' => 'required'
 		);
 		
