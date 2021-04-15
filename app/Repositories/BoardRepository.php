@@ -68,7 +68,7 @@ class BoardRepository
     $floor = $inputs['boardfloor'];
 
     $cek = Board::where('boardactive', '1')
-      ->where('boardnumbers', $number)
+      ->where('boardnumber', $number)
       ->where('boardfloor', $floor)->first();
     
     if($cek != null){
