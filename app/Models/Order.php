@@ -34,6 +34,7 @@ class Order extends Model
 		'ordercreatedat',
 		'ordercreatedby',
 		'ordermodifiedat',
-		'ordermodifiedby'
+		'ordermodifiedby',
+		'orderdiscountprice'
   ];
 }
