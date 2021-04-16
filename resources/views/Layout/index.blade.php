@@ -25,6 +25,17 @@
         border:none; 
         background:transparent
       }
+            /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      input[type=number] {
+        -moz-appearance: textfield;
+      }
     </style>
   	<!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/table/datatable/datatables.css">

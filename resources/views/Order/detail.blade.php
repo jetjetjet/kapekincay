@@ -100,21 +100,7 @@
                     </table>
                     <form id="orderMenuForm" method="post" novalidate action="{{url('/order/bayar')}}/{{$data->id}}">
                       <div class="col-md-12">
-                        <div class="text-right float-right">
-                          <input type="hidden" id="total" value="{{$data->orderprice}}">
-                          <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
-                          <input type="hidden" name="username" id="name" value="{{ session('username') }}" />
-                            <h3>Total :<b> {{ number_format($data->orderprice,0) }}</b></h3>
-                            @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
-                            
-                            @elseif($data->orderstatus == 'COMPLETED' || $data->ordertype == 'TAKEAWAY')
-                              <input autofocus type="number" class="form-control text-right mousetrap" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang">
-                              <h3 id="kembalian">Kembalian :</h3>                       
-                            @else      
-                            <input type="hidden" id="bayar" value="-1" />
-                            @endif          
-                        </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-3 float-left">
                           @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')                                           
                             <h4>Status Pesanan : <b>{{$data->orderstatuscase}}</b></h4>                     
                           @elseif($data->orderstatus == 'COMPLETED'|| $data->ordertype == 'TAKEAWAY')
@@ -124,6 +110,26 @@
                               <option value="Non-Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Non-Tunai' ? ' selected' : '' }}> Non-Tunai</option>
                             </select>                     
                           @endif
+                        </div>
+                        <div class="float-right col-md-3">
+                          <input type="hidden" id="afterPrice" value="{{$data->orderprice}}">
+                          <input type="hidden" id="startPrice" value="{{$data->orderprice}}">
+                          <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
+                          <input type="hidden" name="username" id="name" value="{{ session('username') }}" />
+                            <h3 id="price">Total :<b class="float-right"> {{ number_format($data->orderprice,0) }}</b></h3>
+                            @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
+                            
+                            @elseif($data->orderstatus == 'COMPLETED' || $data->ordertype == 'TAKEAWAY')
+                              <input autofocus type="number" class="form-control text-right mousetrap mb-2" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang">          
+                                <label class="new-control new-checkbox checkbox-primary">
+                                  <input id="cekDisc" type="checkbox" class="new-control-input">
+                                  <span class="new-control-indicator"></span>Diskon
+                                </label>              
+                                <input type="number" class="form-control text-right mousetrap d-none" required name="orderdiscountprice" id="diskon" placeholder="Diskon">         
+                              <h3 id="kembalian">Kembalian : <b class="float-right">0</b></h3>                       
+                            @else      
+                            <input type="hidden" id="bayar" value="-1" />
+                            @endif          
                         </div>
                       </div>
                     </form>
@@ -141,7 +147,7 @@
               <div class="widget-content widget-content-area" style="padding:10px">
                 <div class="float-right">
                   <a href="{{url('/order/meja/view')}}" id="back" type="button" class="btn btn-warning mt-2">Kembali</a>
-                  @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
+                  @if($data->orderstatus == 'PAID')
                     <button id="print" class="btn btn-success mt-2">Cetak</button>
                   @endif
                   @if(!($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID'))
@@ -207,23 +213,60 @@
 
 @section('js-form')
 <script>
-  var payAndchange = function()
+  let payAndchange = function()
     {
-      var price = $("#total").val();
-      var pay = $('#bayar').val();
-      var change = Number(pay) - Number(price)
+      let price = $("#afterPrice").val();   
+      let pay = $('#bayar').val();
+      let change = Number(pay) - Number(price)
+
       if(Number(pay) >= Number(price)){
-        $("#kembalian").html('Kembalian : <b>'+formatter.format(change)+'</b>');
+        $("#kembalian").html("Kembalian : <b class='float-right'>"+formatter.format(change)+'</b>');
         $('#drawer').removeAttr('disabled');
       } else {
-        $('#kembalian').html('Kembalian : <b>0</b>');
+        $('#kembalian').html("Kembalian : <b class='float-right'>0</b>");
         $('#drawer').attr('disabled', true);
       }
       //console.log(price, pay, change )
     }
 
+    let disChange = function()
+    {
+      let sPrice = $("#startPrice").val();
+      let pay = $('#bayar').val();
+      let diskon = $("#diskon").val();
+      let discPrice = Number(sPrice) - Number(diskon)
+
+      if(Number(sPrice)<Number(diskon)){
+        $("#price").html("Total : <b class='float-right'>Error</b>");
+        $("#afterPrice").val(Number(sPrice));
+      }else if(Number(diskon)){
+        $("#price").html("Total : <b class='float-right'>"+formatter.format(discPrice)+"</b><h6><i class='float-right' style='color:#acb0c3'><s>"+formatter.format(sPrice)+"</s></i></h6>");
+        $("#afterPrice").val(Number(discPrice));
+      } else {
+        $("#price").html("Total : <b class='float-right'>"+formatter.format(sPrice)+'</b>');
+        $("#afterPrice").val(Number(sPrice));
+      }
+      $('#cekDisc').change(function() { 
+        if (!this.checked) {
+          $("#price").html("Total : <b class='float-right'>"+formatter.format(sPrice)+'</b>');
+          $("#afterPrice").val(Number(sPrice));
+          $('#diskon').val(null)
+        }
+      })    
+    }
+
 
   $(document).ready(function (){
+    $('#cekDisc').change(function() { 
+      if (this.checked) {
+        $('#diskon').removeClass('d-none');
+        $('#diskon').focus()
+      } else {
+        $('#diskon').addClass('d-none');
+        disChange();
+        $('#bayar').focus()
+      }
+    });
     //hotkey
       Mousetrap.bind('enter', function() {
         var price = $("#total").val();
@@ -237,6 +280,9 @@
         }else{
           $('#drawer').trigger('click')
         }
+      });
+      Mousetrap.bind('/', function() {
+        $('#cekDisc').trigger('click');
       });
     //endhotkey
     //hotkeymodal
@@ -340,6 +386,11 @@
 
     $('#bayar').on('keyup',function(){
       payAndchange();
+      disChange();
+    });
+    $('#diskon').on('keyup',function(){
+      payAndchange();
+      disChange();
     });
 
     $('#prosesOrder').on('click', function(){

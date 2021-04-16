@@ -174,7 +174,7 @@ Mousetrap.bind('esc', function(){
 // end bukalaci
 
 // to board
-Mousetrap.bind('/', function(){
+Mousetrap.bind('.', function(){
   const url = $('#board').val()
   window.location.href = url;
 })
