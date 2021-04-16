@@ -106,12 +106,13 @@ class ReportRepository
   public static function getShiftReport($filter)
   {
     $q = DB::table('shifts as s')
-      ->join('orders as o', 'orderpaidby', 'shiftcreatedby')
+      ->join('orders as o', DB::Raw('orderpaidat::date'), '=' ,DB::Raw('shiftstart::date'))
       ->join('users as u', 'u.id','shiftcreatedby')
+      ->whereBetween(DB::raw('orderpaidat::timestamp'), [DB::raw('shiftstart::timestamp'), DB::raw('shiftclose::timestamp')])
       ->where('shiftactive', '1')
       ->where('orderactive', '1')
       ->whereRaw("shiftcreatedat::date between '". $filter['startdate'] . "'::date and '" . $filter['enddate'] . "'::date")
-      ->groupBy(DB::raw("shiftcreatedby, shiftcreatedat::date, username, orderstatus"))
+      ->groupBy(DB::raw("shiftcreatedby, shiftcreatedat::date, username, orderstatus, shiftstartcash, shiftendcash, shiftstartcoin, shiftendcoin"))
       ->orderBy('shiftcreatedat', 'DESC');
     
     if($filter['status'] == "PAID"){
@@ -120,7 +121,9 @@ class ReportRepository
       $q = $q->where('orderstatus', 'ADDITIONAL')
         ->orWhere('orderstatus', 'PROCEED');
     } else if($filter['status'] == "VOIDED"){
-      $q = $q->where('orderstatus', 'VOID');
+      $q = $q->where('orderstatus', 'VOIDED');
+    } else{
+      $q = $q->where('orderstatus', ['PAID', 'ADDITIONAL', 'PROCEED']);
     }
 
     if($filter['user'] != "ALL"){
@@ -130,13 +133,13 @@ class ReportRepository
       'shiftcreatedby',
 			'username',
 			DB::raw("s.shiftcreatedat::date"),
-      DB::raw("sum(shiftstartcash) as kertasawal"),
-      DB::raw("sum(shiftstartcoin) as koinawal"),
-      DB::raw("(sum(shiftstartcash) + sum(shiftstartcoin)) as totalstart"),
-      DB::raw("sum(shiftendcash) as kertasakhir"),
-      DB::raw("sum(shiftendcoin) as koinakhir"),
-      DB::raw("(sum(shiftendcash) + sum(shiftendcoin)) as totalakhir"),
-      DB::raw("((sum(shiftendcash) + sum(shiftendcoin))-(sum(shiftstartcash) + sum(shiftstartcoin))) as selisih"),
+      DB::raw("coalesce(shiftstartcash,0) as kertasawal"),
+      DB::raw("coalesce(shiftstartcoin,0) as koinawal"),
+      DB::raw("coalesce(shiftstartcash,0) + coalesce(shiftstartcoin,0) as totalstart"),
+      DB::raw("coalesce(shiftendcash,0) as kertasakhir"),
+      DB::raw("coalesce(shiftendcoin,0) as koinakhir"),
+      DB::raw("coalesce(shiftendcash,0) + coalesce(shiftendcoin,0) as totalakhir"),
+      DB::raw("(coalesce(shiftendcash,0) + coalesce(shiftendcoin,0)) - (coalesce(shiftstartcash,0) + coalesce(shiftstartcoin,0)) as selisih"),
       DB::raw("sum(orderprice) as totalorder")
     )->get();
 
