@@ -250,20 +250,20 @@ class Cetak
 
   public static function getAsStringkasirmenu($name, $price, $qty, $currency)
   {
-    $rightCols = 7;
-    $rupiah = 3;
+    $rightCols = 9;
+    $rupiah = 7;
     // $width = 80;
     $leftCols = 6;
-    $middle = 12;
-    $middle2 = 20;
+    $middle = 13;
+    $middle2 = 13;
 
     $left = str_pad($name, $leftCols);
 
+    $mid2 = str_pad($price, $middle2,' ', STR_PAD_LEFT);
+
     $mid = str_pad($qty, $middle,' ', STR_PAD_RIGHT);
 
-    $rp = str_pad("Rp. ", $rupiah,' ', STR_PAD_RIGHT);
-
-    $mid2 = str_pad($price, $middle2,' ', STR_PAD_LEFT);
+    $rp = str_pad("Rp. ", $rupiah,' ', STR_PAD_LEFT);
 
     $right = str_pad($currency, $rightCols, ' ', STR_PAD_LEFT);
     return "$left$mid2$mid$rp$right\n";

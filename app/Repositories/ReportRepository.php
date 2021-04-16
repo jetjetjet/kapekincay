@@ -28,7 +28,7 @@ class ReportRepository
       DB::raw("to_char(orderdate, 'DD-MM-YYYY') as tanggal"),       
       DB::raw("CASE WHEN orders.ordertype = 'DINEIN' THEN 'Makan ditempat' ELSE 'Bungkus' END as ordertypetext"), 
       'orderinvoice',
-      'orderprice',
+      DB::raw("orderprice - coalesce(orderdiscountprice,0) as price"),
       DB::raw("CASE WHEN orders.orderstatus = 'PAID' THEN 'Lunas' WHEN orders.orderstatus = 'VOIDED' THEN 'Dibatalkan' ELSE 'Diproses' END as orderstatuscase"),
       'username',
       )
@@ -51,7 +51,10 @@ class ReportRepository
     }elseif($inputs['status'] == 'Semua'){
       $od->whereNotIn('orderstatus', ['VOIDED']);
     }
-    $data = $od->select(DB::raw("sum(orderprice) as total"))->first();
+    $data = $od->select(
+      DB::raw("sum(orderprice) - sum(coalesce(orderdiscountprice,0)) as total"),
+      )
+      ->first();
 
     return $data;
   }
@@ -140,7 +143,7 @@ class ReportRepository
       DB::raw("coalesce(shiftendcoin,0) as koinakhir"),
       DB::raw("coalesce(shiftendcash,0) + coalesce(shiftendcoin,0) as totalakhir"),
       DB::raw("(coalesce(shiftendcash,0) + coalesce(shiftendcoin,0)) - (coalesce(shiftstartcash,0) + coalesce(shiftstartcoin,0)) as selisih"),
-      DB::raw("sum(orderprice) as totalorder")
+      DB::raw("sum(orderprice) - sum(coalesce(orderdiscountprice,0)) as totalorder")
     )->get();
 
     $data = new \StdClass();

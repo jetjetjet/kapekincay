@@ -68,9 +68,9 @@
           <tr>
             <td>{{$key + 1}}</td>
             <td>{{$row['tanggal']}}</td>
-            <td>{{$row['orderinvoice']}}</td>
+            <td><a href="{{url('/order/detail')}}/{{$row['id']}}">{{$row['orderinvoice']}}</a></td>
             <td>{{$row['ordertypetext']}}</td>
-            <td>{{number_format($row['orderprice'])}}</td>
+            <td>{{number_format($row['price'])}}</td>
             <td>{{$row['orderstatuscase']}}</td>
             <td>{{$row['username']}}</td>
           </tr>

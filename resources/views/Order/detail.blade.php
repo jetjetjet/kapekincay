@@ -116,16 +116,20 @@
                           <input type="hidden" id="startPrice" value="{{$data->orderprice}}">
                           <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
                           <input type="hidden" name="username" id="name" value="{{ session('username') }}" />
+                            @if(isset($data->orderdiscountprice))
+                            <h3 id="price">Total : <b class='float-right'>{{ number_format($data->orderprice - $data->orderdiscountprice,0)}}</b><h6><i class='float-right' style='color:#acb0c3'><s>{{ number_format($data->orderprice,0) }}</s></i></h6> </b></h3>
+                            @else
                             <h3 id="price">Total :<b class="float-right"> {{ number_format($data->orderprice,0) }}</b></h3>
+                            @endif
                             @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
-                            
+
                             @elseif($data->orderstatus == 'COMPLETED' || $data->ordertype == 'TAKEAWAY')
-                              <input autofocus type="number" class="form-control text-right mousetrap mb-2" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang">          
-                                <label class="new-control new-checkbox checkbox-primary">
+                              <label class="new-control new-checkbox checkbox-primary">
                                   <input id="cekDisc" type="checkbox" class="new-control-input">
                                   <span class="new-control-indicator"></span>Diskon
-                                </label>              
-                                <input type="number" class="form-control text-right mousetrap d-none" required name="orderdiscountprice" id="diskon" placeholder="Diskon">         
+                              </label>                                  
+                              <input type="number" class="form-control text-right mousetrap d-none" required name="orderdiscountprice" id="diskon" placeholder="Diskon">  
+                              <input autofocus type="number" class="form-control text-right mousetrap mb-2" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang">                                              
                               <h3 id="kembalian">Kembalian : <b class="float-right">0</b></h3>                       
                             @else      
                             <input type="hidden" id="bayar" value="-1" />
@@ -226,13 +230,12 @@
         $('#kembalian').html("Kembalian : <b class='float-right'>0</b>");
         $('#drawer').attr('disabled', true);
       }
-      //console.log(price, pay, change )
+      // console.log(price, pay, change )
     }
 
     let disChange = function()
     {
       let sPrice = $("#startPrice").val();
-      let pay = $('#bayar').val();
       let diskon = $("#diskon").val();
       let discPrice = Number(sPrice) - Number(diskon)
 
@@ -269,7 +272,7 @@
     });
     //hotkey
       Mousetrap.bind('enter', function() {
-        var price = $("#total").val();
+        var price = $("#afterPrice").val();
         var pay = $('#bayar').val();
         if(Number(pay) == -1){
           alert('Pesanan Belum selesai')
@@ -310,7 +313,7 @@
           Mousetrap.unbind('backspace')
             $('#bayar').focus()
             Mousetrap.bind('enter', function() {
-              var price = $("#total").val();
+              var price = $("#afterPrice").val();
               var pay = $('#bayar').val();
               if(Number(pay) == 0){
                 alert('Masukkan jumlah uang')
@@ -326,7 +329,7 @@
     //Cetak
 
     $('#drawer').on('click', function () {
-      var price = $("#total").val();
+      var price = $("#afterPrice").val();
       var pay = $('#bayar').val();
       var change = Number(pay) - Number(price)
       Swal.fire('Sedang Diproses')

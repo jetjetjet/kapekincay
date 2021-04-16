@@ -195,6 +195,7 @@ class OrderRepository
           'ordervoidedat',
           'ordervoidreason',
           'ordervoidedby',
+          'orderdiscountprice',
           'uvoid.username as ordervoidedusername',
           DB::raw("CASE WHEN orders.orderstatus = 'PROCEED' THEN 'Diproses' WHEN orders.orderstatus = 'COMPLETED' THEN 'Selesai' WHEN orders.orderstatus = 'PAID' THEN 'Lunas' WHEN orders.orderstatus = 'VOIDED' THEN 'Batal' WHEN orders.orderstatus = 'ADDITIONAL' THEN 'Proses Tambah' END as orderstatuscase")
         )->first();
