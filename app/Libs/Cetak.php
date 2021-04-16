@@ -160,6 +160,8 @@ class Cetak
       if($data->discountprice){
         $printer->text(self::getAsStringkasirtotal("Diskon ","-".number_format($data->discountprice), "Rp "));
         $gTotal -= $data->discountprice;
+      }else{
+        $printer->text(self::getAsStringkasirtotal("Diskon ","0", "Rp "));
       }
       $printer->selectPrintMode(Printer::MODE_FONT_A);
       $printer->text("------------------------------------------------\n");
