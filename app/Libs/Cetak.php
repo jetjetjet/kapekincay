@@ -6,6 +6,7 @@ use Mike42\Escpos\Printer;
 use Mike42\Escpos\EscposImage;
 use Mike42\Escpos\PrintConnectors\RawbtPrintConnector;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 use Mike42\Escpos\CapabilityProfile;
 
 use App\Repositories\SettingRepository;
@@ -94,16 +95,18 @@ class Cetak
     // dd($data);
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100, 2);
+      // $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100, 2);
+      $connector = null;
+      $connector = new WindowsPrintConnector("test2");
       $printer = new Printer($connector, $profile);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
       // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-      // $printer->text("Cafe&Resto\n");
-      // $printer->text("Syifa Donat\n");
+      $printer->text("Cafe&Resto\n");
+      $printer->text("SudahLuopa Gaming\n");
       // // // gambar
-      $tux = EscposImage::load(public_path(self::getSetting()['logoApp']),true);     
-      $printer -> graphics($tux);
-      // $printer -> feed();
+      // $tux = EscposImage::load(public_path(self::getSetting()['logoApp']),true);     
+      // $printer -> graphics($tux);
+      $printer -> feed();
       $printer->selectPrintMode();
       $printer->text(self::getSetting()['Alamat']."\n");
       $printer->text('Telp. '.self::getSetting()['Telp']."\n");
@@ -119,7 +122,7 @@ class Cetak
       $printer->text("Kasir         : ". $inputs['username'] . "\n");
       $printer->text("Tipe Pesanan  : " . $data->orderType . "\n");
       if($data->noTable != null){
-        $printer->text("Meja - " . $data->noTable . "\n");
+        $printer->text("                Meja - " . $data->noTable . "\n");
       }
       $printer->text("Tanggal       : ". $data->date . "\n");
       $printer->setEmphasis(false);
@@ -130,25 +133,44 @@ class Cetak
       $printer->setEmphasis(true);
       // $printer->text(self::getAsString("", $data->price, "Rp "));
       $printer->setEmphasis(false);
+      $subTotal = 0;
+      $promo = 0;
       if($data->detail){
         $printer->text("================================================\n");
-        $printer->text(self::getAsStringkasirmenu('Nama Menu','Harga' , "Jumlah", "Total"));
-        $printer->text("------------------------------------------------\n");
         foreach($data->detail as $item){
-          $printer->text(self::getAsStringkasirmenu($item->text , number_format($item->price), $item->qty, number_format($item->totalPrice))); // for 58mm Font A
+          $printer->setEmphasis(true);
+          if($item->promo){
+            $printer->text($item->text);
+            $printer->selectPrintMode(Printer::MODE_UNDERLINE);
+            $printer->text("(-".number_format($item->promodiscount).")\n");
+            $printer->selectPrintMode(Printer::MODE_FONT_A);
+          }else{
+            $printer->text($item->text."\n");
+          }
+          $printer->setEmphasis(false);
+          $printer->text(self::getAsStringkasirmenu("" , number_format($item->price), " x ".$item->qty,number_format($item->totalPrice))); // for 58mm Font A
         }
       }
-  
       $printer->text("================================================\n");
       /* Total */
       $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-      $printer->text(self::getAsStringkasirtotal("Total ", number_format($data->price), "Rp "));
-
-
-        
-          $printer->text(self::getAsStringkasirtotal($data->payment , number_format($data->paidprice), "Rp "));
-          $kembalian = $data->paidprice - $data->price;
-          $printer->text(self::getAsStringkasirtotal("Kembalian ", number_format($kembalian), "Rp "));
+      $printer->text(self::getAsStringkasirtotal("Sub Total ", number_format($data->price), "Rp "));
+      $gTotal = $data->price;
+      $kembalian = $data->paidprice;
+      if($data->discountprice){
+        $printer->text(self::getAsStringkasirtotal("Diskon ","-".number_format($data->discountprice), "Rp "));
+        $gTotal -= $data->discountprice;
+      }
+      $printer->selectPrintMode(Printer::MODE_FONT_A);
+      $printer->text("------------------------------------------------\n");
+      $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+      $printer->text(self::getAsStringkasirtotal("Grand Total ",number_format($gTotal), "Rp "));
+      $kembalian = $data->paidprice - $gTotal;
+      $printer->text(self::getAsStringkasirtotal($data->payment , number_format($data->paidprice), "Rp "));
+      $printer->selectPrintMode(Printer::MODE_FONT_A);
+      $printer->text("------------------------------------------------\n");
+      $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+      $printer->text(self::getAsStringkasirtotal("Kembalian ", number_format($kembalian), "Rp "));
       
 
       $printer->selectPrintMode();
@@ -170,6 +192,7 @@ class Cetak
       $printer->close();
 
     }catch(\Exception $e){
+      dd($e);
       $printer = false;
     }
   }
@@ -178,7 +201,9 @@ class Cetak
   {
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100, 2);
+      // $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100, 2);
+      $connector = null;
+      $connector = new WindowsPrintConnector("test2");
       $printer = new Printer($connector, $profile);
       $printer -> pulse();
       $printer->close();
@@ -195,7 +220,9 @@ class Cetak
   {
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100, 2);
+      // $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100, 2);
+      $connector = null;
+      $connector = new WindowsPrintConnector("test2");
       $printer = new Printer($connector, $profile);
       $printer->close();
       $respon['status'] = 'success';
@@ -223,20 +250,23 @@ class Cetak
 
   public static function getAsStringkasirmenu($name, $price, $qty, $currency)
   {
-    $rightCols = 8;
-    $width = 80;
-    $leftCols = 20;
-    $middle = 8;
-    $middle2 = 12;
+    $rightCols = 7;
+    $rupiah = 3;
+    // $width = 80;
+    $leftCols = 6;
+    $middle = 12;
+    $middle2 = 20;
 
     $left = str_pad($name, $leftCols);
 
-    $mid = str_pad($qty, $middle,' ', STR_PAD_LEFT);
+    $mid = str_pad($qty, $middle,' ', STR_PAD_RIGHT);
+
+    $rp = str_pad("Rp. ", $rupiah,' ', STR_PAD_RIGHT);
 
     $mid2 = str_pad($price, $middle2,' ', STR_PAD_LEFT);
 
     $right = str_pad($currency, $rightCols, ' ', STR_PAD_LEFT);
-    return "$left$mid2$mid$right\n";
+    return "$left$mid2$mid$rp$right\n";
   }
 
   public static function getAsStringkasirtotal($name, $price, $currency)

@@ -547,7 +547,7 @@ class OrderRepository
     $ui->orderpaymentmethod = $db->orderpaymentmethod ?? null;
     $ui->orderpaid = $db->orderpaid ?? null;
     $ui->orderpaidprice = $db->orderpaidprice ?? null;
-    $ui->orderpaidprice = $db->orderpaidprice ?? null;
+    $ui->orderdiscountprice = $db->orderdiscountprice ?? null;
     $ui->orderpaidremark = $db->orderpaidremark ?? null;
     $ui->ordervoid = $db->ordervoid ?? null;
     $ui->ordervoidedusername = $db->ordervoidedusername ?? null;
@@ -743,6 +743,7 @@ class OrderRepository
       $data->update([
         'orderpaymentmethod' => $inputs['orderpaymentmethod'],
         'orderpaidprice' => $inputs['orderpaidprice'],
+        'orderdiscountprice' => $inputs['orderdiscountprice'],
         'orderstatus' => 'PAID',
         'orderpaid' => '1',
         'orderpaidby' => $loginid,
@@ -818,7 +819,8 @@ class OrderRepository
           'orderprice',
           'orderdate',   
           'orderpaidprice', 
-          'orderpaymentmethod' 
+          'orderpaymentmethod',
+          'orderdiscountprice' 
         )->first();
         $order->boardnumber = null;
         $order->ordertype = 'Bungkus';
@@ -832,7 +834,8 @@ class OrderRepository
           'orderpaidprice', 
           'orderpaymentmethod', 
           DB::raw("case when ordertype = 'DINEIN' then 'Makan Ditempat' else 'Bungkus' end as ordertype"),
-          DB::raw("'No.' ||boardnumber || ' - Lantai ' || boardfloor as boardnumber")
+          DB::raw("'No.' ||boardnumber || ' - Lantai ' || boardfloor as boardnumber"),
+          'orderdiscountprice' 
         )->first();
       }
       // dd($order);
@@ -840,6 +843,7 @@ class OrderRepository
       $dataOrder->invoice = $order->orderinvoice;
       $dataOrder->price = $order->orderprice;
       $dataOrder->paidprice = $order->orderpaidprice;
+      $dataOrder->discountprice = $order->orderdiscountprice;
       $dataOrder->payment = $order->orderpaymentmethod;
       $dataOrder->date = Carbon::parse($order->orderdate)->format('d/m/Y H:i') ?? null;
       $dataOrder->orderType = $order->ordertype;
@@ -853,6 +857,10 @@ class OrderRepository
         $temp->qty = $sub->odqty;
         $temp->price = $sub->odprice;
         $temp->totalPrice = $sub->odtotalprice;
+        $temp->priceraw = $sub->odpriceraw;
+        $temp->totalPriceraw = $sub->odtotalpriceraw;
+        $temp->promodiscount = $sub->promodiscount;
+        $temp->promo = $sub->odispromo;
   
         array_push($dataOrder->detail, $temp);
       }
