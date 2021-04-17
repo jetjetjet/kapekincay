@@ -401,7 +401,7 @@ class OrderRepository
   {
     $ids = Array();
     foreach($details as $dt){
-      array_push($ids,$dt['id'] != null ? $dt['id'] :0);
+      array_push($ids,$dt->id != null ? $dt->id :0);
     }
     try{
       $data = OrderDetail::where('odactive', '1')
@@ -427,22 +427,22 @@ class OrderRepository
     // dd($details);
     $detRow = "";
     try{
-      foreach ($details as $key=>$dtl){
-        if (!isset($dtl['id'])){
-          if($dtl['odqty'] > 0){
+      foreach ($details as $dtl){
+        if (!isset($dtl->id)){
+          if($dtl->odqty > 0){
             $detRow = OrderDetail::create([
               'odorderid' => $idHeader,
-              'odmenuid' => $dtl['odmenuid'],
-              'odqty' => $dtl['odqty'],
-              'odprice' => $dtl['odprice'],
-              'odtotalprice' => ($dtl['odprice'] * $dtl['odqty']),
-              'odpriceraw' => $dtl['odpriceraw'],
-              'odtotalpriceraw' => ($dtl['odpriceraw'] * $dtl['odqty']),
-              'odremark' => $dtl['odremark'],
+              'odmenuid' => $dtl->odmenuid,
+              'odqty' => $dtl->odqty,
+              'odprice' => $dtl->odprice,
+              'odtotalprice' => ($dtl->odprice * $dtl->odqty),
+              'odpriceraw' => $dtl->odpriceraw,
+              'odtotalpriceraw' => ($dtl->odpriceraw * $dtl->odqty),
+              'odremark' => $dtl->odremark,
               'oddelivered' => '0',
-              'odindex' => $key,
-              'odispromo' => isset($dtl['odpromoid']) ? '1' : '0',
-              'odpromoid' => $dtl['odpromoid'] ?? null,
+              'odindex' => $dtl->index,
+              'odispromo' => isset($dtl->odpromoid) ? '1' : '0',
+              'odpromoid' => $dtl->odpromoid ?? null,
               'odactive' => '1',
               'odcreatedat' => now()->toDateTimeString(),
               'odcreatedby' => $loginid
@@ -456,33 +456,33 @@ class OrderRepository
           }
         } else {
           $detRow = OrderDetail::where('odactive', '1')
-            ->where('id', $dtl['id']);
-          if($dtl['odqty'] > 0){
+            ->where('id', $dtl->id);
+          if($dtl->odqty > 0){
             $detRow->update([
-              'odmenuid' => $dtl['odmenuid'],
-              'odqty' => $dtl['odqty'],
-              'odprice' => $dtl['odprice'],
-              'odtotalprice' => ($dtl['odprice'] * $dtl['odqty']),
-              'odpriceraw' => $dtl['odpriceraw'],
-              'odtotalpriceraw' => ($dtl['odpriceraw'] * $dtl['odqty']),
-              'odremark' => $dtl['odremark'],
-              'odindex' => $key,
-              'odispromo' => isset($dtl['odpromoid']) ? '1' : '0',
-              'odpromoid' => $dtl['odpromoid'] ?? null,
+              'odmenuid' => $dtl->odmenuid,
+              'odqty' => $dtl->odqty,
+              'odprice' => $dtl->odprice,
+              'odtotalprice' => ($dtl->odprice * $dtl->odqty),
+              'odpriceraw' => $dtl->odpriceraw,
+              'odtotalpriceraw' => ($dtl->odpriceraw * $dtl->odqty),
+              'odremark' => $dtl->odremark,
+              'odindex' => $dtl->index,
+              'odispromo' => isset($dtl->odpromoid) ? '1' : '0',
+              'odpromoid' => $dtl->odpromoid ?? null,
               'odmodifiedat' => now()->toDateTimeString(),
               'odmodifiedby' => $loginid
             ]);
           }else{
             $detRow->update([
-              'odmenuid' => $dtl['odmenuid'],
-              'odqty' => $dtl['odqty'],
-              'odprice' => $dtl['odprice'],
-              'odtotalprice' => ($dtl['odprice'] * $dtl['odqty']),
-              'odpriceraw' => $dtl['odpriceraw'],
-              'odtotalpriceraw' => ($dtl['odpriceraw'] * $dtl['odqty']),
-              'odispromo' => isset($dtl['odpromoid']) ? '1' : '0',
-              'odpromoid' => $dtl['odpromoid'] ?? null,
-              'odremark' => $dtl['odremark'],
+              'odmenuid' => $dtl->odmenuid,
+              'odqty' => $dtl->odqty,
+              'odprice' => $dtl->odprice,
+              'odtotalprice' => ($dtl->odprice * $dtl->odqty),
+              'odpriceraw' => $dtl->odpriceraw,
+              'odtotalpriceraw' => ($dtl->odpriceraw * $dtl->odqty),
+              'odispromo' => isset($dtl->odpromoid) ? '1' : '0',
+              'odpromoid' => $dtl->odpromoid ?? null,
+              'odremark' => $dtl->odremark,
               'odindex' => $key,
               'odactive' => '0',
               'odmodifiedat' => now()->toDateTimeString(),
@@ -678,8 +678,8 @@ class OrderRepository
   public static function deleteMenuOrder($respon, $id, $subId, $loginid)
   {
     $data = OrderDetail::where('odactive', '1')
-      ->where('odorderid', $subId)
-      ->where('id', $id)
+      ->where('odorderid', $id)
+      ->where('id', $subId)
       ->first();
 
     $cekDelete = false;
@@ -690,6 +690,13 @@ class OrderRepository
         'odmodifiedat' => now()->toDateTimeString(),
         'odmodifiedby' => $loginid
       ]);
+
+      $cekDelivered = OrderDetail::where('oddelivered', '0')->where('odactive', '1')->where('odorderid', $id)->first();
+      if($cekDelivered == null){
+        $updH = Order::where('orderactive', '1')
+          ->where('id', $id)
+          ->update(['orderstatus' => 'COMPLETED']);
+      }
 
       $cekDelete = true;
     }
