@@ -219,18 +219,22 @@
 <script>
   let payAndchange = function()
     {
+      let sPrice = $("#startPrice").val();
       let price = $("#afterPrice").val();   
       let pay = $('#bayar').val();
-      let change = Number(pay) - Number(price)
+      let diskon = $("#diskon").val();
+      let change = + Number(diskon) + (Number(pay) - Number(sPrice))
 
-      if(Number(pay) >= Number(price)){
+      if(Number(diskon) >= Number(sPrice) || Number(change) < 0){
+        $('#kembalian').html("Kembalian : <b class='float-right'>0</b>");
+        $('#drawer').attr('disabled', true);
+      }else if(Number(change) >= 0){
         $("#kembalian").html("Kembalian : <b class='float-right'>"+formatter.format(change)+'</b>');
         $('#drawer').removeAttr('disabled');
       } else {
         $('#kembalian').html("Kembalian : <b class='float-right'>0</b>");
         $('#drawer').attr('disabled', true);
       }
-      // console.log(price, pay, change )
     }
 
     let disChange = function()
@@ -242,6 +246,7 @@
       if(Number(sPrice)<Number(diskon)){
         $("#price").html("Total : <b class='float-right'>Error</b>");
         $("#afterPrice").val(Number(sPrice));
+        $('#drawer').attr('disabled', true);
       }else if(Number(diskon)){
         $("#price").html("Total : <b class='float-right'>"+formatter.format(discPrice)+"</b><h6><i class='float-right' style='color:#acb0c3'><s>"+formatter.format(sPrice)+"</s></i></h6>");
         $("#afterPrice").val(Number(discPrice));
@@ -255,7 +260,8 @@
           $("#afterPrice").val(Number(sPrice));
           $('#diskon').val(null)
         }
-      })    
+      })  
+      console.log(sPrice)  
     }
 
 

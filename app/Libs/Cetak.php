@@ -102,7 +102,7 @@ class Cetak
       $printer->setJustification(Printer::JUSTIFY_CENTER);
       // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
       $printer->text("Cafe&Resto\n");
-      $printer->text("SudahLuopa Gaming\n");
+      $printer->text("Hayyyysss\n");
       // // // gambar
       // $tux = EscposImage::load(public_path(self::getSetting()['logoApp']),true);     
       // $printer -> graphics($tux);
