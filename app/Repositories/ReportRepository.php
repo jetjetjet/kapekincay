@@ -28,6 +28,7 @@ class ReportRepository
       DB::raw("to_char(orderdate, 'DD-MM-YYYY') as tanggal"),       
       DB::raw("CASE WHEN orders.ordertype = 'DINEIN' THEN 'Makan ditempat' ELSE 'Bungkus' END as ordertypetext"), 
       'orderinvoice',
+      'orderdiscountprice',
       DB::raw("orderprice - coalesce(orderdiscountprice,0) as price"),
       DB::raw("CASE WHEN orders.orderstatus = 'PAID' THEN 'Lunas' WHEN orders.orderstatus = 'VOIDED' THEN 'Dibatalkan' ELSE 'Diproses' END as orderstatuscase"),
       'username',

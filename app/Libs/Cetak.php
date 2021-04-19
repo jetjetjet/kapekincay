@@ -104,11 +104,11 @@ class Cetak
       $printer = new Printer($connector, $profile);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
       // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-      $printer->text("Cafe&Resto\n");
-      $printer->text("Hayyyysss\n");
+      // $printer->text("Cafe&Resto\n");
+      // $printer->text("Hayyyysss\n");
       // // // gambar
-      // $tux = EscposImage::load(public_path(self::getSetting()['logoApp']),true);     
-      // $printer -> graphics($tux);
+      $tux = EscposImage::load(public_path(self::getSetting()['logoApp']),true);     
+      $printer -> graphics($tux);
       $printer -> feed();
       $printer->selectPrintMode();
       $printer->text(self::getSetting()['Alamat']."\n");
@@ -145,7 +145,7 @@ class Cetak
           if($item->promo){
             $printer->text($item->text);
             $printer->selectPrintMode(Printer::MODE_UNDERLINE);
-            $printer->text("(-".number_format($item->promodiscount).")\n");
+            $printer->text("(@".number_format($item->promodiscount).")\n");
             $printer->selectPrintMode(Printer::MODE_FONT_A);
           }else{
             $printer->text($item->text."\n");
@@ -197,7 +197,6 @@ class Cetak
       $printer->close();
 
     }catch(\Exception $e){
-      dd($e);
       $printer = false;
     }
   }
