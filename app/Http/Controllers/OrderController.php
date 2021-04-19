@@ -144,9 +144,10 @@ class OrderController extends Controller
 		$inputs = $request->all();
 
 		// Subs.
-		// $inputs['sub'] = $this->mapRowsX(isset($inputs['sub']) ? $inputs['sub'] : null);
+		$inputs['dtl'] = $this->mapRowsX(isset($inputs['dtl']) ? $inputs['dtl'] : null);
 		
 		$validator = validator::make($inputs, $rules);
+		// return redirect()->back()->withInput($inputs);
 
 		if ($validator->fails()){
 			return redirect()->back()->withErrors($validator)->withInput($inputs);

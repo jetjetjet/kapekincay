@@ -120,6 +120,9 @@ input[type=number] {
 @endsection
 
 @section('content-body')
+<?php
+  $subs = isset($data->id) ? $data->subOrder : old('dtl', []);
+?>
 <div class="widget-content widget-content-area br-4">
   <div class="col-xl-12 col-lg-12 col-md-12">
     <div class="statbox box box-shadow">
@@ -249,7 +252,7 @@ input[type=number] {
                     </tr>
                   </thead>
                   <tbody>
-                   @foreach ($data->subOrder as $sub)
+                   @foreach ($subs as $sub)
                     @include('Order.subOrder', Array('rowIndex' => $loop->index))
                    @endforeach
                   </tbody>
@@ -290,7 +293,7 @@ input[type=number] {
                 @endif
                 <?php 
                   $canSaveBtn = isset($data->id)
-                  ? $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'PROCEED' ? true : false
+                  ? $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'PROCEED' || $data->orderstatus == 'COMPLETED' ? true : false
                   : true 
                 ?>
                 @if(Perm::can(['order_simpan']) && $canSaveBtn)
@@ -635,6 +638,7 @@ input[type=number] {
       $row.find('[id^=dtl][id$="[odtotalprice]"]').html(formatter.format(tprice));
       $row.find('[name^=dtl][name$="[odtotalprice]"]').val(tprice);
       $row.find('[id^=dtl][id$="[odremark]"]').html(remark);
+      $row.find('[name^=dtl][name$="[odmenutext]"]').val(rowMenuText);
       $row.find('[name^=dtl][name$="[odmenuid]"]').val(rowId);
       $row.find('[name^=dtl][name$="[odpromoid]"]').val(rowPromoId);
       $row.find('[name^=dtl][name$="[odmenutext]"]').val(rowMenuText);
@@ -651,7 +655,7 @@ input[type=number] {
           validasi2 = $row.find('[name^=dtl][name$="[odprice]"]').val();
       
       if(idSub && validasi2){
-        gridDeleteSub("{{ url('order/hapus-menu') . '/' }}" + idSub + "/" + $('#id').val(),
+        gridDeleteSub("{{ url('order/hapus-menu') . '/' }}" + $('#id').val() + "/" + idSub,
           'Hapus Menu Pesanan', 
           'Apakah anda yakin ingin menghapus menu dari pesanan?', 
           function(data){
