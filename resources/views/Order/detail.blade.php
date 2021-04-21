@@ -1,6 +1,15 @@
 @extends('Layout.layout-form')
 
 @section('breadcumb')
+<style>
+ .table{
+  margin-bottom: 0 !important;
+ }
+
+ .table > thead > tr > th {
+  color: #212529;
+ }
+</style>
   <div class="title">
     <h3>Order</h3>
   </div>
@@ -11,6 +20,7 @@
 @endsection
 
 @section('content-form')
+<section class="grid">
   @if(isset($data->ordervoidedat))
     <div class="alert alert-danger" role="alert">
       <strong>Pesanan Dibatalkan!</strong>
@@ -21,148 +31,39 @@
         </ul>
     </div>
   @endif
-  <div class="widget-content widget-content-area br-6">
-    <div class="row">
-      <div id="flStackForm" class="col-lg-12 layout-spacing layout-top-spacing">
-        <div class="statbox">
-          <div class="widget-content">
-              @if($data->ordertype == 'DINEIN')
-                <div class="form-row">
-                  <div class='col-12'>
-                    <h3 style="color:#1b55e2"><b>{{$data->orderboardtext}}</b></h3>
-                  </div>
-                </div>
-              @endif
-              <hr class="mt-0 mb-3"/>
-              <div class="form-row">
-                <div class='col-md-2 col-sm-6 xs-6'>
-                  <h4>Nomor Pesanan</h4>
-                </div>
-                <div class='col-md-10 col-sm-6 xs-6'>
-                  <h4>: <b>{{$data->orderinvoice}}</b></h4>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class='col-md-2 col-sm-6 xs-6'>
-                  <h4>Tipe Pesanan </h4>
-                </div>
-                <div class='col-md-10 col-sm-6 xs-6'>
-                  <h4>: <b> {{$data->ordertype == 'DINEIN' ? 'Makan Ditempat' : 'Bungkus' }} </b></h4>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class='col-md-2 col-sm-6 xs-6'>
-                  <h4>Tgl. Pesanan</h4>
-                </div>
-                <div class='col-md-10 col-sm-6 xs-6'>
-                  <h4>: <b> {{$data->orderdate }} </b></h4>
-                </div>
-              </div>
-              @if(isset($data->orderpaiddate))
-                <div class="form-row">
-                  <div class='col-md-2 col-sm-6 xs-6'>
-                    <h4>Tgl. Pembayaran</h4>
-                  </div>
-                  <div class='col-md-10 col-sm-6 xs-6'>
-                    <h4>: <b> {{$data->orderpaiddate }} </b></h4>
-                  </div>
-                </div>
-              @endif
-              @if(isset($data->orderpaymentmethod))
-                <div class="form-row">
-                  <div class='col-md-2 col-sm-6 xs-6'>
-                    <h4>Tipe Pembayaran</h4>
-                  </div>
-                  <div class='col-md-10 col-sm-6 xs-6'>
-                    <h4>: <b> {{$data->orderpaymentmethod }} </b></h4>
-                  </div>
-                </div>
-              @endif
-              <hr class="mt-0 mb-0"/>
-              <section>
-                <div class="form-row">
-                  <div class="table-responsive">
-                    <h3 class="mt-2 mb-10" style="font-weight: 300; text-align: left; padding-left: 1.8rem;">Detail Pesanan</h3>
-                    <table id=grid class="table table-bordered mb-20">
-                        <thead>
-                          <th>Menu</th>
-                          <th>Qty</th>
-                          <th>Harga</th>
-                          <th>Promo</th>
-                          <th>Total</th>
-                          <th>Catatan</th>
-                          @if(!$data->orderpaid)
-                            <th>Status Pesanan</th>
-                          @endif
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <form id="orderMenuForm" method="post" novalidate action="{{url('/order/bayar')}}/{{$data->id}}">
-                      <div class="col-md-12">
-                        <div class="form-group col-md-3 float-left">
-                          @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')                                           
-                            <h4>Status Pesanan : <b>{{$data->orderstatuscase}}</b></h4>                     
-                          @elseif($data->orderstatus == 'COMPLETED'|| $data->ordertype == 'TAKEAWAY')
-                            <h4>Jenis Pembayaran</h4>
-                            <select class="form-control mousetrap" id="type" name="orderpaymentmethod">
-                              <option value="Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Tunai' ? ' selected' : '' }}> Tunai</option>
-                              <option value="Non-Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Non-Tunai' ? ' selected' : '' }}> Non-Tunai</option>
-                            </select>                     
-                          @endif
-                        </div>
-                        <div class="float-right col-md-3">
-                          <input type="hidden" id="afterPrice" value="{{$data->orderprice}}">
-                          <input type="hidden" id="startPrice" value="{{$data->orderprice}}">
-                          <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
-                          <input type="hidden" name="username" id="name" value="{{ session('username') }}" />
-                            @if(isset($data->orderdiscountprice))
-                            <h3 id="price">Total : <b class='float-right'>{{ number_format($data->orderprice - $data->orderdiscountprice,0)}}</b><h6><i class='float-right' style='color:#acb0c3'><s>{{ number_format($data->orderprice,0) }}</s></i></h6> </b></h3>
-                            @else
-                            <h3 id="price">Total :<b class="float-right"> {{ number_format($data->orderprice,0) }}</b></h3>
-                            @endif
-                            @if($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID')
-
-                            @elseif($data->orderstatus == 'COMPLETED' || $data->ordertype == 'TAKEAWAY')
-                              <label class="new-control new-checkbox checkbox-primary">
-                                  <input id="cekDisc" type="checkbox" class="new-control-input">
-                                  <span class="new-control-indicator"></span>Diskon
-                              </label>                                  
-                              <input type="number" class="form-control text-right mousetrap d-none" required name="orderdiscountprice" id="diskon" placeholder="Diskon">  
-                              <input autofocus type="number" class="form-control text-right mousetrap mb-2" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang">                                              
-                              <h3 id="kembalian">Kembalian : <b class="float-right">0</b></h3>                       
-                            @else      
-                            <input type="hidden" id="bayar" value="-1" />
-                            @endif          
-                        </div>
-                      </div>
-                    </form>
-                    <form id="miniform" method="post" novalidate action="{{url('/order/bayar/cetak')}}/{{$data->id}}">
-                      <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
-                      <input type="hidden" name="username" id="name" value="{{ session('username') }}" />
-                    </form>
-                  </div>
-                </div>
-              </section>
-              
-          </div>
-          <div id="fixbot" class="row fixed-bottom">
-            <div class="col-sm-12 ">
-              <div class="widget-content widget-content-area" style="padding:10px">
-                <div class="float-right">
-                  <a href="{{url('/order/meja/view')}}" id="back" type="button" class="btn btn-warning mt-2">Kembali</a>
-                  @if($data->orderstatus == 'PAID')
-                    <button id="print" class="btn btn-success mt-2">Cetak</button>
-                  @endif
-                  @if(!($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID'))
-                    @if($data->ordertype == 'TAKEAWAY' || Perm::can(['order_pelayan']))
-                    <a href="{{ url('/order').'/'.$data->id }}" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Pesanan</a>
-                    @endif
-                    <!-- <a href="" type="button" id="drawer" class="btn btn-success mt-2">Buka Laci</a> -->
-                    @if(Perm::can(['order_pembayaran']))
-                      <button disabled id="drawer" class="btn btn-primary mt-2">&nbsp;&nbsp;&nbsp;Bayar&nbsp;&nbsp;&nbsp;</button>
-                    @endif
-                  @endif
+  
+  @if($data->orderstatus == 'ADDITIONAL' || $data->ordertype == 'PROCEED')
+    <div class="alert alert-warning" role="warning">
+      <strong>Pesanan Masih Diproses!</strong>
+        <ul>
+          <li>Pembayaran tidak bisa dilanjutkan jika masih ada pesanan yang masih diproses.</li>
+        </ul>
+    </div>
+  @endif
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="widget-content widget-content-area br-6">
+        <div class="row">
+          <div id="flStackForm" class="col-lg-12 layout-spacing layout-top-spacing pb-1">
+            <div class="statbox">
+              <div class="widget-content">
+                <div class="table-responsive">
+                  <h3 class="mt-2 mb-10" style="font-weight: 300; text-align: left; padding-left: 1.8rem;">Detail Pesanan</h3>
+                  <table id=grid class="table table-bordered mb-20">
+                    <thead>
+                      <th>Menu</th>
+                      <th>Qty</th>
+                      <th>Harga</th>
+                      <th>Promo</th>
+                      <th>Total</th>
+                      <th>Catatan</th>
+                      @if(!$data->orderpaid)
+                        <th>Status Pesanan</th>
+                      @endif
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -170,7 +71,182 @@
         </div>
       </div>
     </div>
+    <div class="col-sm-4">
+      <div class="widget-content widget-content-area br-6">
+          <div class="row">
+            <div id="flStackForm" class="col-lg-12 layout-spacing layout-top-spacing pb-1">
+              <div class="statbox">
+                <div class="widget-content">
+                  @if($data->ordertype == 'DINEIN')
+                    <div class="form-row">
+                      <div class='col-12'>
+                        <h3 style="color:#1b55e2"><b>{{$data->orderboardtext}}</b></h3>
+                      </div>
+                    </div>
+                  @endif
+                  <div class="form-row">
+                    <div class='col-12'>
+                      <table class="table table-borderless">
+                        <thead>
+                          <tr>
+                            <th style="width: 55% !important;" class="p-1 w-auto dtl">Nomor Pesanan</th>
+                            <th class="col p-1 text-right dtl">{{$data->orderinvoice}}</th>
+                          </tr>
+                          <tr>
+                            <th style="width: 55% !important;" class="p-1 w-auto">Jenis Pesanan</th>
+                            <th class="col p-1 text-right">{{$data->ordertype == 'DINEIN' ? 'Makan Ditempat' : 'Bungkus' }}</th>
+                          </tr>
+                          <tr>
+                            <th style="width: 55% !important;" class="p-1 w-auto">Tgl. Pesanan</th>
+                            <th class="col p-1 text-right">{{$data->orderdate }}</th>
+                          </tr>
+                          @if(isset($data->orderpaiddate))
+                            <tr>
+                              <th style="width: 55% !important;" class="p-1 w-auto">Tgl. Pembayaran</th>
+                              <th class="col p-1 text-right">{{$data->orderpaiddate }}</th>
+                            </tr>
+                          @endif
+                          @if(isset($data->orderpaymentmethod))
+                            <tr>
+                              <th style="width: 55% !important;" class="p-1 w-auto">Jenis Pembayaran</th>
+                              <th class="col p-1 text-right">{{$data->orderpaymentmethod }}</th>
+                            </tr>
+                          @endif
+                        </thead>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class='col-12'>
+                      <table class="table table-borderless" style="background-color: linen;">
+                        <thead>
+                          <tr>
+                            <th style="padding-left: 0.3rem; width: 55% !important;" class="py-0 my-0">Total</th>
+                            <th class="py-0 my-0 text-right">
+                              <h4><b class='float-right'><p class="my-0" id="price">{{ number_format($data->orderprice,0) }}</p></b></h4>
+                            </th>
+                          </tr>
+                          <tr>
+                            <th style="padding-left: 0.3rem; width: 55% !important;" class="py-0 my-0">Diskon</th>
+                            <th class="py-0 my-0 text-right">
+                              <?php 
+                                $lblDiskon = isset($data->orderdiscountprice) 
+                                  ? number_format($data->orderdiscountprice,0)
+                                  : "-";
+                              ?>
+                              <h4><b class='float-right'><p class="my-0" id="lblDiskon">{{ $lblDiskon }}</p></b></h4>
+                              <!-- <input type="number" class="form-control text-right mousetrap" value="" name="orderdiscountprice" id="diskon" placeholder="Diskon"> -->
+                            </th>
+                          </tr>
+                          <tr>
+                            <th style="padding-left: 0.3rem; width: 55% !important;" class="py-0 my-0">Gran Total</th>
+                            <th class="py-0 my-0 text-right">
+                              <?php 
+                                $lblGranTotal = isset($data->orderdiscountprice) 
+                                  ? number_format($data->orderprice - $data->orderdiscountprice,0)
+                                  : number_format($data->orderprice,0);
+                              ?>
+                              <h4><b class='float-right'><p id="lblGranTotal" class="my-0">{{ $lblGranTotal }}</p></b></h4>
+                            </th>
+                          </tr>
+                          <tr class="border-top">
+                              <?php 
+                                $lblPaid = isset($data->orderpaid) 
+                                  ? number_format($data->orderpaidprice,0)
+                                  : 0;
+                              ?>
+                            <th style="padding-left: 0.3rem; width: 55% !important;" class="py-0 my-0">Bayar</th>
+                            <th class="py-0 my-0 text-right">
+                              <h4><b class='float-right'><p class="my-0" id="lblBayar">{{ $lblPaid }}</p></b></h4>
+                            </th>
+                          </tr>
+                          <tr>
+                            <th style="padding-left: 0.3rem; width: 55% !important;" class="py-0 my-0">Kembalian</th>
+                            <th class="py-0 my-0 text-right">
+                              <?php 
+                                $lblKembalian = $data->orderpaid
+                                  ? isset($data->orderdiscountprice)
+                                    ? number_format($data->orderpaidprice - ($data->orderprice - $data->orderdiscountprice),0)
+                                    : number_format($data->orderpaidprice - $data->orderprice)
+                                  : 0;
+                              ?>
+                              <h4><b class='float-right'><p class="my-0" id="lblKembalian">{{ $lblKembalian }}</p></b></h4>
+                            </th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                  </div>
+                  <form id="orderMenuForm" method="post" novalidate action="{{url('/order/bayar')}}/{{$data->id}}">
+                    <input type="hidden" id="afterPrice" value="{{$data->orderprice}}">
+                    <input type="hidden" id="startPrice" value="{{$data->orderprice}}">
+                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="username" id="name" value="{{ session('username') }}" />
+                    @if($data->orderstatus == 'COMPLETED' || $data->ordertype == 'TAKEAWAY')
+                      <div class="form-row mt-2">
+                        <div class='col-md-5 col-sm-6 xs-6 mt-2'>
+                          <h4>Jenis Pembayaran</h4>
+                        </div>
+                        <div class='col-md-7 col-sm-6 xs-6'>
+                          <select class="form-control mousetrap" id="type" name="orderpaymentmethod">
+                            <option value="Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Tunai' ? ' selected' : '' }}> Tunai</option>
+                            <option value="Non-Tunai" {{ old('orderpaymentmethod', $data->orderpaymentmethod) == 'Non-Tunai' ? ' selected' : '' }}> Non-Tunai</option>
+                          </select>  
+                        </div>
+                        <div class='col-md-5 col-sm-6 xs-6 mt-2'>
+                          <h4>Diskon</h4>
+                        </div>
+                        <div class='col-md-7 col-sm-6 xs-6 mt-1'>
+                          <input type="number" class="form-control text-right mousetrap" required name="orderdiscountprice" id="diskon" placeholder="Diskon">
+                        </div>
+                        <div class='col-md-5 col-sm-6 xs-6 mt-2'>
+                          <h4>Nominal Bayar</h4>
+                        </div>
+                        <div class='col-md-7 col-sm-6 xs-6 mt-1'>
+                          <input autofocus type="number" class="form-control text-right mousetrap mb-2" required name="orderpaidprice" id="bayar" placeholder="Jumlah Uang"> 
+                        </div>
+                      </div>
+                    @else
+                      <input type="hidden" id="bayar" value="-1" />
+                    @endif
+                  </form>
+                  <form id="miniform" method="post" novalidate action="{{url('/order/bayar/cetak')}}/{{$data->id}}">
+                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="username" id="name" value="{{ session('username') }}" />
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
   </div>
+
+  <!-- TOmbol Bawah -->
+  <div class="statbox">
+    <div id="fixbot" class="row fixed-bottom">
+      <div class="col-sm-12 ">
+        <div class="widget-content widget-content-area" style="padding:10px">
+          <div class="float-right">
+            <a href="{{url('/order/meja/view')}}" id="back" type="button" class="btn btn-warning mt-2">Kembali</a>
+            @if($data->orderstatus == 'PAID')
+              <button id="print" class="btn btn-success mt-2">Cetak</button>
+            @endif
+            @if(!($data->orderstatus == 'VOIDED' || $data->orderstatus == 'PAID'))
+              @if($data->ordertype == 'TAKEAWAY' || Perm::can(['order_pelayan']))
+              <a href="{{ url('/order').'/'.$data->id }}" type="button" id="headerOrder" class="btn btn-success mt-2">Ubah Pesanan</a>
+              @endif
+              <!-- <a href="" type="button" id="drawer" class="btn btn-success mt-2">Buka Laci</a> -->
+              @if(Perm::can(['order_pembayaran']))
+                <button disabled id="drawer" class="btn btn-primary mt-2">&nbsp;&nbsp;&nbsp;Bayar&nbsp;&nbsp;&nbsp;</button>
+              @endif
+            @endif
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <div class="modal fade" data-keyboard="false" id="konfirm">
   <div class="modal-dialog modal-dialog-centered">
@@ -224,15 +300,18 @@
       let pay = $('#bayar').val();
       let diskon = $("#diskon").val();
       let change = + Number(diskon) + (Number(pay) - Number(sPrice))
-
+      
       if(Number(diskon) >= Number(sPrice) || Number(change) < 0){
-        $('#kembalian').html("Kembalian : <b class='float-right'>0</b>");
+        $('#lblKembalian').html(0);
+        $('#lblBayar').html(formatter.format(pay));
         $('#drawer').attr('disabled', true);
       }else if(Number(change) >= 0){
-        $("#kembalian").html("Kembalian : <b class='float-right'>"+formatter.format(change)+'</b>');
+        $("#lblKembalian").html(formatter.format(change));
+        $('#lblBayar').html(formatter.format(pay));
         $('#drawer').removeAttr('disabled');
       } else {
-        $('#kembalian').html("Kembalian : <b class='float-right'>0</b>");
+        $('#lblKembalian').html(0);
+        $('#lblBayar').html(0);
         $('#drawer').attr('disabled', true);
       }
     }
@@ -243,39 +322,24 @@
       let diskon = $("#diskon").val();
       let discPrice = Number(sPrice) - Number(diskon)
 
-      if(Number(sPrice)<Number(diskon)){
-        $("#price").html("Total : <b class='float-right'>Error</b>");
-        $("#afterPrice").val(Number(sPrice));
+      if( Number(sPrice) < Number(diskon) ){
+        $("#lblGranTotal").html("Error");
+        $("#lblDiskon").html(formatter.format(diskon));
+        // $("#afterPrice").val(Number(sPrice));
         $('#drawer').attr('disabled', true);
-      }else if(Number(diskon)){
-        $("#price").html("Total : <b class='float-right'>"+formatter.format(discPrice)+"</b><h6><i class='float-right' style='color:#acb0c3'><s>"+formatter.format(sPrice)+"</s></i></h6>");
-        $("#afterPrice").val(Number(discPrice));
+      } else if(Number(diskon)){
+        $("#lblGranTotal").html(formatter.format(discPrice));
+        $("#lblDiskon").html(formatter.format(diskon));
+        // $("#afterPrice").val(Number(discPrice));
       } else {
-        $("#price").html("Total : <b class='float-right'>"+formatter.format(sPrice)+'</b>');
-        $("#afterPrice").val(Number(sPrice));
-      }
-      $('#cekDisc').change(function() { 
-        if (!this.checked) {
-          $("#price").html("Total : <b class='float-right'>"+formatter.format(sPrice)+'</b>');
-          $("#afterPrice").val(Number(sPrice));
-          $('#diskon').val(null)
-        }
-      })  
-      console.log(sPrice)  
+        $("#lblGranTotal").html(formatter.format(sPrice));
+        $("#lblDiskon").html("-");
+        // $("#afterPrice").val(Number(sPrice));
+      }  
     }
 
 
   $(document).ready(function (){
-    $('#cekDisc').change(function() { 
-      if (this.checked) {
-        $('#diskon').removeClass('d-none');
-        $('#diskon').focus()
-      } else {
-        $('#diskon').addClass('d-none');
-        disChange();
-        $('#bayar').focus()
-      }
-    });
     //hotkey
       Mousetrap.bind('enter', function() {
         var price = $("#afterPrice").val();
@@ -465,8 +529,14 @@
           data: 'odremark',
         },
         @if(!$data->orderpaid)
-        { 
-          data: 'oddelivertext',
+        {
+          data: null,
+          render: function(data, type, full, meta){
+            let textDeliv = data.oddelivertext == "Sedang Diproses"
+              ? '<span class="badge badge-danger"> Sedang Diproses </span>'
+              : '<span class="badge badge-info"> Sudah Diantar </span>';
+            return textDeliv;
+          }
         }
         @endif
       ]

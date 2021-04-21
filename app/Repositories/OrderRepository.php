@@ -189,6 +189,7 @@ class OrderRepository
           DB::raw("to_char(orderpaidat, 'dd/mm/yyyy HH24:MI') as orderpaiddate"),
           'orderprice',
           'orderpaid',
+          'orderpaidprice',
           'orderstatus',
           'orderdetail',
           'orderpaymentmethod',
