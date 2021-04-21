@@ -70,7 +70,11 @@
             <td>{{$row['tanggal']}}</td>
             <td><a href="{{url('/order/detail')}}/{{$row['id']}}">{{$row['orderinvoice']}}</a></td>
             <td>{{$row['ordertypetext']}}</td>
-            <td>{{number_format($row['price'])}}</td>
+            @if(isset($row['orderdiscountprice']))
+              <td>{{number_format($row['price'])}}<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-dollar-sign p-1 br-6 mb-1"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path><title>Potongan Harga {{number_format($row->orderdiscountprice)}}</title></svg></td>
+            @else 
+              <td>{{number_format($row['price'])}}</td>
+            @endif
             <td>{{$row['orderstatuscase']}}</td>
             <td>{{$row['username']}}</td>
           </tr>

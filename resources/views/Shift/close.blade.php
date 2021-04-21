@@ -60,7 +60,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">Rp </span>
                   </div>
-                  <input type="number" name="shiftendcash" value="{{ old('shiftendcash', $data->shiftendcash) }}" class="form-control text-right" id="pricing" placeholder="Harga" required>
+                  <input type="number" name="shiftendcash" value="{{ old('shiftendcash', $data->shiftendcash) }}" class="form-control text-right" id="pricing" placeholder="Kertas" required>
                 </div>
               </div>
               <div class="col-md-4 mb-3">
@@ -69,7 +69,7 @@
                   <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">Rp </span>
                   </div>
-                  <input type="number" name="shiftendcoin" value="{{ old('shiftendcoin', $data->shiftendcoin) }}" class="form-control text-right" id="pricing" placeholder="Harga">
+                  <input type="number" name="shiftendcoin" value="{{ old('shiftendcoin', $data->shiftendcoin) }}" class="form-control text-right" id="pricing" placeholder="Koin">
                 </div>
               </div> 
               <div class="col-md-12 mb-3">
