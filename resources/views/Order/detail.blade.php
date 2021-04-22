@@ -41,7 +41,7 @@
     </div>
   @endif
   <div class="row">
-    <div class="col-sm-8">
+    <div class="col-lg-8 col-sm-12">
       <div class="widget-content widget-content-area br-6">
         <div class="row">
           <div id="flStackForm" class="col-lg-12 layout-spacing layout-top-spacing pb-1">
@@ -71,7 +71,7 @@
         </div>
       </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-lg-4 col-sm-12">
       <div class="widget-content widget-content-area br-6">
           <div class="row">
             <div id="flStackForm" class="col-lg-12 layout-spacing layout-top-spacing pb-1">
