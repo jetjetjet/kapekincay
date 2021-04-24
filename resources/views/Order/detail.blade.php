@@ -32,7 +32,7 @@
     </div>
   @endif
   
-  @if($data->orderstatus == 'ADDITIONAL' || $data->ordertype == 'PROCEED')
+  @if(($data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'PROCEED')  && $data->ordertype == 'DINEIN')
     <div class="alert alert-warning" role="warning">
       <strong>Pesanan Masih Diproses!</strong>
         <ul>
@@ -139,13 +139,18 @@
                             </th>
                           </tr>
                           <tr>
-                            <th style="padding-left: 0.3rem; width: 55% !important;" class="py-0 my-0">Gran Total</th>
+                            <th style="padding-left: 0.3rem; width: 55% !important;" class="py-0 my-0">Grand Total</th>
                             <th class="py-0 my-0 text-right">
                               <?php 
                                 $lblGranTotal = isset($data->orderdiscountprice) 
                                   ? number_format($data->orderprice - $data->orderdiscountprice,0)
                                   : number_format($data->orderprice,0);
+
+                                $hdnGranTotal = isset($data->orderdiscountprice) 
+                                ? $data->orderprice - $data->orderdiscountprice
+                                : $data->orderprice;
                               ?>
+                              <input type="hidden" id="hdnGranTotal" value="{{$hdnGranTotal}}"/>
                               <h4><b class='float-right'><p id="lblGranTotal" class="my-0">{{ $lblGranTotal }}</p></b></h4>
                             </th>
                           </tr>
@@ -182,7 +187,7 @@
                     <input type="hidden" id="startPrice" value="{{$data->orderprice}}">
                     <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
                     <input type="hidden" name="username" id="name" value="{{ session('username') }}" />
-                    @if($data->orderstatus == 'COMPLETED' || $data->ordertype == 'TAKEAWAY')
+                    @if($data->orderstatus == 'COMPLETED' || ($data->ordertype == 'TAKEAWAY' && !($data->orderstatus == 'PAID' || $data->orderstatus == 'VOIDED')))
                       <div class="form-row mt-2">
                         <div class='col-md-5 col-sm-6 xs-6 mt-2'>
                           <h4>Jenis Pembayaran</h4>
@@ -342,7 +347,7 @@
   $(document).ready(function (){
     //hotkey
       Mousetrap.bind('enter', function() {
-        var price = $("#afterPrice").val();
+        var price = $("#hdnGranTotal").val();
         var pay = $('#bayar').val();
         if(Number(pay) == -1){
           alert('Pesanan Belum selesai')
@@ -353,9 +358,6 @@
         }else{
           $('#drawer').trigger('click')
         }
-      });
-      Mousetrap.bind('/', function() {
-        $('#cekDisc').trigger('click');
       });
     //endhotkey
     //hotkeymodal
@@ -383,7 +385,7 @@
           Mousetrap.unbind('backspace')
             $('#bayar').focus()
             Mousetrap.bind('enter', function() {
-              var price = $("#afterPrice").val();
+              var price = $("#hdnGranTotal").val();
               var pay = $('#bayar').val();
               if(Number(pay) == 0){
                 alert('Masukkan jumlah uang')
@@ -399,7 +401,7 @@
     //Cetak
 
     $('#drawer').on('click', function () {
-      var price = $("#afterPrice").val();
+      var price = $("#hdnGranTotal").val();
       var pay = $('#bayar').val();
       var change = Number(pay) - Number(price)
       Swal.fire('Sedang Diproses')
