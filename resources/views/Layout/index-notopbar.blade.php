@@ -65,7 +65,16 @@
   </style>
 </head>
 <body class="sidebar-noneoverflow" data-spy="scroll" data-target="#navSection" data-offset="100">
+  <div class="mx-auto d-none pt-2 spinHotkeys" style="width: 200px;"> 
+    <div class="spinner-border" role="status">
+      <span style="margin: 2 0 0 0" class="sr-only">Loading...</span>
+    </div>
+    <!-- <span class="badge mb-2 outline-badge-dark"> Proses... </span> -->
+  </div>
   <div class="main-container" id="container">
+    <input type='hidden' id='bukalaci' value="{{url('/open/drawerauth')}}">
+    <input type='hidden' id='ping' value="{{url('/cek/printer')}}">
+    <input type='hidden' id='board' value="{{url('/order/meja/view')}}">
     <div id="content" class="main-content">
       <div class="layout-px-spacing">
         @yield('content-breadcumb')
