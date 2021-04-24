@@ -663,7 +663,11 @@ input[type=number] {
               sweetAlert('Data Dihapus', data.messages[0], 'success')
               window.setTimeout(() => {
                 $row.remove();
-                caclculatedOrder()        
+                caclculatedOrder()
+                let notif = localStorage.getItem("notif") ?? false;
+                if(notif){
+                  ws.send('Ok')
+                }     
               }, 0);
             } else {
               sweetAlert('Kesalahan!', data.messages[0], 'error')
@@ -690,7 +694,8 @@ input[type=number] {
             if(notif){
               ws.send('Ok')
             }
-            location.reload();
+            // location.reload();
+            $row.remove();
           }
       });
     })

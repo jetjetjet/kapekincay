@@ -34,11 +34,9 @@ class MenuCategoryController extends Controller
 
 	public function search(Request $request)
   {
-    if ($request->has('q')) {
-      $cari = $request->q;
-      $data = MenuCategoryRepository::search($cari);
-      
-      return response()->json($data);
-    }
+		$cari = $request->has('q') ? $request->q : null;
+		$data = MenuCategoryRepository::search($cari);
+		
+		return response()->json($data);
   }
 }

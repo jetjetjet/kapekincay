@@ -48,6 +48,7 @@ class MenuController extends Controller
 		$respon = Helpers::$responses;
 		$rules = array(
 			'menuname' => 'required',
+			'menumcid' => 'required',
 			'menuprice' => 'required|integer'
 		);
 
@@ -116,7 +117,7 @@ class MenuController extends Controller
 
 	public function searchMenu(Request $request)
   {
-		$cari = $request->q ?? "";
+		$cari = $request->has('q') ? $request->q : null;
 		$data = MenuRepository::search($cari);
 		
 		return response()->json($data);

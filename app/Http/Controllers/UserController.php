@@ -84,15 +84,16 @@ class UserController extends Controller
 	{
 		$respon = Helpers::$responses;
 		$inputs = $request->all();
-		
 		$rules = array(
 			'username' => 'required',
+			'userfullname' => 'required'
 		);
 		
 		if(!isset($inputs['id'])){
 			$rules = array(
 				'username' => 'required|unique:users,username',
-				'userpassword' => 'required'
+				'userpassword' => 'required',
+				'userfullname' => 'required'
 			);
 		}
 
