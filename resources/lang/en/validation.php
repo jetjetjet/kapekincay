@@ -155,7 +155,9 @@ return [
         'promodiscount' => 'Potongan Promo',
         'orderboardid' => 'Nomor Meja',
         'ordertype' => 'Jenis Pesanan',
-        'DINEIN' => 'Makan Ditempat'
+        'DINEIN' => 'Makan Ditempat',
+        'userfullname' => 'Nama Lengkap',
+        'menumcid' => 'Kategori Menu'
     ],
 
     'values' => [

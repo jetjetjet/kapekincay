@@ -166,7 +166,7 @@ input[type=number] {
                     >
                       <div class="category-tile">
                         <img width="120" height="120" src="{{ isset($mkn->menuimg) ? asset($mkn->menuimg) : asset('/public/images/fnb.jpg') }}" onerror="this.onerror=null;this.src='{{asset('/images/fnb.jpg')}}';" >
-                        <span>{{$mkn['menuname']}} {{$mkn['menuavaible'] != true ? " - Stok Kosong" : ""}}</span>
+                        <span>{{$mkn['menuname']}} <p class="text-danger">{{$mkn['menuavaible'] != true ? " - Stok Kosong" : ""}}</p></span>
                       </div>
                     </a>
                   </div>
@@ -663,7 +663,11 @@ input[type=number] {
               sweetAlert('Data Dihapus', data.messages[0], 'success')
               window.setTimeout(() => {
                 $row.remove();
-                caclculatedOrder()        
+                caclculatedOrder()
+                let notif = localStorage.getItem("notif") ?? false;
+                if(notif){
+                  ws.send('Ok')
+                }     
               }, 0);
             } else {
               sweetAlert('Kesalahan!', data.messages[0], 'error')
@@ -690,7 +694,8 @@ input[type=number] {
             if(notif){
               ws.send('Ok')
             }
-            location.reload();
+            // location.reload();
+            $row.remove();
           }
       });
     })
