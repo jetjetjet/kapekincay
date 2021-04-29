@@ -105,6 +105,9 @@
           "sSearch": '<i data-feather="search"></i>',
           "sSearchPlaceholder": "Cari...",
           "sLengthMenu": "Hasil :  _MENU_",
+          "sInfoEmpty": "Tidak ada data ditemukan",
+          "sInfoFiltered": "(dari jumlah total _MAX_ data)",
+          "sZeroRecords": "Tidak ada data ditemukan"
         },
         "processing": true,
         "serverSide": true,
