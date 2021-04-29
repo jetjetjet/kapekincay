@@ -5,8 +5,6 @@
 
   <link href="{{ url('/') }}/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
   <link href="{{ url('/') }}/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
-  <link href="{{ url('/') }}/plugins/flatpickr/flatpickr.css" rel="stylesheet" type="text/css">
-  <link href="{{ url('/') }}/plugins/flatpickr/custom-flatpickr.css" rel="stylesheet" type="text/css">
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/select2/select2.min.css">
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/assets/css/forms/theme-checkbox-radio.css">
@@ -74,12 +72,9 @@
 
 @section('js-body')
   <script src="{{ url('/') }}/assets/js/scrollspyNav.js"></script>
-  <script src="{{ url('/') }}/plugins/flatpickr/flatpickr.js"></script>
-  <script src="{{ url('/') }}/plugins/flatpickr/custom-flatpickr.js"></script>
   <script src="{{ url('/') }}/plugins/select2/select2.min.js"></script>
   <script src="{{ url('/') }}/plugins/select2/custom-select2.js"></script>
   <script src="{{ url('/') }}/plugins/file-upload/file-upload-with-preview.min.js"></script>
-
   <script src="{{ url('/') }}/assets/js/ie11fix/fn.fix-padStart.js"></script>
   @yield('js-form')
 @endsection
