@@ -26,6 +26,12 @@ class OrderController extends Controller
 		return view('Order.index');
 	}
 
+	
+	public function indexBungkus()
+	{
+		return view('Order.indexBungkus');
+	}
+
 	public function indexCustomer(Request $request)
 	{
 		$respon = Helpers::$responses;
@@ -35,14 +41,16 @@ class OrderController extends Controller
 
   public function getGridaway(Request $request)
 	{
-		$results = OrderRepository::gridtakeaway();
+		$filter = Helpers::getFilter($request);
+		$results = OrderRepository::gridTakeAway($filter);
 		
 		return response()->json($results);
 	}
 
 	public function getGridin(Request $request)
 	{
-		$results = OrderRepository::griddinein();
+		$filter = Helpers::getFilter($request);
+		$results = OrderRepository::gridDineIn($filter);
 		
 		return response()->json($results);
 	}

@@ -134,38 +134,122 @@ class OrderRepository
     return $data;
   }
 
-  public static function gridtakeaway()
+  public static function gridTakeAway($filter)
   {
-    return Order::where('orderactive', '1')
-    ->where('ordertype', 'TAKEAWAY')
-    ->select(
-      'id',
-      'orderinvoice',  
-      // 'ordercustname', 
-      DB::raw("CASE WHEN orders.ordertype = 'DINEIN' THEN 'Makan ditempat' ELSE 'Bungkus' END as ordertypetext"), 
-      'orderdate',
-      'orderprice', 
-      DB::raw("CASE WHEN orders.orderstatus = 'PROCEED' THEN 'Diproses' WHEN orders.orderstatus = 'COMPLETED' THEN 'Selesai' WHEN orders.orderstatus = 'PAID' THEN 'Lunas' WHEN orders.orderstatus = 'VOIDED' THEN 'Batal' WHEN orders.orderstatus = 'ADDITIONAL' THEN 'Proses Tambah' END as orderstatuscase")
-      ) 
-    ->get();
+    $q = Order::where('orderactive', '1')
+      ->where('ordertype', 'TAKEAWAY')
+      ->select(
+        'id',
+        'orderinvoice',  
+        // 'ordercustname', 
+        DB::raw("CASE WHEN orders.ordertype = 'DINEIN' THEN 'Makan ditempat' ELSE 'Bungkus' END as ordertypetext"), 
+        'orderdate',
+        'orderprice', 
+        DB::raw("CASE WHEN orders.orderstatus = 'PROCEED' THEN 'Diproses' WHEN orders.orderstatus = 'COMPLETED' THEN 'Selesai' WHEN orders.orderstatus = 'PAID' THEN 'Lunas' WHEN orders.orderstatus = 'VOIDED' THEN 'Batal' WHEN orders.orderstatus = 'ADDITIONAL' THEN 'Proses Tambah' END as orderstatuscase")
+      );
+
+    $count = $q->count();
+
+    if(!empty($filter->filterDate)){
+      $q->whereRaw("ordercreatedat::date between '". $filter->filterDate->from . "'::date and '" . $filter->filterDate->to . "'::date");
+    }
+    
+    //Filter Kolom.
+    if (!empty($filter->filterText) && !empty($filter->filterColumn)){
+      // if (empty($filterText)) continue;
+      $trimmedText = trim($filter->filterText);
+      $filterCol = $filter->filterColumn;
+      if($filterCol == "orderprice"){
+        $filterCol = "cast(orderprice as varchar)";
+      }
+
+      $text = strtolower(implode('%', explode(' ', $trimmedText)));
+      $q->whereRaw('upper('.$filterCol .') like upper(?)', [ '%' . $text . '%']);
+    }
+
+    $countFiltered = $q->count();
+    // Order.
+    if (!empty($filter->sortColumns)){
+      foreach ($filter->sortColumns as $value){
+        $field = $value->field;
+        if (empty($field)) continue;
+        $q->orderBy($field, $value->dir);
+      }
+    } else {
+      $q->orderBy('ordercreatedat', 'DESC');
+    }
+
+    // Paging.
+    $q->skip($filter->pageOffset)
+      ->take($filter->pageLimit);
+
+    $grid = new \stdClass();
+    $grid->recordsTotal = $count;
+    $grid->recordsFiltered = $countFiltered;
+    $grid->data = $q->get();
+
+    return $grid;
   }
  
-  public static function griddinein()
+  public static function gridDineIn($filter)
   {
-    return Order::where('orderactive', '1')
-    ->where('ordertype', 'DINEIN')
-    ->join('boards', 'orderboardid' ,'=', 'boards.id')
-    ->select(
-      'orders.id',
-      'orderinvoice', 
-      DB::raw("concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor) as orderboardtext"),
-      // 'ordercustname', 
-      DB::raw("CASE WHEN orders.ordertype = 'DINEIN' THEN 'Makan ditempat' ELSE 'Bungkus' END as ordertypetext"), 
-      'orderdate',
-      'orderprice', 
-      DB::raw("CASE WHEN orders.orderstatus = 'PROCEED' THEN 'Diproses' WHEN orders.orderstatus = 'COMPLETED' THEN 'Selesai' WHEN orders.orderstatus = 'PAID' THEN 'Lunas' WHEN orders.orderstatus = 'VOIDED' THEN 'Batal' WHEN orders.orderstatus = 'ADDITIONAL' THEN 'Proses Tambah' END as orderstatuscase")
-      ) 
-    ->get();
+    $q = Order::where('orderactive', '1')
+      ->where('ordertype', 'DINEIN')
+      ->join('boards', 'orderboardid' ,'=', 'boards.id')
+      ->select(
+        'orders.id',
+        'orderinvoice', 
+        DB::raw("concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor) as orderboardtext"),
+        // 'ordercustname', 
+        DB::raw("CASE WHEN orders.ordertype = 'DINEIN' THEN 'Makan ditempat' ELSE 'Bungkus' END as ordertypetext"), 
+        'orderdate',
+        'orderprice', 
+        DB::raw("CASE WHEN orders.orderstatus = 'PROCEED' THEN 'Diproses' WHEN orders.orderstatus = 'COMPLETED' THEN 'Selesai' WHEN orders.orderstatus = 'PAID' THEN 'Lunas' WHEN orders.orderstatus = 'VOIDED' THEN 'Batal' WHEN orders.orderstatus = 'ADDITIONAL' THEN 'Proses Tambah' END as orderstatuscase")
+      );
+
+      $count = $q->count();
+
+      if(!empty($filter->filterDate)){
+        $q->whereRaw("ordercreatedat::date between '". $filter->filterDate->from . "'::date and '" . $filter->filterDate->to . "'::date");
+      }
+      
+      //Filter Kolom.
+      if (!empty($filter->filterText) && !empty($filter->filterColumn)){
+        // if (empty($filterText)) continue;
+        $trimmedText = trim($filter->filterText);
+        $filterCol = $filter->filterColumn;
+        if($filterCol == "orderboard"){
+          $filterCol = "concat('Meja No. ', boardnumber , ' - Lantai ', boardfloor)";
+        } else if($filterCol == "orderprice"){
+          $filterCol = "cast(orderprice as varchar)";
+        }
+
+        $text = strtolower(implode('%', explode(' ', $trimmedText)));
+        $q->whereRaw('upper('.$filterCol .') like upper(?)', [ '%' . $text . '%']);
+      }
+  
+      $countFiltered = $q->count();
+      // Order.
+      if (!empty($filter->sortColumns)){
+        foreach ($filter->sortColumns as $value){
+          $field = $value->field;
+          if (empty($field)) continue;
+          $q->orderBy($field, $value->dir);
+        }
+      } else {
+        $q->orderBy('ordercreatedat', 'DESC');
+      }
+  
+      // Paging.
+      $q->skip($filter->pageOffset)
+        ->take($filter->pageLimit);
+  
+      $grid = new \stdClass();
+      $grid->recordsTotal = $count;
+      $grid->recordsFiltered = $countFiltered;
+      $grid->data = $q->get();
+  
+      return $grid;
   }
 
   public static function getOrder($respon, $id)

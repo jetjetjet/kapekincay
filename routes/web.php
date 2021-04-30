@@ -87,6 +87,7 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/setting/simpan', [SettingController::class, 'save'])->middleware('can:pengaturan_edit');
   
   Route::get('/order/index', [OrderController::class, 'index'])->middleware('can:order_lihat');
+  Route::get('/order/index-bungkus', [OrderController::class, 'indexBungkus'])->middleware('can:order_lihat');
   Route::get('/order/index/grid/takeaway', [OrderController::class, 'getGridaway'])->middleware('can:order_lihat');
   Route::get('/order/index/grid/dinein', [OrderController::class, 'getGridin'])->middleware('can:order_lihat');
   Route::get('/order/grid/bungkus', [ OrderController::class, 'orderBungkus' ])->middleware('can:order_lihatBungkus');
