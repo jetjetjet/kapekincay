@@ -2,7 +2,7 @@
 
 @section('breadcumb')
   <div class="title">
-    <h3>Laporan Transaksi</h3>
+    <h3>Laporan Shift</h3>
   </div>
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="javascript:void(0);">Laporan</a></li>
@@ -98,20 +98,25 @@
         searchInputPlaceholder: 'Search options',
       });
       
-      flatpickr($('#end'), {
-        dateFormat: "d-m-Y",
-        altinput: true,
-        altformat: "Y-m-d",
-        maxDate: new Date().fp_incr(1),
-        defaultDate: "{{ request('enddate') != null ? request('enddate') : Carbon\Carbon::tomorrow()->format('d-m-Y')}}"
-      });
-
       flatpickr($('#start'), {
         dateFormat: "d-m-Y",
         altinput: true,
         altformat: "Y-m-d",
         maxDate: "today",
-        defaultDate: "{{ request('startdate') != null ? request('startdate') : 'today' }}"
+        defaultDate: "{{ request('startdate') != null ? request('startdate') : Carbon\Carbon::now()->startOfMonth()->format('d-m-Y') }}",
+        onChange: function (selectedDates, dateStr, instance) {
+          endPicker.set("minDate", dateStr);
+          $('#end').removeAttr('disabled')
+        }
+      });
+
+      let endPicker = flatpickr($('#end'), {
+        dateFormat: "d-m-Y",
+        altinput: true,
+        altformat: "Y-m-d",
+        minDate: "{{request('startdate') != null ? request('startdate') : Carbon\Carbon::now()->startOfMonth()->format('d-m-Y') }}",
+        maxDate: "{{Carbon\Carbon::now()->endOfMonth()->format('d-m-Y')}}",
+        defaultDate: "{{ request('enddate') != null ? request('enddate') : Carbon\Carbon::now()->endOfMonth()->format('d-m-Y')}}"
       });
 
       $('#formsub').on('submit', function(){

@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\Order;
+use App\Models\Menu;
 use App\Models\User;
 use App\Models\Expense;
 use DB;
@@ -149,6 +150,28 @@ class ReportRepository
 
     $data = new \StdClass();
     $data->data = $getRow;
+    return $data;
+  }
+
+  public static function getMenuReport($inputs)
+  {
+    $detailOrder = DB::table('orderdetail')
+      ->where('odactive', '1')
+      ->whereRaw("odcreatedat::date between '" . $inputs['startdate'] . "' and '" . $inputs['enddate'] . "'")
+      ->groupBy('odmenuid')
+      ->select(
+        DB::raw(" sum(odqty) as totalorder"),
+        'odmenuid');
+      
+    $data = Menu::joinSub($detailOrder, 'od', function ($join) {
+        $join->on('menus.id', '=', 'od.odmenuid');})
+      ->select(
+        'menuname',
+        'menuprice',
+        'od.totalorder',
+        DB::raw('od.totalorder*menuprice as grantotal'))
+      ->orderBy('od.totalorder', 'DESC')->get();
+
     return $data;
   }
 

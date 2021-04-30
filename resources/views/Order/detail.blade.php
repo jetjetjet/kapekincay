@@ -145,12 +145,7 @@
                                 $lblGranTotal = isset($data->orderdiscountprice) 
                                   ? number_format($data->orderprice - $data->orderdiscountprice,0)
                                   : number_format($data->orderprice,0);
-
-                                $hdnGranTotal = isset($data->orderdiscountprice) 
-                                ? $data->orderprice - $data->orderdiscountprice
-                                : $data->orderprice;
                               ?>
-                              <input type="hidden" id="hdnGranTotal" value="{{$hdnGranTotal}}"/>
                               <h4><b class='float-right'><p id="lblGranTotal" class="my-0">{{ $lblGranTotal }}</p></b></h4>
                             </th>
                           </tr>
@@ -347,13 +342,15 @@
   $(document).ready(function (){
     //hotkey
       Mousetrap.bind('enter', function() {
-        var price = $("#hdnGranTotal").val();
-        var pay = $('#bayar').val();
+        let sPrice = $("#startPrice").val(); 
+        let pay = $('#bayar').val();
+        let diskon = $("#diskon").val();
+        let change = Number(sPrice) - Number(diskon)
         if(Number(pay) == -1){
           alert('Pesanan Belum selesai')
         }else if(Number(pay) == 0){
           alert('Masukkan jumlah uang')
-        }else if(Number(pay) < Number(price)){
+        }else if(Number(pay) < Number(change)){
           alert('Jumlah Uang tidak mencukupi')
         }else{
           $('#drawer').trigger('click')
@@ -385,11 +382,13 @@
           Mousetrap.unbind('backspace')
             $('#bayar').focus()
             Mousetrap.bind('enter', function() {
-              var price = $("#hdnGranTotal").val();
-              var pay = $('#bayar').val();
+              let sPrice = $("#startPrice").val(); 
+              let pay = $('#bayar').val();
+              let diskon = $("#diskon").val();
+              let change = Number(sPrice) - Number(diskon)
               if(Number(pay) == 0){
                 alert('Masukkan jumlah uang')
-              }else if(Number(pay) < Number(price)){
+              }else if(Number(pay) < Number(change)){
                 alert('Jumlah Uang tidak mencukupi')
               }else{
                 $('#drawer').trigger('click')

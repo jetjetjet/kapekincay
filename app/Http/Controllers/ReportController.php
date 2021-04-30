@@ -58,4 +58,16 @@ class ReportController extends Controller
 		// dd($data);
 		return view('Report.shiftReport')->with('data', $data)->with('user', $user);
 	}
+
+	public function menuReport(Request $request)
+	{
+		$inputs = $request->all();
+		// dd($inputs);
+		$data = new \stdClass;
+		if($inputs){
+			$data = ReportRepository::getMenuReport($inputs);
+		}
+		// dd($data);
+		return view('Report.menuRep')->with('data', $data);
+	}
 }
