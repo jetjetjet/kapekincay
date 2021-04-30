@@ -290,7 +290,7 @@ input[type=number] {
                 @endif
                 <?php 
                   $canSaveBtn = isset($data->id)
-                  ? $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'PROCEED' ? true : false
+                  ? $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'PROCEED' || $data->orderstatus == 'COMPLETED' ? true : false
                   : true 
                 ?>
                 @if(Perm::can(['order_simpan']) && $canSaveBtn)
