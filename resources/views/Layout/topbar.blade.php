@@ -59,6 +59,9 @@
 									@if(Perm::can(['menu_lihat']))
 										<li><a href="{{ url('/menu') }}">Menu</a></li>
 									@endif
+									@if(Perm::can(['promo_lihat']))
+										<li><a href="{{ url('/promo') }}">Promo</a></li>
+									@endif
 								</ul>
 							</li>
 						@endif
@@ -77,10 +80,13 @@
 								</a>
 								<ul class="collapse submenu list-unstyled animated fadeInUp" id="transaction" data-parent="#topAccordion">
 									@if(Perm::can(['order_lihat']))
-										<li><a href="{{ url('/order/meja/view') }}">Pesanan</a></li>
+										<li><a href="{{ url('/order/meja/view') }}">Meja Pesanan</a></li>
 									@endif
 									@if(Perm::can(['order_lihat']))
-										<li><a href="{{ url('/order/index') }}">Daftar Pesanan</a></li>
+										<li><a href="{{ url('/order/index') }}">Daftar Pesanan Ditempat</a></li>
+									@endif
+									@if(Perm::can(['order_pembayaran']))
+										<li><a href="{{ url('/order/index-bungkus') }}">Daftar Pesanan bungkus</a></li>
 									@endif
 									@if(Perm::can(['pengeluaran_lihat']))
 										<li><a href="{{ url('/pengeluaran') }}">Pengeluaran</a></li>
@@ -119,13 +125,16 @@
 								</a>
 								<ul class="collapse submenu list-unstyled animated fadeInUp" id="report" data-parent="#topAccordion">
 								@if(Perm::can(['laporan_lihat']))
-										<li><a href="{{ url('/laporan/pengeluaran') }}">Laporan Pengeluaran</a></li>
+										<li><a href="{{ url('/laporan-pengeluaran') }}">Laporan Pengeluaran</a></li>
 									@endif
 									@if(Perm::can(['laporan_lihat']))
 										<li><a href="{{ url('/laporan') }}">Laporan Transaksi</a></li>
 									@endif
 									@if(Perm::can(['laporan_lihat']))
 										<li><a href="{{ url('/laporan-shift') }}">Laporan Shift</a></li>
+									@endif
+									@if(Perm::can(['laporan_lihat']))
+										<li><a href="{{ url('/laporan-menu') }}">Laporan Menu</a></li>
 									@endif
 									@if(Perm::can(['log_lihat']))
 										<li><a href="{{ url('/log') }}">Log</a></li>

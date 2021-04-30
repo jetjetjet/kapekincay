@@ -205,6 +205,7 @@ class MenuRepository
       })
       ->where('mcactive', '1')
       ->where('menuactive', '1')
+      ->orderBy('menuname', 'ASC')
       ->select(
         'menus.id',
         'menuname', 

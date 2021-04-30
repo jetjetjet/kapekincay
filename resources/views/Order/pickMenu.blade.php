@@ -120,6 +120,9 @@ input[type=number] {
 @endsection
 
 @section('content-body')
+<?php
+  $subs = isset($data->id) ? $data->subOrder : old('dtl', []);
+?>
 <div class="widget-content widget-content-area br-4">
   <div class="col-xl-12 col-lg-12 col-md-12">
     <div class="statbox box box-shadow">
@@ -163,7 +166,7 @@ input[type=number] {
                     >
                       <div class="category-tile">
                         <img width="120" height="120" src="{{ isset($mkn->menuimg) ? asset($mkn->menuimg) : asset('/public/images/fnb.jpg') }}" onerror="this.onerror=null;this.src='{{asset('/images/fnb.jpg')}}';" >
-                        <span>{{$mkn['menuname']}} {{$mkn['menuavaible'] != true ? " - Stok Kosong" : ""}}</span>
+                        <span>{{$mkn['menuname']}} <p class="text-danger">{{$mkn['menuavaible'] != true ? " - Stok Kosong" : ""}}</p></span>
                       </div>
                     </a>
                   </div>
@@ -249,7 +252,7 @@ input[type=number] {
                     </tr>
                   </thead>
                   <tbody>
-                   @foreach ($data->subOrder as $sub)
+                   @foreach ($subs as $sub)
                     @include('Order.subOrder', Array('rowIndex' => $loop->index))
                    @endforeach
                   </tbody>
@@ -635,6 +638,7 @@ input[type=number] {
       $row.find('[id^=dtl][id$="[odtotalprice]"]').html(formatter.format(tprice));
       $row.find('[name^=dtl][name$="[odtotalprice]"]').val(tprice);
       $row.find('[id^=dtl][id$="[odremark]"]').html(remark);
+      $row.find('[name^=dtl][name$="[odmenutext]"]').val(rowMenuText);
       $row.find('[name^=dtl][name$="[odmenuid]"]').val(rowId);
       $row.find('[name^=dtl][name$="[odpromoid]"]').val(rowPromoId);
       $row.find('[name^=dtl][name$="[odmenutext]"]').val(rowMenuText);
@@ -651,7 +655,7 @@ input[type=number] {
           validasi2 = $row.find('[name^=dtl][name$="[odprice]"]').val();
       
       if(idSub && validasi2){
-        gridDeleteSub("{{ url('order/hapus-menu') . '/' }}" + idSub + "/" + $('#id').val(),
+        gridDeleteSub("{{ url('order/hapus-menu') . '/' }}" + $('#id').val() + "/" + idSub,
           'Hapus Menu Pesanan', 
           'Apakah anda yakin ingin menghapus menu dari pesanan?', 
           function(data){
@@ -659,7 +663,11 @@ input[type=number] {
               sweetAlert('Data Dihapus', data.messages[0], 'success')
               window.setTimeout(() => {
                 $row.remove();
-                caclculatedOrder()        
+                caclculatedOrder()
+                let notif = localStorage.getItem("notif") ?? false;
+                if(notif){
+                  ws.send('Ok')
+                }     
               }, 0);
             } else {
               sweetAlert('Kesalahan!', data.messages[0], 'error')
@@ -686,7 +694,8 @@ input[type=number] {
             if(notif){
               ws.send('Ok')
             }
-            location.reload();
+            // location.reload();
+            $row.remove();
           }
       });
     })

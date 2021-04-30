@@ -25,6 +25,7 @@ class ReportController extends Controller
 		}else{
 			$data->sub['total'] = '0';
 		}
+		// dd($data);
 		return view('Report.index')->with('data', $data)->with('user', $user);
 	}
 
@@ -51,8 +52,22 @@ class ReportController extends Controller
 		$user = ReportRepository::getName();
 		if($inputs){
 			$data = ReportRepository::getShiftReport($inputs);
+		}else{
+			$data->sub['total'] = '0';
 		}
 		// dd($data);
 		return view('Report.shiftReport')->with('data', $data)->with('user', $user);
+	}
+
+	public function menuReport(Request $request)
+	{
+		$inputs = $request->all();
+		// dd($inputs);
+		$data = new \stdClass;
+		if($inputs){
+			$data = ReportRepository::getMenuReport($inputs);
+		}
+		// dd($data);
+		return view('Report.menuRep')->with('data', $data);
 	}
 }

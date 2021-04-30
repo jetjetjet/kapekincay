@@ -20,7 +20,7 @@ class ExpenseRepository
       if($id){
         $respon['data'] = Expense::where('expenseactive', '1')
         ->where('id', $id)
-        ->select('id', 'expensename', 'expenseprice', DB::raw("to_char(expensedate, 'DD-MM-YYYY')as expensedateraw"), 'expensedetail', 'expenseactive', 'expenseexecutedat', 'expenseexecutedby')
+        ->select('id', 'expensename', 'expenseprice', DB::raw("to_char(expensedate, 'DD-MM-YYYY')as expensedateraw"), 'expensedetail', 'expenseactive', 'expenseexecutedat', 'expenseexecutedby','expensedate')
         ->first();
   
         if($respon['data'] == null){

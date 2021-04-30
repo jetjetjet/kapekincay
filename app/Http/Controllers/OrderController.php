@@ -26,6 +26,12 @@ class OrderController extends Controller
 		return view('Order.index');
 	}
 
+	
+	public function indexBungkus()
+	{
+		return view('Order.indexBungkus');
+	}
+
 	public function indexCustomer(Request $request)
 	{
 		$respon = Helpers::$responses;
@@ -35,14 +41,16 @@ class OrderController extends Controller
 
   public function getGridaway(Request $request)
 	{
-		$results = OrderRepository::gridtakeaway();
+		$filter = Helpers::getFilter($request);
+		$results = OrderRepository::gridTakeAway($filter);
 		
 		return response()->json($results);
 	}
 
 	public function getGridin(Request $request)
 	{
-		$results = OrderRepository::griddinein();
+		$filter = Helpers::getFilter($request);
+		$results = OrderRepository::gridDineIn($filter);
 		
 		return response()->json($results);
 	}
@@ -137,16 +145,17 @@ class OrderController extends Controller
   {
     $respon = Helpers::$responses;
 		$rules = array(
-			// 'orderboardid' => 'required',
-			'ordertype' => 'required'
+			'ordertype' => 'required',
+			'orderboardid' => 'required_if:ordertype,DINEIN'
 		);
 		
 		$inputs = $request->all();
 
 		// Subs.
-		// $inputs['sub'] = $this->mapRowsX(isset($inputs['sub']) ? $inputs['sub'] : null);
+		$inputs['dtl'] = $this->mapRowsX(isset($inputs['dtl']) ? $inputs['dtl'] : null);
 		
 		$validator = validator::make($inputs, $rules);
+		// return redirect()->back()->withInput($inputs);
 
 		if ($validator->fails()){
 			return redirect()->back()->withErrors($validator)->withInput($inputs);

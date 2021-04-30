@@ -87,7 +87,7 @@
       altformat: "Y-m-d",
       dateFormat: "d-m-Y",
       maxDate: "today",
-      defaultDate: "today"
+      defaultDate: "{{ $data->expensedate != null ? $data->expensedateraw : 'today' }}"
     });
 
 

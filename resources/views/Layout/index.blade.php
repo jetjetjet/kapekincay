@@ -18,12 +18,25 @@
     <link href="{{ url('/') }}/plugins/sweetalerts/sweetalert2.min.css" rel="stylesheet" type="text/css" />
     <link href="{{ url('/') }}/plugins/sweetalerts/sweetalert.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/assets/css/elements/alert.css">
+    <link href="{{ url('/') }}/plugins/flatpickr/flatpickr.css" rel="stylesheet" type="text/css">
+    <link href="{{ url('/') }}/plugins/flatpickr/custom-flatpickr.css" rel="stylesheet" type="text/css">
     <!-- <link href="{{ url('/') }}/assets/css/tables/table-basic.css" rel="stylesheet" type="text/css" /> -->
     <!-- END GLOBAL MANDATORY STYLES -->
     <style>
       .btnTransparent{
         border:none; 
         background:transparent
+      }
+            /* Chrome, Safari, Edge, Opera */
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      input[type=number] {
+        -moz-appearance: textfield;
       }
     </style>
   	<!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
@@ -158,6 +171,8 @@
     <script src="{{ url('/') }}/js/cafe.js"></script>
     <script src="{{ url('/') }}/plugins/font-icons/feather/feather.min.js"></script>
     <script src="{{ url('/') }}/plugins/sweetalerts/sweetalert2.min.js"></script>
+    <script src="{{ url('/') }}/plugins/flatpickr/flatpickr.js"></script>
+    <script src="{{ url('/') }}/plugins/flatpickr/custom-flatpickr.js"></script>
     <script>
       const pMaster = getIPWS();
       let ws = new WebSocket('ws://'+ pMaster +':8910/kapews');

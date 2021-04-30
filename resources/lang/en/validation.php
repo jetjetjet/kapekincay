@@ -98,7 +98,7 @@ return [
     'present' => 'The :attribute field must be present.',
     'regex' => 'The :attribute format is invalid.',
     'required' => ':attribute tidak boleh kosong.',
-    'required_if' => 'The :attribute field is required when :other is :value.',
+    'required_if' => ':attribute harus diisi jika :other :value.',
     'required_unless' => 'The :attribute field is required unless :other is in :values.',
     'required_with' => 'The :attribute field is required when :values is present.',
     'required_with_all' => 'The :attribute field is required when :values are present.',
@@ -155,6 +155,15 @@ return [
         'promodiscount' => 'Potongan Promo',
         'orderboardid' => 'Nomor Meja',
         'ordertype' => 'Jenis Pesanan',
+        'DINEIN' => 'Makan Ditempat',
+        'userfullname' => 'Nama Lengkap',
+        'menumcid' => 'Kategori Menu'
+    ],
+
+    'values' => [
+        'ordertype' => [
+            'DINEIN' => 'Makan Ditempat'
+        ],
     ],
 
 ];
