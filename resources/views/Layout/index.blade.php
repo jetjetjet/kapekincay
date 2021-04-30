@@ -6,7 +6,7 @@
     <meta name="ipws" content="{{ session('ipserver') }}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
-    <title>{{ session('cafeName') ?? '' }} v.0.0.1</title>
+    <title>{{ session('cafeName') ?? '' }} v.1.0.1</title>
     <link rel="icon" type="image/x-icon" href="{{ url('/') }}/assets/img/favicon.ico"/>
     <link href="{{ url('/') }}/assets/css/loader.css" rel="stylesheet" type="text/css" />
     <script src="{{ url('/') }}/assets/js/loader.js"></script>
