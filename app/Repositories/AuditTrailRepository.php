@@ -17,10 +17,10 @@ class AuditTrailRepository
         'messages',
         'createdat');
     //Filter Tgl
-    $q->whereRaw("createdat::date between '". $filter->filterDate->from . "'::date and '" . $filter->filterDate->to . "'::date");
     
     $count = $q->count();
-
+    $q->whereRaw("createdat::date between '". $filter->filterDate->from . "'::date and '" . $filter->filterDate->to . "'::date");
+    
     //Filter Kolom.
     if (!empty($filter->filterText) && !empty($filter->filterColumn)){
       // if (empty($filterText)) continue;
