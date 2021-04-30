@@ -192,14 +192,15 @@
       form.addEventListener('submit', function(event) {
         
         let subRowMinus = true
-        let mPrice = $targetContainer.find('[name^=sub][name$="[menuPromo]"]')
+        let mPrice = $targetContainer.find('[name^=sub][name$="[menupromo]"]')
         mPrice.each(function(index, item){
           let rowPromo = $(this).val();
-
-          if(Number(rowPromo) < 0)
-            subRowMinus = false
+          if(Number(rowPromo) < 0){
+            subRowMinus = false;
+            return;
+          }
         })
-
+        
         if(!subRowMinus){
           $('.subAlert').removeClass('d-none')
           $('html, body').animate({scrollTop:0}, '300');

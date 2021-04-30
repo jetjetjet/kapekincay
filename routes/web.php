@@ -53,8 +53,10 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/jabatan/hapus/{id}', [RoleController::class, 'deleteById'])->middleware('can:jabatan_hapus');
 
   Route::get('/laporan', [ReportController::class, 'index'])->middleware('can:laporan_lihat');
-  Route::get('/laporan/pengeluaran', [ReportController::class, 'exIndex'])->middleware('can:laporan_lihat');
+  Route::get('/laporan-pengeluaran', [ReportController::class, 'exIndex'])->middleware('can:laporan_lihat');
   Route::get('/laporan-shift', [ReportController::class, 'shiftReport'])->middleware('can:laporan_lihat');
+  Route::get('/laporan-menu', [ReportController::class, 'menuReport'])->middleware('can:laporan_lihat');
+  
   
   Route::get('/meja', [BoardController::class, 'index'])->middleware('can:meja_lihat');
   Route::get('/meja/grid', [BoardController::class, 'getLists'])->middleware('can:meja_lihat');
@@ -117,12 +119,12 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/profile/simpan/{id}', [UserController::class, 'saveProfile']);
   Route::post('/profile/ubah-password/{id}', [UserController::class, 'changeProfilePassword']);
 
-  // Route::get('/promo', [PromoController::class, 'index'])->middleware('can:promo_lihat,promo_simpan');
-  // Route::get('/promo/grid', [PromoController::class, 'getLists'])->middleware('can:promo_lihat');
-  // Route::get('/promo/detail/{id?}', [PromoController::class, 'getById'])->middleware('can:promo_lihat');
-  // Route::post('/promo/simpan', [PromoController::class, 'save'])->middleware('can:promo_simpan');
-  // Route::post('/promo/hapus/{id}', [PromoController::class, 'deleteById'])->middleware('can:promo_hapus');
-  // Route::post('/promo/hapus-sub/{idSub}', [PromoController::class, 'deleteSub'])->middleware('can:promo_hapus');
+  Route::get('/promo', [PromoController::class, 'index'])->middleware('can:promo_lihat,promo_simpan');
+  Route::get('/promo/grid', [PromoController::class, 'getLists'])->middleware('can:promo_lihat');
+  Route::get('/promo/detail/{id?}', [PromoController::class, 'getById'])->middleware('can:promo_lihat');
+  Route::post('/promo/simpan', [PromoController::class, 'save'])->middleware('can:promo_simpan');
+  Route::post('/promo/hapus/{id}', [PromoController::class, 'deleteById'])->middleware('can:promo_hapus');
+  Route::post('/promo/hapus-sub/{idSub}', [PromoController::class, 'deleteSub'])->middleware('can:promo_hapus');
   
   Route::get('/shift', [ShiftController::class, 'index'])->middleware('can:shift_lihat');
   Route::get('/shift/grid', [ShiftController::class, 'getLists'])->middleware('can:shift_lihat');

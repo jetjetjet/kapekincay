@@ -185,15 +185,18 @@ class OrderRepository
           DB::raw("case when ordertype = 'DINEIN' then 'Makan Ditempat' else 'Bungkus' end as ordertypetext"),
           'orderboardid',
           'ordertype',
-          'orderdate',
+          DB::raw("to_char(orderdate, 'dd/mm/yyyy HH24:MI') as orderdate"),
+          DB::raw("to_char(orderpaidat, 'dd/mm/yyyy HH24:MI') as orderpaiddate"),
           'orderprice',
           'orderpaid',
+          'orderpaidprice',
           'orderstatus',
           'orderdetail',
           'orderpaymentmethod',
           'ordervoidedat',
           'ordervoidreason',
           'ordervoidedby',
+          'orderdiscountprice',
           'uvoid.username as ordervoidedusername',
           DB::raw("CASE WHEN orders.orderstatus = 'PROCEED' THEN 'Diproses' WHEN orders.orderstatus = 'COMPLETED' THEN 'Selesai' WHEN orders.orderstatus = 'PAID' THEN 'Lunas' WHEN orders.orderstatus = 'VOIDED' THEN 'Batal' WHEN orders.orderstatus = 'ADDITIONAL' THEN 'Proses Tambah' END as orderstatuscase")
         )->first();
@@ -399,7 +402,7 @@ class OrderRepository
   {
     $ids = Array();
     foreach($details as $dt){
-      array_push($ids,$dt['id'] != null ? $dt['id'] :0);
+      array_push($ids,$dt->id != null ? $dt->id :0);
     }
     try{
       $data = OrderDetail::where('odactive', '1')
@@ -425,22 +428,22 @@ class OrderRepository
     // dd($details);
     $detRow = "";
     try{
-      foreach ($details as $key=>$dtl){
-        if (!isset($dtl['id'])){
-          if($dtl['odqty'] > 0){
+      foreach ($details as $dtl){
+        if (!isset($dtl->id)){
+          if($dtl->odqty > 0){
             $detRow = OrderDetail::create([
               'odorderid' => $idHeader,
-              'odmenuid' => $dtl['odmenuid'],
-              'odqty' => $dtl['odqty'],
-              'odprice' => $dtl['odprice'],
-              'odtotalprice' => ($dtl['odprice'] * $dtl['odqty']),
-              'odpriceraw' => $dtl['odpriceraw'],
-              'odtotalpriceraw' => ($dtl['odpriceraw'] * $dtl['odqty']),
-              'odremark' => $dtl['odremark'],
+              'odmenuid' => $dtl->odmenuid,
+              'odqty' => $dtl->odqty,
+              'odprice' => $dtl->odprice,
+              'odtotalprice' => ($dtl->odprice * $dtl->odqty),
+              'odpriceraw' => $dtl->odpriceraw,
+              'odtotalpriceraw' => ($dtl->odpriceraw * $dtl->odqty),
+              'odremark' => $dtl->odremark,
               'oddelivered' => '0',
-              'odindex' => $key,
-              'odispromo' => isset($dtl['odpromoid']) ? '1' : '0',
-              'odpromoid' => $dtl['odpromoid'] ?? null,
+              'odindex' => $dtl->index,
+              'odispromo' => isset($dtl->odpromoid) ? '1' : '0',
+              'odpromoid' => $dtl->odpromoid ?? null,
               'odactive' => '1',
               'odcreatedat' => now()->toDateTimeString(),
               'odcreatedby' => $loginid
@@ -454,33 +457,33 @@ class OrderRepository
           }
         } else {
           $detRow = OrderDetail::where('odactive', '1')
-            ->where('id', $dtl['id']);
-          if($dtl['odqty'] > 0){
+            ->where('id', $dtl->id);
+          if($dtl->odqty > 0){
             $detRow->update([
-              'odmenuid' => $dtl['odmenuid'],
-              'odqty' => $dtl['odqty'],
-              'odprice' => $dtl['odprice'],
-              'odtotalprice' => ($dtl['odprice'] * $dtl['odqty']),
-              'odpriceraw' => $dtl['odpriceraw'],
-              'odtotalpriceraw' => ($dtl['odpriceraw'] * $dtl['odqty']),
-              'odremark' => $dtl['odremark'],
-              'odindex' => $key,
-              'odispromo' => isset($dtl['odpromoid']) ? '1' : '0',
-              'odpromoid' => $dtl['odpromoid'] ?? null,
+              'odmenuid' => $dtl->odmenuid,
+              'odqty' => $dtl->odqty,
+              'odprice' => $dtl->odprice,
+              'odtotalprice' => ($dtl->odprice * $dtl->odqty),
+              'odpriceraw' => $dtl->odpriceraw,
+              'odtotalpriceraw' => ($dtl->odpriceraw * $dtl->odqty),
+              'odremark' => $dtl->odremark,
+              'odindex' => $dtl->index,
+              'odispromo' => isset($dtl->odpromoid) ? '1' : '0',
+              'odpromoid' => $dtl->odpromoid ?? null,
               'odmodifiedat' => now()->toDateTimeString(),
               'odmodifiedby' => $loginid
             ]);
           }else{
             $detRow->update([
-              'odmenuid' => $dtl['odmenuid'],
-              'odqty' => $dtl['odqty'],
-              'odprice' => $dtl['odprice'],
-              'odtotalprice' => ($dtl['odprice'] * $dtl['odqty']),
-              'odpriceraw' => $dtl['odpriceraw'],
-              'odtotalpriceraw' => ($dtl['odpriceraw'] * $dtl['odqty']),
-              'odispromo' => isset($dtl['odpromoid']) ? '1' : '0',
-              'odpromoid' => $dtl['odpromoid'] ?? null,
-              'odremark' => $dtl['odremark'],
+              'odmenuid' => $dtl->odmenuid,
+              'odqty' => $dtl->odqty,
+              'odprice' => $dtl->odprice,
+              'odtotalprice' => ($dtl->odprice * $dtl->odqty),
+              'odpriceraw' => $dtl->odpriceraw,
+              'odtotalpriceraw' => ($dtl->odpriceraw * $dtl->odqty),
+              'odispromo' => isset($dtl->odpromoid) ? '1' : '0',
+              'odpromoid' => $dtl->odpromoid ?? null,
+              'odremark' => $dtl->odremark,
               'odindex' => $key,
               'odactive' => '0',
               'odmodifiedat' => now()->toDateTimeString(),
@@ -547,7 +550,7 @@ class OrderRepository
     $ui->orderpaymentmethod = $db->orderpaymentmethod ?? null;
     $ui->orderpaid = $db->orderpaid ?? null;
     $ui->orderpaidprice = $db->orderpaidprice ?? null;
-    $ui->orderpaidprice = $db->orderpaidprice ?? null;
+    $ui->orderdiscountprice = $db->orderdiscountprice ?? null;
     $ui->orderpaidremark = $db->orderpaidremark ?? null;
     $ui->ordervoid = $db->ordervoid ?? null;
     $ui->ordervoidedusername = $db->ordervoidedusername ?? null;
@@ -676,8 +679,8 @@ class OrderRepository
   public static function deleteMenuOrder($respon, $id, $subId, $loginid)
   {
     $data = OrderDetail::where('odactive', '1')
-      ->where('odorderid', $subId)
-      ->where('id', $id)
+      ->where('odorderid', $id)
+      ->where('id', $subId)
       ->first();
 
     $cekDelete = false;
@@ -688,6 +691,13 @@ class OrderRepository
         'odmodifiedat' => now()->toDateTimeString(),
         'odmodifiedby' => $loginid
       ]);
+
+      $cekDelivered = OrderDetail::where('oddelivered', '0')->where('odactive', '1')->where('odorderid', $id)->first();
+      if($cekDelivered == null){
+        $updH = Order::where('orderactive', '1')
+          ->where('id', $id)
+          ->update(['orderstatus' => 'COMPLETED']);
+      }
 
       $cekDelete = true;
     }
@@ -743,6 +753,7 @@ class OrderRepository
       $data->update([
         'orderpaymentmethod' => $inputs['orderpaymentmethod'],
         'orderpaidprice' => $inputs['orderpaidprice'],
+        'orderdiscountprice' => $inputs['orderdiscountprice'],
         'orderstatus' => 'PAID',
         'orderpaid' => '1',
         'orderpaidby' => $loginid,
@@ -818,7 +829,8 @@ class OrderRepository
           'orderprice',
           'orderdate',   
           'orderpaidprice', 
-          'orderpaymentmethod' 
+          'orderpaymentmethod',
+          'orderdiscountprice' 
         )->first();
         $order->boardnumber = null;
         $order->ordertype = 'Bungkus';
@@ -832,7 +844,8 @@ class OrderRepository
           'orderpaidprice', 
           'orderpaymentmethod', 
           DB::raw("case when ordertype = 'DINEIN' then 'Makan Ditempat' else 'Bungkus' end as ordertype"),
-          DB::raw("'No.' ||boardnumber || ' - Lantai ' || boardfloor as boardnumber")
+          DB::raw("'No.' ||boardnumber || ' - Lantai ' || boardfloor as boardnumber"),
+          'orderdiscountprice' 
         )->first();
       }
       // dd($order);
@@ -840,6 +853,7 @@ class OrderRepository
       $dataOrder->invoice = $order->orderinvoice;
       $dataOrder->price = $order->orderprice;
       $dataOrder->paidprice = $order->orderpaidprice;
+      $dataOrder->discountprice = $order->orderdiscountprice;
       $dataOrder->payment = $order->orderpaymentmethod;
       $dataOrder->date = Carbon::parse($order->orderdate)->format('d/m/Y H:i') ?? null;
       $dataOrder->orderType = $order->ordertype;
@@ -853,6 +867,10 @@ class OrderRepository
         $temp->qty = $sub->odqty;
         $temp->price = $sub->odprice;
         $temp->totalPrice = $sub->odtotalprice;
+        $temp->priceraw = $sub->odpriceraw;
+        $temp->totalPriceraw = $sub->odtotalpriceraw;
+        $temp->promodiscount = $sub->promodiscount;
+        $temp->promo = $sub->odispromo;
   
         array_push($dataOrder->detail, $temp);
       }

@@ -55,6 +55,7 @@ class MenuCategoryRepository
   {
     return MenuCategory::whereRaw('UPPER(mcname) LIKE UPPER(\'%'. $cari .'%\')')
     ->where('mcactive', '1')
+    ->orderBy('mcname', 'ASC')
     ->select('id', 'mcname as text')
     ->get();
   }

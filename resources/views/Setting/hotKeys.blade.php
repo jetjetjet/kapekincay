@@ -29,7 +29,7 @@
                                 <h5>Global (Semua Halaman)</h5>
                                 <p><b style="color: #007bff;">Esc</b> Atau <b style="color: #007bff;">*</b> Untuk membuka laci</p>
                                 <p><b style="color: #007bff;">P</b> Untuk ping ke printer</p>
-                                <p><b style="color: #007bff;">/</b> Ke halaman meja</p>
+                                <p><b style="color: #007bff;">.</b> Ke halaman meja</p>
                             </section>
                             <hr>
                             <section>
@@ -41,6 +41,7 @@
                             <section>
                               <h5>Halaman Pembayaran</h5>
                               <p><b style="color: #007bff;">Enter</b> Untuk melanjutkan pembayaran setelah memasukkan total pembayaran</p>
+                              <p><b style="color: #007bff;">/</b> Untuk mengaktifkan diskon</p>
                               <p><b style="color: #acb0c3;">--------------------------------------</b></p>
                               <p><i style="color: #acb0c3;">Saat Muncul tampilan Konfirmasi/Printer Tidak Terhubung</i></p>
                               <p><b style="color: #007bff;">Enter</b> Untuk melanjutkan pembayaran di tampilan konfirmasi/printer tidak terhubung</p>

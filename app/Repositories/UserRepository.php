@@ -46,7 +46,7 @@ class UserRepository
         'username',
         'usercontact',
         'useraddress',
-        'userjoindate')
+        DB::raw("to_char(userjoindate, 'dd-mm-yyyy') as userjoindate"))
       ->first();
 
       if($respon['data'] == null){

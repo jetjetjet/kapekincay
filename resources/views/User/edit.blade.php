@@ -168,7 +168,12 @@
       });
     })
 
-    let f1 = flatpickr($('#userjoindate'));
+    let f1 = flatpickr($('#userjoindate'), {
+        altinput: true,
+        altformat: "Y-m-d",
+        dateFormat: "d-m-Y",
+        defaultDate: "{{ old('userjoindate',$data->userjoindate) ?? 'today'}}",
+      });
 
     $('.select2').select2({
       tags: true,

@@ -42,7 +42,7 @@ class BoardRepository
   {
     $orders = DB::table('orders')
       ->where('orderactive', '1')
-      ->whereRaw("(orderstatus is null or orderstatus in('PROCEED', 'ADDITIONAL'))")
+      ->whereRaw("(orderstatus is null or orderstatus in('PROCEED', 'ADDITIONAL', 'COMPLETED'))")
       ->whereNotNull("orderboardid")
       ->select('orderboardid')
       ->get();
