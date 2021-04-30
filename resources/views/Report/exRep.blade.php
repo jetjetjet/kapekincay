@@ -12,7 +12,7 @@
 
 @section('content-form')
   <div class="widget-content widget-content-area br-6">
-    <form class="needs-validation" method="get" novalidate action="{{ url('/laporan/pengeluaran') }}">
+    <form class="needs-validation" method="get" novalidate action="{{ url('/laporan-pengeluaran') }}">
       <div class="form-row">     
         <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
         <div class="col-md-6 mb-1">
@@ -94,16 +94,6 @@
 
 @section('js-form')
   <script>
-    var chg = function(){
-      var str = $('#start').val()
-      var end = $('#end').val()
-      flatpickr($('#end'), {
-      minDate:str
-    });
-    flatpickr($('#start'), {
-      maxDate:end
-    });
-    }
 
 
     $(document).ready(function (){
@@ -113,20 +103,26 @@
       searchInputPlaceholder: 'Search options',
       });
       
-    flatpickr($('#end'), {
-      dateFormat: "d-m-Y",
-      altinput: true,
-      altformat: "Y-m-d",
-      maxDate: new Date().fp_incr(1),
-      defaultDate: "{{ request('enddate') != null ? request('enddate') : Carbon\Carbon::tomorrow()->format('d-m-Y')}}"
-    });
-    flatpickr($('#start'), {
-      dateFormat: "d-m-Y",
-      altinput: true,
-      altformat: "Y-m-d",
-      maxDate: "today",
-      defaultDate: "{{ request('startdate') != null ? request('startdate') : 'today' }}"
-    });
+      flatpickr($('#start'), {
+        dateFormat: "d-m-Y",
+        altinput: true,
+        altformat: "Y-m-d",
+        maxDate: "today",
+        defaultDate: "{{ request('startdate') != null ? request('startdate') : Carbon\Carbon::now()->startOfMonth()->format('d-m-Y') }}",
+        onChange: function (selectedDates, dateStr, instance) {
+          endPicker.set("minDate", dateStr);
+          $('#end').removeAttr('disabled')
+        }
+      });
+
+      let endPicker = flatpickr($('#end'), {
+        dateFormat: "d-m-Y",
+        altinput: true,
+        altformat: "Y-m-d",
+        minDate: "{{request('startdate') != null ? request('startdate') : Carbon\Carbon::now()->startOfMonth()->format('d-m-Y') }}",
+        maxDate: "{{Carbon\Carbon::now()->endOfMonth()->format('d-m-Y')}}",
+        defaultDate: "{{ request('enddate') != null ? request('enddate') : Carbon\Carbon::now()->endOfMonth()->format('d-m-Y')}}"
+      });
 // $('#start').change(function(){
 // chg()
 // })
