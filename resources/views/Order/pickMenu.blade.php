@@ -694,8 +694,7 @@ input[type=number] {
             if(notif){
               ws.send('Ok')
             }
-            // location.reload();
-            $row.remove();
+            location.reload();
           }
       });
     })
