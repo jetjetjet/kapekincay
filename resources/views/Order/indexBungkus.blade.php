@@ -2,16 +2,20 @@
 
 @section('breadcumb')
   <div class="title">
-    <h3>Log</h3>
+    <h3>User</h3>
   </div>
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="javascript:void(0);">Laporan</a></li>
-    <li class="breadcrumb-item active"  aria-current="page"><a href="javascript:void(0);">Log</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);">Transaksi</a></li>
+    <li class="breadcrumb-item"><a href="javascript:void(0);">Daftar Pesanan</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><a href="javascript:void(0);">Bungkus</a></li>
   </ol>
 @endsection
 
 @section('content-table')
   <div class="widget-content widget-content-area br-6">
+    <div class="mb-4">
+      <h3>Pesanan Dibungkus (7 Hari Terakhir)</h3>
+    </div>
     <fieldset>
       <div class="form-row ml-4">
         <div class="form-group col-2">
@@ -26,9 +30,9 @@
         <div class="form-group col-1 pl-0">
           <select id="filterColumn" class="form-control form-control-sm" style="border-top-left-radius: 0px!important; border-bottom-left-radius: 0px!important;">
             <option value=""></option>
-            <option value="username">Username</option>
-            <option value="action">Aksi</option>
-            <option value="status">Status</option>
+            <option value="orderinvoice">No. Invoice</option>
+            <option value="orderprice">Total Harga</option>
+            <!-- <option value="orderstatus">Meja</option> -->
           </select>
         </div>
         <div class="form-group col-2">
@@ -38,19 +42,29 @@
       </div>
     </fieldset>
     <div class="table-responsive">
-      <table id="grid" class="table table-hover" style="width:100%">
+      <table id="gridtakeaway" class="table table-hover" style="width:100%">
         <thead>
           <tr>
-            <th>Username</th>
-            <th width="20%">Url</th>
-            <th>Aksi</th>
-            <th>Status</th>
-            <th width="25%">Log</th>
-            <th width="15%">Tgl</th>
+            <th>No.Invoice</th>
+            <th>Tipe pesanan</th>
+            <th>tanggal</th>
+            <th>total</th>
+            <th>status</th>
+            <th class="no-content"></th>
           </tr>
         </thead>
         <tbody>
         </tbody>
+        <tfoot>
+          <tr>
+          <th>No.Invoice</th>
+            <th>Tipe Pesanan</th>
+            <th>Tanggal</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </tfoot>
       </table>
     </div>
   </div>
@@ -59,7 +73,7 @@
 @section('js-table')
   <script>
     $(document).ready(function (){
-     let fDate = flatpickr($('#periodeLog'), {
+      let fDate = flatpickr($('#periodeLog'), {
         mode: "range",
         altinput: true,
         altformat: "Y-m-d",
@@ -81,9 +95,9 @@
         // defaultDate: ["2016-10-10", "2016-10-20"]
       });
 
-      let grid = $('#grid').DataTable({
+      let grid2 = $('#gridtakeaway').DataTable({
         ajax: {
-            url: "{{ url('log/grid') }}",
+            url: "{{ url('order/index/grid/takeaway') }}",
             "data": function(dt){
               return $.extend( {}, dt, {
                 "filterDate" : $('#periodeLog').val(),
@@ -97,9 +111,11 @@
           '<"row"<"col-md-12"<"row"<"col-md-6"B> > >' +
           '<"col-md-12"rt> <"col-md-12"<"row"<"col-md-5"i><"col-md-7"p>>> >',
         buttons: {
-          buttons: []
+            buttons: []
         },
-        oLanguage: {
+        "processing": true,
+        "serverSide": true,
+        "oLanguage": {
           "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
           "sInfo": "Halaman _PAGE_ dari _PAGES_",
           "sSearch": '<i data-feather="search"></i>',
@@ -109,47 +125,48 @@
           "sInfoFiltered": "(dari jumlah total _MAX_ data)",
           "sZeroRecords": "Tidak ada data ditemukan"
         },
-        "processing": true,
-        "serverSide": true,
         "stripeClasses": [],
         "lengthMenu": [10, 20, 50],
-        "pageLength": 15,
+        "pageLength": 8,
         "order": [],
         columns: [
-            { 
-              data: 'username',
-              name: 'u.username',
-              searchText: false
-            }, { 
-              data: 'path',
-              name: 'path',
-              searchText: false
-            }, { 
-              data: 'action',
-              name: 'action',
-              searchText: false
-            },{
-              data: null,
-              name: 'status',
-              render: function(data, type, full, meta){
-                let badges = data.status == 'error'
-                  ? '<span class="badge badge-danger">Error</span>'
-                  : '<span class="badge badge-info">Sukses</span>';
-                  
-                return badges;
-              },
-              searchText: false
-            }, { 
-              data: 'messages',
-              name: 'messages',
-              searchText: false
-            }, { 
-              data: 'createdat',
-              name: 'createdat',
-              searchText: false
+          { 
+            data: 'orderinvoice',
+            searchText: true
+          },
+          { 
+              data: 'ordertypetext',
+              searchText: true
+          },
+          { 
+              data: 'orderdate',
+              searchText: true
+          },
+          { 
+            data: null,
+            render: function(data, type, full, meta){
+            return formatter.format(data.orderprice);
             }
-          ]
+          },
+          { 
+              data: 'orderstatuscase',
+              searchText: true
+          },
+          { 
+            data:null,
+            render: function(data, type, full, meta){
+                return '<a href="#" title="Detail" class="gridDetail"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search p-1 br-6 mb-1"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></a>';      
+           }
+          }
+        ]
+      });
 
+
+      $('#griddinein').on('click', 'a.gridDetail', function (e) {
+        e.preventDefault();
+        const rowData = grid2.row($(this).closest('tr')).data();
+
+        window.location = "{{ url('/order/detail') . '/' }}"+ rowData.id;
       });
 
       $('#filterColumn').on('change',function(e){
@@ -168,7 +185,7 @@
         $('#filterText').val(null);
         $('#filterText').attr("disabled", "disabled");
 
-        grid.ajax.reload()
+        grid2.ajax.reload()
       });
 
       $("#apply").on("click", function(){
@@ -180,9 +197,8 @@
           status: "success",
           username: "superadmin"
         }];
-        grid.ajax.reload()
+        grid2.ajax.reload()
       });
-    
     });
   </script>
 @endsection

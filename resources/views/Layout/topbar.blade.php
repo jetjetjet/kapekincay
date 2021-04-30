@@ -80,10 +80,13 @@
 								</a>
 								<ul class="collapse submenu list-unstyled animated fadeInUp" id="transaction" data-parent="#topAccordion">
 									@if(Perm::can(['order_lihat']))
-										<li><a href="{{ url('/order/meja/view') }}">Pesanan</a></li>
+										<li><a href="{{ url('/order/meja/view') }}">Meja Pesanan</a></li>
 									@endif
 									@if(Perm::can(['order_lihat']))
-										<li><a href="{{ url('/order/index') }}">Daftar Pesanan</a></li>
+										<li><a href="{{ url('/order/index') }}">Daftar Pesanan Ditempat</a></li>
+									@endif
+									@if(Perm::can(['order_pembayaran']))
+										<li><a href="{{ url('/order/index-bungkus') }}">Daftar Pesanan bungkus</a></li>
 									@endif
 									@if(Perm::can(['pengeluaran_lihat']))
 										<li><a href="{{ url('/pengeluaran') }}">Pengeluaran</a></li>

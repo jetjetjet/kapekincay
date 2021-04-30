@@ -60,6 +60,8 @@ class Helpers
       $filterDate = explode(" to ",$request->input('filterDate'));
       $tempDate->from = $filterDate[0];
       $tempDate->to = $filterDate[1];
+    // } else if($request->input('filterText') && $request->input('filterColumn')){
+    //   $tempDate = null;
     } else {
       $tempDate->from = Carbon::now()->subDays(7)->format('d-m-Y');
       $tempDate->to = Carbon::now()->format('d-m-Y');
