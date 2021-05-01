@@ -400,52 +400,36 @@
     //Cetak
 
     $('#drawer').on('click', function () {
-      var price = $("#hdnGranTotal").val();
+      var price = $("#startPrice").val();
       var pay = $('#bayar').val();
-      var change = Number(pay) - Number(price)
+      let diskon = $("#diskon").val();
+      var change = Number(pay) - (Number(price) - Number(diskon));
       Swal.fire('Sedang Diproses')
       Swal.showLoading()
-      if(change == 0){
-        $.ajax({
-        url: "{{url('/open/drawer') }}",
-        type: "post",
-        success: function(result){
-          //console.log(result);
-          var msg = result.messages[0];
-          if(result.status == 'success'){
+      $.ajax({
+      url: "{{url('/open/drawer') }}",
+      type: "post",
+      success: function(result){
+        //console.log(result);
+        var msg = result.messages[0];
+        if(result.status == 'success'){
+          if(change == 0){
             $('#orderMenuForm').submit();
           }else{
-            $('#withoutPrint').modal('show');
-          }      
-          Swal.hideLoading()  
-          Swal.clickConfirm()
-        },
-        error:function(error){
-          Swal.hideLoading()
-          Swal.clickConfirm()
-        }
-        })
-      }else{
-        $.ajax({
-        url: "{{url('/open/drawer') }}",
-        type: "post",
-        success: function(result){
-          //console.log(result);
-          var msg = result.messages[0];
-          if(result.status == 'success'){
             $('#konfirm').modal('show');
-          }else{
-            $('#withoutPrint').modal('show');
           }
-          Swal.hideLoading()
-          Swal.clickConfirm()
-        },
-        error:function(error){
-          Swal.hideLoading()
-          Swal.clickConfirm()
-        }
-        })
+        }else{
+          $('#withoutPrint').modal('show');
+        }      
+        Swal.hideLoading()  
+        Swal.clickConfirm()
+      },
+      error:function(error){
+        Swal.hideLoading()
+        Swal.clickConfirm()
       }
+      })
+     
       
     });
 
