@@ -111,9 +111,8 @@ class ReportRepository
   public static function getShiftReport($filter)
   {
     $q = DB::table('shifts as s')
-      ->join('orders as o', DB::Raw('orderpaidat::date'), '=' ,DB::Raw('shiftstart::date'))
+      ->join('orders as o', DB::Raw('ordercreatedat::date'), '=' ,DB::Raw('shiftstart::date'))
       ->join('users as u', 'u.id','shiftcreatedby')
-      ->whereBetween(DB::raw('orderpaidat::timestamp'), [DB::raw('shiftstart::timestamp'), DB::raw('shiftclose::timestamp')])
       ->where('shiftactive', '1')
       ->where('orderactive', '1')
       ->whereRaw("shiftcreatedat::date between '". $filter['startdate'] . "'::date and '" . $filter['enddate'] . "'::date")
@@ -121,14 +120,18 @@ class ReportRepository
       ->orderBy('shiftcreatedat', 'DESC');
     
     if($filter['status'] == "PAID"){
-      $q = $q->where('orderstatus', 'PAID');
+      $q = $q->where('orderstatus', 'PAID')
+      ->whereBetween(DB::raw('orderpaidat::timestamp'), [DB::raw('shiftstart::timestamp'), DB::raw('shiftclose::timestamp')]);
     } else if($filter['status'] == 'INPROG'){
       $q = $q->where('orderstatus', 'ADDITIONAL')
-        ->orWhere('orderstatus', 'PROCEED');
+        ->orWhere('orderstatus', 'PROCEED')
+        ->whereBetween(DB::raw('ordermodifiedat::timestamp'), [DB::raw('shiftstart::timestamp'), DB::raw('shiftclose::timestamp')]);
     } else if($filter['status'] == "VOIDED"){
-      $q = $q->where('orderstatus', 'VOIDED');
+      $q = $q->where('orderstatus', 'VOIDED')
+      ->whereBetween(DB::raw('ordervoidedat::timestamp'), [DB::raw('shiftstart::timestamp'), DB::raw('shiftclose::timestamp')]);
     } else{
-      $q = $q->where('orderstatus', ['PAID', 'ADDITIONAL', 'PROCEED']);
+      $q = $q->where('orderstatus', ['PAID', 'ADDITIONAL', 'PROCEED'])
+      ->whereBetween(DB::raw('ordermodifiedat::timestamp'), [DB::raw('shiftstart::timestamp'), DB::raw('shiftclose::timestamp')]);
     }
 
     if($filter['user'] != "ALL"){

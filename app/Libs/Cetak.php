@@ -275,10 +275,10 @@ class Cetak
 
   public static function getAsStringkasirtotal($name, $price, $currency)
   {
-    $rightCols = 8;
+    $rightCols = 9;
     $width = 80;
     $leftCols = 12;
-    $md = 4;
+    $md = 3;
     $left = str_pad($name, $leftCols);
 
     $sign = str_pad( 'Rp.', $md, ' ', STR_PAD_LEFT);
