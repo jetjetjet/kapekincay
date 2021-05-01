@@ -776,6 +776,14 @@ class OrderRepository
         'odmodifiedby' => $loginid
       ]);
 
+      //Update Harga
+      $getTotalPrice = OrderDetail::where('odactive', '1') 
+        ->where('odorderid', $id)
+        ->sum('odtotalprice');
+      $updH = Order::where('orderactive', '1')
+        ->where('id', $id)
+        ->update(['orderprice' => $getTotalPrice]);
+
       $cekDelivered = OrderDetail::where('oddelivered', '0')->where('odactive', '1')->where('odorderid', $id)->first();
       if($cekDelivered == null){
         $updH = Order::where('orderactive', '1')
