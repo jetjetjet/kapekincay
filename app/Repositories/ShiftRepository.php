@@ -90,11 +90,11 @@ class ShiftRepository
     $cekId = Shift::where('id', $id)->select('shiftclose')->first();
     $qClosed = $cekId->shiftclose ?? null;
     
-    if($qClosed != null){
-      $respon['status'] = 'error';
-      array_push($respon['messages'],'Shift sudah ditutup tidak bisa diedit');
-    }
-    elseif($id){
+    // if($qClosed != null){
+    //   $respon['status'] = 'error';
+    //   array_push($respon['messages'],'Shift sudah ditutup tidak bisa diedit');
+    // }
+    if($id){
       $respon['data'] = Shift::where('shiftactive', '1')
       ->where('id', $id)
       ->select('id',

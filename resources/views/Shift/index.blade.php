@@ -115,9 +115,7 @@
 
               }else{
                 let icon = "";  
-                if(data.can_view)
-                  icon += '<a href="#" title="View" class="gridView"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye p-1 br-6 mb-1"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
-                
+               
                 if(data.can_delete)
                   icon += '<a href="#" title="Delete" class="gridDelete"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash p-1 br-6 mb-1"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></a>';
                 
@@ -150,6 +148,13 @@
         window.location = "{{ url('/shift/close') . '/' }}" + rowData.id;
     });
     
+    $('#grid').on('click', 'a.gridView', function (e) {
+        e.preventDefault();
+        const rowData = grid.row($(this).closest('tr')).data();
+
+        window.location = "{{ url('/shift/close') . '/' }}" + rowData.id;
+    });
+
       $('#grid').on('click', 'a.gridDelete', function (e) {
         e.preventDefault();
         
