@@ -293,7 +293,7 @@ input[type=number] {
                 @endif
                 <?php 
                   $canSaveBtn = isset($data->id)
-                  ? $data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'PROCEED' || $data->orderstatus == 'COMPLETED' ? true : false
+                  ? ($data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'PROCEED' || $data->orderstatus == 'COMPLETED') && $data->orderpaid == null ? true : false
                   : true 
                 ?>
                 @if(Perm::can(['order_simpan']) && $canSaveBtn)
@@ -404,6 +404,9 @@ input[type=number] {
   let totalPrice = 0;
   $(document).ready(function (){
     //hotkeys    
+      ws.onmessage = function(e) { 
+        window.location.reload()
+      };
 
       //modal-tambah
         $(this).on('shown.bs.modal', function() {
