@@ -404,9 +404,9 @@ input[type=number] {
   let totalPrice = 0;
   $(document).ready(function (){
     //hotkeys    
-      ws.onmessage = function(e) { 
-        window.location.reload()
-      };
+      // ws.onmessage = function(e) { 
+      //   window.location.reload()
+      // };
 
       //modal-tambah
         $(this).on('shown.bs.modal', function() {
