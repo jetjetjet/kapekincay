@@ -425,7 +425,7 @@ class OrderRepository
     } catch (\Exception $e) {
       // $eMsg = $e->getMessage() ?? "NOT_RECORDED";
       // Log::channel('errorKape')->error(trim($eMsg));
-      $respon['status'] = error;
+      $respon['status'] = 'error';
     }
     return $respon;
   }
@@ -584,6 +584,7 @@ class OrderRepository
       if($doubleCek == null){
         Order::where('orderactive', '1')
           ->where('id', $idHeader)
+          ->where('orderpaid', '0')
           ->update([
             'orderstatus' => 'COMPLETED'
           ]);
