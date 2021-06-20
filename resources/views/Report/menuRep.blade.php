@@ -28,7 +28,7 @@
         <button class="btn btn-primary mt-2" id="sub" type="submit">Cari</button>
       </div>
     </form>
-  @if($data)
+    @if($data)
     <div class="table-responsive mb-4 mt-4">
       <hr>
       <h3 style="color:#1b55e2">Hasil Pencarian</h3>
@@ -67,10 +67,10 @@
     </div>
     @else
     <div class="table-responsive mb-4 mt-4">
-    <div style="text-align:center;">
-      <h3>Data Kosong</h3>
+      <div style="text-align:center;">
+        <h3>Data Kosong</h3>
+      </div>
     </div>
-  </div>
     @endif
   </div>
 @endsection

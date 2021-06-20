@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Exports\ReportExport;
 use Illuminate\Http\Request;
 
 use Validator;
@@ -18,15 +19,23 @@ class ReportController extends Controller
 		$data = new \stdClass;
 		$user = ReportRepository::getName();
 
-		if($inputs){
-			$data = ReportRepository::grid($inputs);
-			$data->sub = ReportRepository::get($inputs);
-			
-		}else{
-			$data->sub['total'] = '0';
+		$print = $request->input('print');
+		if(empty($print)){
+			if($inputs){
+				$total = new \stdClass;
+				$data = ReportRepository::grid($inputs);
+				$total = ReportRepository::get($inputs);
+				// dd($total[0]['total']);	
+			}else{
+				$total[0]['total'] = '0';	
+				$total[1]['totalex'] = '0';
+				// dd($total);	
+			}
+			// dd($total);
+			return view('Report.index')->with('data', $data)->with('total', $total)->with('user', $user);
 		}
-		// dd($data);
-		return view('Report.index')->with('data', $data)->with('user', $user);
+
+		return (new ReportExport($inputs))->download('invoices.xlsx');
 	}
 
 	public function exIndex(Request $request)
@@ -66,6 +75,8 @@ class ReportController extends Controller
 		$data = new \stdClass;
 		if($inputs){
 			$data = ReportRepository::getMenuReport($inputs);
+		}else{
+			$data = null;
 		}
 		// dd($data);
 		return view('Report.menuRep')->with('data', $data);

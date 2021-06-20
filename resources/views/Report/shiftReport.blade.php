@@ -70,10 +70,10 @@
             <td>{{$no++}}</td>
             <td>{{\carbon\carbon::parse($row->shiftcreatedat)->format('d-m-Y') }}</td>
             <td>{{$row->username}}</td>
-            <td>Rp{{number_format($row->totalstart)}} <br /> (Kertas: {{number_format($row->kertasawal)}} Koin: {{number_format($row->koinawal)}})</td>
-            <td>Rp{{number_format($row->totalakhir)}} <br /> (Kertas: {{number_format($row->kertasakhir)}} Koin: {{number_format($row->koinakhir)}})</td>
-            <td>Rp{{number_format($row->selisih)}}</td>
-            <td>Rp{{number_format($row->totalorder)}}</td>
+            <td>Rp. {{number_format($row->totalstart)}} <br /> (Kertas: {{number_format($row->kertasawal)}} Koin: {{number_format($row->koinawal)}})</td>
+            <td>Rp. {{number_format($row->totalakhir)}} <br /> (Kertas: {{number_format($row->kertasakhir)}} Koin: {{number_format($row->koinakhir)}})</td>
+            <td>Rp. {{number_format($row->selisih)}}</td>
+            <td>Rp. {{number_format($row->totalorder)}}</td>
           </tr>
           @endforeach
         </tbody>

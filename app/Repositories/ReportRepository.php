@@ -11,21 +11,8 @@ class ReportRepository
 {
   public static function grid($inputs)
   {
-    $od = Order::where('orderactive', '1')
-      ->whereRaw("orderdate::date between '" . $inputs['startdate'] . "' and '" . $inputs['enddate'] . "'")
-      ->join('users', 'ordercreatedby', '=', 'users.id');
-    if($inputs['user'] != 'Semua'){
-      $od->where('users.id', $inputs['user']);
-    }
-    if($inputs['status'] == 'Diproses'){
-      $od->whereNotIn('orderstatus', ['PAID', 'VOIDED']);
-    }elseif($inputs['status'] != 'Semua'){
-      $od->where('orderstatus', $inputs['status']);
-    }elseif($inputs['status'] == 'Semua'){
-      $od->whereNotIn('orderstatus', ['VOIDED']);
-    }
-    $data = $od->select(
-      'orders.id',
+    $data = self::getOrder($inputs)->select(
+      'orders.id as id',
       DB::raw("to_char(orderdate, 'DD-MM-YYYY') as tanggal"),       
       DB::raw("CASE WHEN orders.ordertype = 'DINEIN' THEN 'Makan ditempat' ELSE 'Bungkus' END as ordertypetext"), 
       'orderinvoice',
@@ -33,16 +20,30 @@ class ReportRepository
       DB::raw("orderprice - coalesce(orderdiscountprice,0) as price"),
       DB::raw("CASE WHEN orders.orderstatus = 'PAID' THEN 'Lunas' WHEN orders.orderstatus = 'VOIDED' THEN 'Dibatalkan' ELSE 'Diproses' END as orderstatuscase"),
       'username',
-      )
-    ->get();
+      )->orderBy('orderdate', 'asc')->get();
+
+    $data->ex = self::getExport($inputs)->select(
+      'expenses.id',
+      'expensename', 
+      'expensedetail', 
+      'expenseprice',
+      DB::raw("to_char(expensedate, 'DD-MM-YYYY') as tanggal"),
+      DB::raw("CASE WHEN expenses.expenseexecutedby = '0' THEN 'Draft' ELSE 'Selesai' END as status"),
+      'cr.username as create',
+      'er.username as execute',
+      DB::raw("to_char(expenseexecutedat, 'DD-MM-YYYY') as tanggalend"),
+    )->orderBy('expensedate', 'asc')->get();
+
     return $data;
   }
-  
-  public static function get($inputs)
+
+  public static function getOrder($inputs)
   {
-    $od = Order::where('orderactive', '1')
+    // order
+    return Order::where('orderactive', '1')
       ->whereRaw("orderdate::date between '" . $inputs['startdate'] . "' and '" . $inputs['enddate'] . "'")
       ->join('users', 'ordercreatedby', '=', 'users.id');
+
     if($inputs['user'] != 'Semua'){
       $od->where('users.id', $inputs['user']);
     }
@@ -53,12 +54,58 @@ class ReportRepository
     }elseif($inputs['status'] == 'Semua'){
       $od->whereNotIn('orderstatus', ['VOIDED']);
     }
-    $data = $od->select(
-      DB::raw("sum(orderprice) - sum(coalesce(orderdiscountprice,0)) as total"),
-      )
-      ->first();
+  }
 
-    return $data;
+  public static function getExport($inputs)
+  {
+    // pengeluaran
+    $ex = Expense::where('expenseactive', '1')
+    ->join('users as cr', 'cr.id', '=', 'expensecreatedby' )
+    ->leftJoin('users as er', 'er.id', '=', 'expenseexecutedby')
+    ->whereRaw("expensedate::date between '" . $inputs['startdate'] . "' and '" . $inputs['enddate'] . "'");
+    if($inputs['user'] != 'Semua'){
+      $ex->where('cr.id', $inputs['user']);
+    }
+    if($inputs['statusEx'] == '0'){
+      $ex->where('expenseexecutedby', '0');
+    }elseif($inputs['statusEx'] == '1'){
+      $ex->whereNotIn('expenseexecutedby', ['0']);
+    }
+
+    return $ex;
+  }
+  
+  public static function get($inputs)
+  {
+    // order
+      $od = Order::where('orderactive', '1')
+        ->whereRaw("orderdate::date between '" . $inputs['startdate'] . "' and '" . $inputs['enddate'] . "'")
+        ->join('users', 'ordercreatedby', '=', 'users.id');
+      if($inputs['user'] != 'Semua'){
+        $od->where('users.id', $inputs['user']);
+      }
+      if($inputs['status'] == 'Diproses'){
+        $od->whereNotIn('orderstatus', ['PAID', 'VOIDED']);
+      }elseif($inputs['status'] != 'Semua'){
+        $od->where('orderstatus', $inputs['status']);
+      }elseif($inputs['status'] == 'Semua'){
+        $od->whereNotIn('orderstatus', ['VOIDED']);
+      }
+      $dataod = $od->select(DB::raw("sum(orderprice) - sum(coalesce(orderdiscountprice,0)) as total"))->first();
+    // pengeluaran
+      $ex = Expense::where('expenseactive', '1')
+      ->join('users as cr', 'cr.id', '=', 'expensecreatedby' )
+      ->whereRaw("expensedate::date between '" . $inputs['startdate'] . "' and '" . $inputs['enddate'] . "'");
+      if($inputs['user'] != 'Semua'){
+        $ex->where('cr.id', $inputs['user']);
+      }
+      if($inputs['statusEx'] == '0'){
+        $ex->where('expenseexecutedby', '0');
+      }elseif($inputs['statusEx'] == '1'){
+        $ex->whereNotIn('expenseexecutedby', ['0']);
+      }
+      $dataex = $ex->select(DB::raw("sum(expenseprice) as totalex"))->first();
+    return array ($dataod, $dataex);
   }
 
   public static function gridEx($inputs)

@@ -10,7 +10,7 @@ class ExpenseRepository
 {
     public static function grid($perms)
     {
-      return Expense::where('expenseactive', '1')->select('id','expensename', 'expenseprice', DB::raw("to_char(expensedate, 'DD-MM-YYYY')as expensedateraw"), 'expensedetail', 'expenseexecutedat', DB::raw($perms['save']), DB::raw($perms['delete']))->get();
+      return Expense::where('expenseactive', '1')->select('id','expensename', 'expenseprice', DB::raw("to_char(expensedate, 'DD-MM-YYYY')as expensedateraw"), 'expensedetail', 'expenseexecutedat', DB::raw($perms['save']), DB::raw($perms['delete']))->orderBy('expensedate', 'desc')->get();
     }
   
     public static function get($respon, $id)
