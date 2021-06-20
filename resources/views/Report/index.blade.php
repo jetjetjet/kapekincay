@@ -53,8 +53,7 @@
         <div class="col-md-12">
           <div class="float-right mb-3">
             @if($total[0]['total'] != 0 || $total[1]['totalex'] != 0)
-            <button style="background-color:#1D6F42; color:white" class="btn mt-3">Excel</button>
-            <a href="" type="button" style="background-color:#1D6F42; color:white" class="btn mt-3">Excel</a>
+            <button id="print" style="background-color:#1D6F42; color:white" class="btn mt-3">Export</button>
             @endif
             <button class="btn btn-primary mt-3" id="sub" type="submit">Cari</button>
           </div>
@@ -189,6 +188,18 @@
   <script>
     $(document).ready(function (){
 
+      $('#print').click(function (e){
+        $('[name=print]').remove();
+        $('form')
+          .append('<input type="hidden" name="print" value="1" />')
+          .attr('target', '_blank')
+          .submit();
+      });
+
+      $('[type=submit]').click(function (e){
+        $('[name=print]').remove();
+        $('form').removeAttr('target');
+      });
       
       flatpickr($('#start'), {
         dateFormat: "d-m-Y",
