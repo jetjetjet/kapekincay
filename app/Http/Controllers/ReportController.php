@@ -19,14 +19,17 @@ class ReportController extends Controller
 		$user = ReportRepository::getName();
 
 		if($inputs){
+      $total = new \stdClass;
 			$data = ReportRepository::grid($inputs);
-			$data->sub = ReportRepository::get($inputs);
-			
+			$total = ReportRepository::get($inputs);
+      // dd($total[0]['total']);	
 		}else{
-			$data->sub['total'] = '0';
+			$total[0]['total'] = '0';	
+			$total[1]['totalex'] = '0';
+      // dd($total);	
 		}
-		// dd($data);
-		return view('Report.index')->with('data', $data)->with('user', $user);
+		// dd($total);
+		return view('Report.index')->with('data', $data)->with('total', $total)->with('user', $user);
 	}
 
 	public function exIndex(Request $request)
@@ -66,6 +69,8 @@ class ReportController extends Controller
 		$data = new \stdClass;
 		if($inputs){
 			$data = ReportRepository::getMenuReport($inputs);
+		}else{
+			$data = null;
 		}
 		// dd($data);
 		return view('Report.menuRep')->with('data', $data);
