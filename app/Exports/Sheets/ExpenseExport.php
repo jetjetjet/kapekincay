@@ -84,7 +84,7 @@ class ExpenseExport implements FromQuery, WithTitle, WithHeadings, WithEvents
     ];
     return [
       AfterSheet::class => function(AfterSheet $event) use ($styleTitulos){
-        $event->sheet->getStyle("A1:G1")->applyFromArray($styleTitulos);
+        $event->sheet->getStyle("A1:H1")->applyFromArray($styleTitulos);
         $event->sheet->setCellValue('A'. ($event->sheet->getHighestRow()+1),"");
         $tyes = ReportRepository::get($this->input);
         foreach ($tyes as $item){

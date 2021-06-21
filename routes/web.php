@@ -53,7 +53,7 @@ Route::group(array('middleware' => 'auth'), function ()
   Route::post('/jabatan/hapus/{id}', [RoleController::class, 'deleteById'])->middleware('can:jabatan_hapus');
 
   Route::get('/laporan', [ReportController::class, 'index'])->middleware('can:laporan_lihat');
-  Route::get('/laporan-pengeluaran', [ReportController::class, 'exIndex'])->middleware('can:laporan_lihat');
+  // Route::get('/laporan-pengeluaran', [ReportController::class, 'exIndex'])->middleware('can:laporan_lihat');
   Route::get('/laporan-shift', [ReportController::class, 'shiftReport'])->middleware('can:laporan_lihat');
   Route::get('/laporan-menu', [ReportController::class, 'menuReport'])->middleware('can:laporan_lihat');
   

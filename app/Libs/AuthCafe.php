@@ -35,12 +35,13 @@ class AuthCafe
 
     'pengaturan_lihat',
     'pengaturan_edit',
+    'pengaturan_notif',
 
     'pengeluaran_lihat',
     'pengeluaran_simpan',
     'pengeluaran_hapus',
     'pengeluaran_proses',
-    'pengaturan_notif',
+
 
     'promo_lihat',
     'promo_simpan',
