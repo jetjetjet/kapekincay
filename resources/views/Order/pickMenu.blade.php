@@ -679,6 +679,7 @@ input[type=number] {
         )
       } else {
         $row.remove();
+        caclculatedOrder()
       }
     })
     .on('row-delivering', function (e, $row){
