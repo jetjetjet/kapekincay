@@ -40,7 +40,7 @@ class ReportRepository
   public static function getOrder($inputs)
   {
     // order
-    return Order::where('orderactive', '1')
+    $od = Order::where('orderactive', '1')
       ->whereRaw("orderdate::date between '" . $inputs['startdate'] . "' and '" . $inputs['enddate'] . "'")
       ->join('users', 'ordercreatedby', '=', 'users.id');
 
@@ -54,6 +54,7 @@ class ReportRepository
     }elseif($inputs['status'] == 'Semua'){
       $od->whereNotIn('orderstatus', ['VOIDED']);
     }
+    return $od;
   }
 
   public static function getExport($inputs)
