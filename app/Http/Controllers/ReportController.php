@@ -35,7 +35,7 @@ class ReportController extends Controller
 			return view('Report.index')->with('data', $data)->with('total', $total)->with('user', $user);
 		}
 
-		return (new ReportExport($inputs))->download('invoices.xlsx');
+		return (new ReportExport($inputs))->download('Laporan '.$inputs['startdate'].'-'.$inputs['enddate'].'.xlsx');
 	}
 
 	public function exIndex(Request $request)
