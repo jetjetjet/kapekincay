@@ -100,7 +100,7 @@ class OrderRepository
 
   public static function orderChart($filter, $range, $month)
   {
-    $transaction = Order::select(DB::raw('ordercreatedat::date as date,sum(orderprice) as total'))
+    $transaction = Order::select(DB::raw('ordercreatedat::date as date, sum(orderprice) - sum(coalesce(orderdiscountprice,0)) as total'))
       ->where('orderstatus', 'PAID')
       ->where('orderactive', '1')
       ->whereRaw("orderdate::date between '". $filter['awal'] . "'::date and '" . $filter['akhir'] . "'::date")
