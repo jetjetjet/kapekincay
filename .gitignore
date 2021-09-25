@@ -5,6 +5,9 @@
 /public/bootstrap
 /public/plugins
 /public/images
+!/public/images/avatar.png
+!/public/images/avatar1.png
+!/public/images/fnb.jpg
 /storage/*.key
 /vendor
 .env
