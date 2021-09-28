@@ -32,14 +32,6 @@
     </div>
   @endif
   
-  @if(($data->orderstatus == 'ADDITIONAL' || $data->orderstatus == 'PROCEED')  && $data->ordertype == 'DINEIN')
-    <div class="alert alert-warning" role="warning">
-      <strong>Pesanan Masih Diproses!</strong>
-        <ul>
-          <li>Pembayaran tidak bisa dilanjutkan jika masih ada pesanan yang masih diproses.</li>
-        </ul>
-    </div>
-  @endif
   <div class="row">
     <div class="col-lg-8 col-sm-12">
       <div class="widget-content widget-content-area br-6">
@@ -57,9 +49,6 @@
                       <th>Promo</th>
                       <th>Total</th>
                       <th>Catatan</th>
-                      @if(!$data->orderpaid)
-                        <th>Status Pesanan</th>
-                      @endif
                     </thead>
                     <tbody>
                     </tbody>
@@ -182,7 +171,7 @@
                     <input type="hidden" id="startPrice" value="{{$data->orderprice}}">
                     <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}" />
                     <input type="hidden" name="username" id="name" value="{{ session('username') }}" />
-                    @if($data->orderstatus == 'COMPLETED' || ($data->ordertype == 'TAKEAWAY' && !($data->orderstatus == 'PAID' || $data->orderstatus == 'VOIDED')))
+                    @if(!($data->orderstatus == 'PAID' || !$data->orderstatus == 'VOIDED'))
                       <div class="form-row mt-2">
                         <div class='col-md-5 col-sm-6 xs-6 mt-2'>
                           <h4>Jenis Pembayaran</h4>
@@ -512,18 +501,7 @@
         },
         { 
           data: 'odremark',
-        },
-        @if(!$data->orderpaid)
-        {
-          data: null,
-          render: function(data, type, full, meta){
-            let textDeliv = data.oddelivertext == "Sedang Diproses"
-              ? '<span class="badge badge-danger"> Sedang Diproses </span>'
-              : '<span class="badge badge-info"> Sudah Diantar </span>';
-            return textDeliv;
-          }
         }
-        @endif
       ]
     });
 

@@ -162,7 +162,7 @@
       });
 
 
-      $('#griddinein').on('click', 'a.gridDetail', function (e) {
+      $('#gridtakeaway').on('click', 'a.gridDetail', function (e) {
         e.preventDefault();
         const rowData = grid2.row($(this).closest('tr')).data();
 

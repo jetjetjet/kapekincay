@@ -171,16 +171,16 @@
 		</ul>
 		<ul class="navbar-item flex-row ml-auto"></ul>
 		<span id="notiferror" class="badge badge-danger d-none">Notif Error</span> &nbsp;&nbsp;
-		<a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a>
+		<!-- <a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize"></i></a> -->
 		<ul class="navbar-item flex-row nav-dropdowns">
 
 			<li class="nav-item dropdown user-profile-dropdown order-lg-0 order-1">
 				<a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="user-profile-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<div class="media">
-						<div class="media-body align-self-center">
+						<div class="media-body align-self-center mt-1">
 								<h6 style="margin-bottom: .3rem !important;"><span>Halo,</span> {{ session('username') }}</h6>
 						</div>
-						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="my-1 mx-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
 						<img src="{{ asset('/images/avatar.png') }}" class="img-fluid">
 					</div>
 				</a>

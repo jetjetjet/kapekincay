@@ -19,7 +19,6 @@ class Cetak
       "footer" => SettingRepository::getAppSetting('FooterStruk'),
       "header" => SettingRepository::getAppSetting('HeaderStruk'),
       "AppName" => SettingRepository::getAppSetting('NamaApp'),
-      "IpPrinter" => SettingRepository::getAppSetting('IpPrinter'),
       "Telp" => SettingRepository::getAppSetting('Telp'),
       "Alamat" => SettingRepository::getAppSetting('Alamat'),
       "footerkasir" => SettingRepository::getAppSetting('FooterStrukKasir'),
@@ -27,12 +26,17 @@ class Cetak
       "logoApp" => SettingRepository::getAppSetting('logoApp'),
     );
   }
+  private static function connector()
+  {
+    return new WindowsPrintConnector('test2');
+    // return new NetworkPrintConnector(SettingRepository::getAppSetting('IpPrinter'), 9100, 2);
+  }
 
   public static function print($data)
   {
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = new RawbtPrintConnector();
+      $connector = self::connector();
       $printer = new Printer($connector, $profile);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
       $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
@@ -42,7 +46,7 @@ class Cetak
       if(self::getSetting()['header'])
         $printer->text(self::getSetting()['header']."\n");
       $printer->text(self::getSetting()['Alamat']."\n");
-      $printer->text("================================\n");
+      $printer->text("================================================\n");
       /* Title of receipt */
       $printer -> setTextSize(2, 1);
       $printer->text($data->invoice . "\n");
@@ -51,7 +55,7 @@ class Cetak
       $printer->setEmphasis(false);
   
       $printer->text("Daftar Pesanan\n");
-      $printer->text("--------------------------------\n");
+      $printer->text("------------------------------------------------\n");
       // Body
       $printer->setJustification(Printer::JUSTIFY_LEFT);
       $printer->setEmphasis(true);
@@ -70,7 +74,7 @@ class Cetak
         }
       }
   
-      $printer->text("--------------------------------\n");
+      $printer->text("------------------------------------------------\n");
       /* Total */
       $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
       $printer->text(self::getAsString("Total ", number_format($data->price,0), "Rp "));
@@ -91,27 +95,22 @@ class Cetak
 
   public static function printKasir($data, $inputs)
   {
-    
-    // dd($data);
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100, 2);
-
-      // // virtualprinter
-      // $connector = null;
-      // $connector = new WindowsPrintConnector("test2");
-
+      $connector = self::connector();
       $printer = new Printer($connector, $profile);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
-      // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-      // $printer->text("Cafe&Resto\n");
-      // $printer->text("Hayyyysss\n");
-      // // // gambar
-      $tux = EscposImage::load(public_path(self::getSetting()['logoApp']),true);     
-      $printer -> graphics($tux);
+      $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+      if(empty(self::getSetting()['logoApp']))
+        $printer->text(self::getSetting()['AppName']."\n");
+      else{
+        $tux = EscposImage::load(public_path(self::getSetting()['logoApp']),true);  
+        $printer -> graphics($tux);
+      }
       $printer -> feed();
       $printer->selectPrintMode();
       $printer->text(self::getSetting()['Alamat']."\n");
+      
       $printer->text('Telp. '.self::getSetting()['Telp']."\n");
       if(self::getSetting()['headerkasir'] != null){
       $printer->text(self::getSetting()['headerkasir']."\n");
@@ -205,9 +204,7 @@ class Cetak
   {
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100, 2);
-      // $connector = null;
-      // $connector = new WindowsPrintConnector("test2");
+      $connector = self::connector();
       $printer = new Printer($connector, $profile);
       $printer -> pulse();
       $printer->close();
@@ -224,9 +221,7 @@ class Cetak
   {
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = new NetworkPrintConnector(self::getSetting()['IpPrinter'], 9100, 2);
-      // $connector = null;
-      // $connector = new WindowsPrintConnector("test2");
+      $connector = self::connector();
       $printer = new Printer($connector, $profile);
       $printer->close();
       $respon['status'] = 'success';

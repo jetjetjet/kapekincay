@@ -121,7 +121,7 @@
               @endif
             </div>  
               <div class="float-right">
-                <a href="{{ url('/menu') }}" type="button" class="btn btn-danger mt-2" type="submit">Batal</a>
+                <a href="{{ url('/menu') }}" type="button" class="btn btn-danger mt-2" type="submit">{{$data->id ? "Kembali" : "Batal"}}</a>
                 <button class="btn btn-primary mt-2" id="sub" type="submit">Simpan</button>
               </div>
           </form>

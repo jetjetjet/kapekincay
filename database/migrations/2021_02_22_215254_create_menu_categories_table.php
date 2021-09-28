@@ -31,6 +31,6 @@ class CreateMenuCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('menu_categories');
+        Schema::dropIfExists('menucategory');
     }
 }

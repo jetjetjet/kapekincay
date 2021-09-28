@@ -165,7 +165,7 @@ input[type=number] {
                       data-promoid="{{$mkn['promoid']}}"
                     >
                       <div class="category-tile">
-                        <img width="120" height="120" src="{{ isset($mkn->menuimg) ? asset($mkn->menuimg) : asset('/public/images/fnb.jpg') }}" onerror="this.onerror=null;this.src='{{asset('/images/fnb.jpg')}}';" >
+                        <img width="120" height="120" src="{{ isset($mkn->menuimg) ? asset($mkn->menuimg) : asset('/images/fnb.jpg') }}" onerror="this.onerror=null;this.src='{{asset('/images/fnb.jpg')}}';" >
                         <span>{{$mkn['menuname']}} <p class="text-danger">{{$mkn['menuavaible'] != true ? " - Stok Kosong" : ""}}</p></span>
                       </div>
                     </a>
@@ -510,7 +510,7 @@ input[type=number] {
             url: url,
             data: form.serialize(),
             success: function(data){
-              window.location.href = data;
+              // window.location.href = data;
               setTimeout(() => {
                 window.location.href = "{{ url('/order/meja/view') }}"
               }, 1000);

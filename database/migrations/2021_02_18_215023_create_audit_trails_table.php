@@ -32,6 +32,6 @@ class CreateAuditTrailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('audit_trails');
+        Schema::dropIfExists('audittrails');
     }
 }

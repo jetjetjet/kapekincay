@@ -33,9 +33,9 @@
       <input type="hidden" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}">
       <p class="text-center">{{$menuQty}}</p>
     @else
-      <span class="input-number-decrement" counter-down>–</span>
-        <input type="number" class="input-number subQty" min="1" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}" sub-input >
-      <span class="input-number-increment" counter-up>+</span> 
+      <span class="input-number-decrement {{isset($sub->id) && isset($rowIndex) ? 'd-none' : '' }}" counter-down>–</span>
+        <input type="number" {{isset($sub->id) && isset($rowIndex) ? 'readonly' : '' }} class="input-number subQty" min="1" name="dtl[{{ $rowIndex }}][odqty]" value="{{$menuQty}}" sub-input >
+      <span class="input-number-increment {{isset($sub->id) && isset($rowIndex) ? 'd-none' : '' }}" counter-up>+</span> 
     @endif
   </td>
   <td>
@@ -48,7 +48,7 @@
       <p class="text-center">{{ $menuRemark }}</p>
       <input type="hidden" value="{{$menuRemark}}" name="dtl[{{ $rowIndex }}][odremark]" style="width: 60px;">
     @else
-      <input type="text" value="{{$menuRemark}}" name="dtl[{{ $rowIndex }}][odremark]" style="width: 60px;">
+      <input type="text" {{isset($sub->id) && isset($rowIndex) ? 'readonly' : '' }} value="{{$menuRemark}}" name="dtl[{{ $rowIndex }}][odremark]" style="width: 60px;">
     @endif
   </td>
     <td>
@@ -61,9 +61,9 @@
         <span class="badge badge-danger">H <i class="far fa-times-circle"></i></span>
       </button>
       @if(isset($sub->id) && isset($rowIndex) && !$menuDelivered && Perm::can(['order_pelayan']))
-        <button type="button" title="Pesanan Selesai Diantar" id="dtl[{{ $rowIndex }}][delivRow]" style="border:none; background:transparent" deliver-row>
+        <!-- <button type="button" title="Pesanan Selesai Diantar" id="dtl[{{ $rowIndex }}][delivRow]" style="border:none; background:transparent" deliver-row>
           <span class="badge badge-info">S <i class="far fa-check-square"></i></span>
-        </button>
+        </button> -->
       @endif
     @endif
   </td>

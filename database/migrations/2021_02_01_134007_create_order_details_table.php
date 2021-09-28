@@ -20,10 +20,13 @@ class CreateOrderDetailsTable extends Migration
             $table->integer('odqty');
             $table->decimal('odprice',16,0);
             $table->decimal('odtotalprice',16,0);
+            $table->decimal('odpriceraw',16,0);
+            $table->decimal('odtotalpriceraw',16,0);
+            $table->boolean('odispromo');
+            $table->bigInteger('odpromoid')->nullable();
             $table->string('odremark')->nullable();
             $table->integer('odindex');
             $table->boolean('oddelivered');
-
             $table->boolean('odactive');
             $table->dateTime('odcreatedat');
             $table->integer('odcreatedby');
@@ -39,6 +42,6 @@ class CreateOrderDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_details');
+        Schema::dropIfExists('orderdetail');
     }
 }

@@ -425,6 +425,7 @@ class OrderRepository
     } catch (\Exception $e) {
       // $eMsg = $e->getMessage() ?? "NOT_RECORDED";
       // Log::channel('errorKape')->error(trim($eMsg));
+      dd($e);
       $respon['status'] = 'error';
     }
     return $respon;
@@ -509,10 +510,9 @@ class OrderRepository
   public static function saveDetailOrder($respon, $id, $details, $loginid)
   {
     $idHeader = $id != null ? $id : $respon['id'];
-    // dd($details);
     $detRow = "";
     try{
-      foreach ($details as $dtl){
+      foreach ($details as $key => $dtl){
         if (!isset($dtl->id)){
           if($dtl->odqty > 0){
             $detRow = OrderDetail::create([
@@ -833,41 +833,49 @@ class OrderRepository
 
   public static function paid($respon, $id, $loginid, $inputs)
   {
-    $data = Order::where('orderactive', '1')
-      ->where('id', $id)
-      ->first();
+    try{
+      DB::beginTransaction();
+      $data = Order::where('orderactive', '1')
+        ->where('id', $id)
+        ->first();
 
-    $datasub = OrderDetail::where('odactive', '1')->where('odorderid', $id);
+      $datasub = OrderDetail::where('odactive', '1')->where('odorderid', $id);
 
-    $otype = Order::where('orderactive', '1')->where('id', $id)->where('ordertype', 'TAKEAWAY')->first();
+      $otype = Order::where('orderactive', '1')->where('id', $id)->first();
 
-    $cekDelete = false;
-    if ($data != null){
-      $data->update([
-        'orderpaymentmethod' => $inputs['orderpaymentmethod'],
-        'orderpaidprice' => $inputs['orderpaidprice'],
-        'orderdiscountprice' => $inputs['orderdiscountprice'],
-        'orderstatus' => 'PAID',
-        'orderpaid' => '1',
-        'orderpaidby' => $loginid,
-        'orderpaidat' => now()->toDateTimeString(),
-        'ordermodifiedby' => $loginid,
-        'ordermodifiedat' => now()->toDateTimeString()
-      ]);
-      if ($otype != null){
-        $datasub->update([
-          'oddelivered' => '1',
-          'odmodifiedat' => now()->toDateTimeString(),
-          'odmodifiedby' => $loginid
+
+      if ($data != null){
+        $data->update([
+          'orderpaymentmethod' => $inputs['orderpaymentmethod'],
+          'orderpaidprice' => $inputs['orderpaidprice'],
+          'orderdiscountprice' => $inputs['orderdiscountprice'],
+          'orderstatus' => 'PAID',
+          'orderpaid' => '1',
+          'orderpaidby' => $loginid,
+          'orderpaidat' => now()->toDateTimeString(),
+          'ordermodifiedby' => $loginid,
+          'ordermodifiedat' => now()->toDateTimeString()
         ]);
-      }       
-      $cekDelete = true;
-      $respon['status'] = 'success';
-      array_push($respon['messages'], 'Pesanan Dibayar');
-    }else{
+        if ($otype != null){
+          $datasub->update([
+            'oddelivered' => '1',
+            'odmodifiedat' => now()->toDateTimeString(),
+            'odmodifiedby' => $loginid
+          ]);
+        }       
+
+        $respon['status'] = 'success';
+        array_push($respon['messages'], 'Pesanan Dibayar');
+      }
+      DB::commit();
+
+    }catch(\Exception $e){
+      $eMsg = $e->getMessage() ?? "NOT_RECORDED";
+      Log::channel('errorKape')->error("OrderDeliver_" . trim($eMsg));
       $respon['status'] = 'error';
-      array_push($respon['messages'], 'Kesalahan');
+      array_push($respon['messages'], 'Kesalahan! Tidak dapat memproses.');
     }
+
     return $respon;
   }
 

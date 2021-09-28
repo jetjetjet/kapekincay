@@ -33,6 +33,6 @@ class CreateSubPromosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sub_promos');
+        Schema::dropIfExists('subpromo');
     }
 }

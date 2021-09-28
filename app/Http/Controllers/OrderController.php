@@ -123,6 +123,7 @@ class OrderController extends Controller
 		);
 		
 		$inputs = $request->all();
+    $inputs['dtl'] = $this->mapRowsX(isset($inputs['dtl']) ? $inputs['dtl'] : null);
 		
 		$validator = validator::make($inputs, $rules);
 
@@ -174,7 +175,7 @@ class OrderController extends Controller
 		return redirect('/order/meja/view');
   }
 
-	public function saveCust(Request $request)
+	public function saveCust(Request $request, $id)
 	{
     $respon = Helpers::$responses;
 		$inputs = $request->all();
@@ -265,7 +266,7 @@ class OrderController extends Controller
 		$cetak = Cetak::print($data);
 	}
 
-	public function orderReceiptkasir($id, Request $request)
+	public static function orderReceiptkasir($id, Request $request)
 	{
 		$data = OrderRepository::getOrderReceiptkasir($id);
 		$inputs = $request->all();
