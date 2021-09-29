@@ -113,6 +113,9 @@ input[type=number] {
   border-left: none;
   border-radius: 0 4px 4px 0;
 }
+.table > tbody:before {
+    content: "";
+}
 </style>
   <div class="title">
     <h3>Pesanan</h3>

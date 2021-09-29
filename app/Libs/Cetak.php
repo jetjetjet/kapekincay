@@ -42,11 +42,11 @@ class Cetak
       $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
       $printer->setEmphasis(true);
       $printer->selectPrintMode();
-      $printer->text(self::getSetting()['AppName'] ."\n");
-      if(self::getSetting()['header'])
-        $printer->text(self::getSetting()['header']."\n");
-      $printer->text(self::getSetting()['Alamat']."\n");
-      $printer->text("================================================\n");
+      // $printer->text(self::getSetting()['AppName'] ."\n");
+      // if(self::getSetting()['header'])
+      //   $printer->text(self::getSetting()['header']."\n");
+      // $printer->text(self::getSetting()['Alamat']."\n");
+      // $printer->text("================================================\n");
       /* Title of receipt */
       $printer -> setTextSize(2, 1);
       $printer->text($data->invoice . "\n");
@@ -83,8 +83,9 @@ class Cetak
       /* Footer */
       $printer->feed(1);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
-      $printer->text(self::getSetting()['footer'] . "\n");
-      $printer->feed();
+      $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
+      $printer->text(now()->toTimeString()."\n");
+      $printer->cut();
       $printer->close();
       // $printer->text($date . "\n");
     }catch(\Exception $e){
@@ -251,8 +252,9 @@ class Cetak
       /* Footer */
       $printer->feed(1);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
-      $printer->text(self::getSetting()['footer'] . "\n");
-      $printer->feed();
+      $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
+      $printer->text(now()->toTimeString()."\n");
+      $printer->cut();
       $printer->close();
       // $printer->text($date . "\n");
     }catch(\Exception $e){
