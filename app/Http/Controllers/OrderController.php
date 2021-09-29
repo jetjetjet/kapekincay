@@ -172,6 +172,11 @@ class OrderController extends Controller
       return redirect()->back()->withErrors($results['messages'])->withInput($inputs);
 		}
 
+		if(isset($results['additional'])){
+			$data = OrderRepository::printAdditional($inputs['id'], $results['additional']);
+			$cetak = Cetak::printTambahan($data);
+		}
+
 		return redirect('/order/meja/view');
   }
 

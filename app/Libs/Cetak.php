@@ -200,6 +200,66 @@ class Cetak
     }
   }
 
+  public static function printTambahan($data)
+  {
+    try{
+      $profile = CapabilityProfile::load("simple");
+      $connector = self::connector();
+      $printer = new Printer($connector, $profile);
+      $printer->setJustification(Printer::JUSTIFY_CENTER);
+      $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+      $printer->setEmphasis(true);
+      $printer->selectPrintMode();
+      $printer->text(self::getSetting()['AppName'] ."\n");
+      if(self::getSetting()['header'])
+        $printer->text(self::getSetting()['header']."\n");
+      $printer->text(self::getSetting()['Alamat']."\n");
+      $printer->text("================================================\n");
+      /* Title of receipt */
+      $printer -> setTextSize(2, 1);
+      $printer->text($data->invoice . "\n");
+      $printer -> setTextSize(1, 1);
+      $printer->text($data->orderType . "\n Meja ". $data->noTable . "\n");
+      $printer->setEmphasis(false);
+  
+      $printer->text("Pesanan Tambahan\n");
+      $printer->text("------------------------------------------------\n");
+      // Body
+      $printer->setJustification(Printer::JUSTIFY_LEFT);
+      $printer->setEmphasis(true);
+      // $printer->text(self::getAsString("", $data->price, "Rp "));
+      $printer->setEmphasis(false);
+      if($data->detail){
+        foreach($data->detail as $item){
+          $rPrice = $item->promo ? $item->priceraw : $item->price;
+          $rPriceTotal = $item->promo  ? $item->totalPriceraw : $item->totalPrice;
+          $printer->text($item->text . "\n");
+          $printer->text(self::getAsString($item->qty . " x " . number_format($rPrice,0), number_format($rPriceTotal,0))); // for 58mm Font A
+          
+          if($item->promo){
+            $printer->text(self::getAsString( "Promo @" . number_format($item->promodiscount,0), number_format(($item->qty * $item->promodiscount),0))); // for 58mm Font A
+          }
+        }
+      }
+  
+      $printer->text("------------------------------------------------\n");
+      /* Total */
+      // $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+      // $printer->text(self::getAsString("Total ", number_format($data->price,0), "Rp "));
+      // $printer->selectPrintMode();
+  
+      /* Footer */
+      $printer->feed(1);
+      $printer->setJustification(Printer::JUSTIFY_CENTER);
+      $printer->text(self::getSetting()['footer'] . "\n");
+      $printer->feed();
+      $printer->close();
+      // $printer->text($date . "\n");
+    }catch(\Exception $e){
+      $printer = false;
+    }
+  }
+
   public static function bukaLaci($respon)
   {
     try{

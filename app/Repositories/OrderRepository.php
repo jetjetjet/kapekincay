@@ -425,7 +425,6 @@ class OrderRepository
     } catch (\Exception $e) {
       // $eMsg = $e->getMessage() ?? "NOT_RECORDED";
       // Log::channel('errorKape')->error(trim($eMsg));
-      dd($e);
       $respon['status'] = 'error';
     }
     return $respon;
@@ -507,15 +506,16 @@ class OrderRepository
     return $respon;
   }
   
-  public static function saveDetailOrder($respon, $id, $details, $loginid)
+  public static function saveDetailOrder(&$respon, $id, $details, $loginid)
   {
     $idHeader = $id != null ? $id : $respon['id'];
     $detRow = "";
+    $tempAdditional = array();
     try{
       foreach ($details as $key => $dtl){
         if (!isset($dtl->id)){
           if($dtl->odqty > 0){
-            $detRow = OrderDetail::create([
+            $insertDetail = array(
               'odorderid' => $idHeader,
               'odmenuid' => $dtl->odmenuid,
               'odqty' => $dtl->odqty,
@@ -531,51 +531,22 @@ class OrderRepository
               'odactive' => '1',
               'odcreatedat' => now()->toDateTimeString(),
               'odcreatedby' => $loginid
-            ]);
+            );
+            
+            $detRow = OrderDetail::create($insertDetail);
+            //Tambahan Makanan
+            if ($id != null) array_push($tempAdditional, $insertDetail);
   
-              $updStatus = Order::where('orderactive', '1')
-              ->where('id', $idHeader)
-              ->update([
-                'orderstatus' => 'ADDITIONAL'
-              ]);
-          }
-        } else {
-          $detRow = OrderDetail::where('odactive', '1')
-            ->where('id', $dtl->id);
-          if($dtl->odqty > 0){
-            $detRow->update([
-              'odmenuid' => $dtl->odmenuid,
-              'odqty' => $dtl->odqty,
-              'odprice' => $dtl->odprice,
-              'odtotalprice' => ($dtl->odprice * $dtl->odqty),
-              'odpriceraw' => $dtl->odpriceraw,
-              'odtotalpriceraw' => ($dtl->odpriceraw * $dtl->odqty),
-              'odremark' => $dtl->odremark,
-              'odindex' => $dtl->index,
-              'odispromo' => isset($dtl->odpromoid) ? '1' : '0',
-              'odpromoid' => $dtl->odpromoid ?? null,
-              'odmodifiedat' => now()->toDateTimeString(),
-              'odmodifiedby' => $loginid
-            ]);
-          }else{
-            $detRow->update([
-              'odmenuid' => $dtl->odmenuid,
-              'odqty' => $dtl->odqty,
-              'odprice' => $dtl->odprice,
-              'odtotalprice' => ($dtl->odprice * $dtl->odqty),
-              'odpriceraw' => $dtl->odpriceraw,
-              'odtotalpriceraw' => ($dtl->odpriceraw * $dtl->odqty),
-              'odispromo' => isset($dtl->odpromoid) ? '1' : '0',
-              'odpromoid' => $dtl->odpromoid ?? null,
-              'odremark' => $dtl->odremark,
-              'odindex' => $key,
-              'odactive' => '0',
-              'odmodifiedat' => now()->toDateTimeString(),
-              'odmodifiedby' => $loginid
+            $updStatus = Order::where('orderactive', '1')
+            ->where('id', $idHeader)
+            ->update([
+              'orderstatus' => 'ADDITIONAL'
             ]);
           }
         }
       }
+
+      if(count($tempAdditional) > 0) $respon['additional'] = $tempAdditional;
 
       $doubleCek = OrderDetail::where('odactive', '1')
         ->where('odorderid', $idHeader)
@@ -877,6 +848,45 @@ class OrderRepository
     }
 
     return $respon;
+  }
+
+  public static function printAdditional($id, $additional)
+  {
+    $dataOrder = new \StdClass();
+    $order = Order::join('boards', 'boards.id', 'orderboardid')
+      ->where('orderactive', '1')
+      ->where('orders.id', $id)
+      ->select(
+        'orderinvoice',
+        'orderprice',
+        'orderdate',
+        DB::raw("case when ordertype = 'DINEIN' then 'Makan Ditempat' else 'Bungkus' end as ordertype"),
+        DB::raw("boardnumber || ' - Lantai ' || boardfloor as boardnumber")
+      )->first();
+
+    if($order != null){
+      $dataOrder->invoice = $order->orderinvoice;
+      $dataOrder->price = $order->orderprice;
+      $dataOrder->date = Carbon::parse($order->orderdate)->format('d/m/Y H:i') ?? null;
+      $dataOrder->orderType = $order->ordertype;
+      $dataOrder->noTable = $order->boardnumber;
+      $dataOrder->detail = Array();
+      foreach($additional as $add){
+        $menuName = DB::table('menus')->where('id', $add['odmenuid'])->select('menuname')->first(); 
+        $promo = DB::table('promo')->where('id', $add['odpromoid'])->select('promodiscount')->first();
+        $temp = new \StdClass();
+        $temp->text = $menuName->menuname;
+        $temp->qty = $add['odqty'];
+        $temp->price = $add['odprice'];
+        $temp->promo = $add['odispromo'];
+        $temp->totalPrice = $add['odtotalprice'];
+        $temp->priceraw = $add['odpriceraw'];
+        $temp->totalPriceraw = $add['odtotalpriceraw'];
+        $temp->promodiscount = $promo->promodiscount ?? 0;
+        array_push($dataOrder->detail, $temp);
+      }
+    }
+    return $dataOrder;
   }
 
   public static function getOrderReceipt($id)
