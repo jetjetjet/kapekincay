@@ -51,7 +51,10 @@ class Cetak
       $printer -> setTextSize(2, 1);
       $printer->text($data->invoice . "\n");
       $printer -> setTextSize(1, 1);
-      $printer->text($data->orderType . "\n Meja ". $data->noTable . "\n");
+      if($data->orderType == "Makan Ditempat")
+        $printer->text($data->orderType . "\n Meja ". $data->noTable . "\n");
+      else
+        $printer->text($data->orderType . "\n");
       $printer->setEmphasis(false);
   
       $printer->text("Daftar Pesanan\n");

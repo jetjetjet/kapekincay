@@ -756,11 +756,9 @@ input[type=number] {
     if(val == "TAKEAWAY"){
       $('.divMeja').addClass('d-none');
       $('#headerOrder').addClass('d-none');
-      $('#saveAndPrint').addClass('d-none');
     } else {
       $('.divMeja').removeClass('d-none')
       $('#headerOrder').removeClass('d-none');
-      $('#saveAndPrint').removeClass('d-none');
     }
   }
 
