@@ -28,8 +28,8 @@ class Cetak
   }
   private static function connector()
   {
-    return new WindowsPrintConnector('test2');
-    // return new NetworkPrintConnector(SettingRepository::getAppSetting('IpPrinter'), 9100, 2);
+    // return new WindowsPrintConnector('test2');
+    return new NetworkPrintConnector(SettingRepository::getAppSetting('IpPrinter'), 9100, 2);
   }
 
   public static function print($data)
@@ -42,16 +42,19 @@ class Cetak
       $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
       $printer->setEmphasis(true);
       $printer->selectPrintMode();
-      $printer->text(self::getSetting()['AppName'] ."\n");
-      if(self::getSetting()['header'])
-        $printer->text(self::getSetting()['header']."\n");
-      $printer->text(self::getSetting()['Alamat']."\n");
-      $printer->text("================================================\n");
+      // $printer->text(self::getSetting()['AppName'] ."\n");
+      // if(self::getSetting()['header'])
+      //   $printer->text(self::getSetting()['header']."\n");
+      // $printer->text(self::getSetting()['Alamat']."\n");
+      // $printer->text("================================================\n");
       /* Title of receipt */
       $printer -> setTextSize(2, 1);
       $printer->text($data->invoice . "\n");
       $printer -> setTextSize(1, 1);
-      $printer->text($data->orderType . "\n Meja ". $data->noTable . "\n");
+      if($data->orderType == "Makan Ditempat")
+        $printer->text($data->orderType . "\n Meja ". $data->noTable . "\n");
+      else
+        $printer->text($data->orderType . "\n");
       $printer->setEmphasis(false);
   
       $printer->text("Daftar Pesanan\n");
@@ -83,8 +86,9 @@ class Cetak
       /* Footer */
       $printer->feed(1);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
-      $printer->text(self::getSetting()['footer'] . "\n");
-      $printer->feed();
+      $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
+      $printer->text(now()->toTimeString()."\n");
+      $printer->cut();
       $printer->close();
       // $printer->text($date . "\n");
     }catch(\Exception $e){
@@ -251,8 +255,9 @@ class Cetak
       /* Footer */
       $printer->feed(1);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
-      $printer->text(self::getSetting()['footer'] . "\n");
-      $printer->feed();
+      $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
+      $printer->text(now()->toTimeString()."\n");
+      $printer->cut();
       $printer->close();
       // $printer->text($date . "\n");
     }catch(\Exception $e){

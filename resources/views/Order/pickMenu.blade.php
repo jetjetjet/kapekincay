@@ -113,6 +113,9 @@ input[type=number] {
   border-left: none;
   border-radius: 0 4px 4px 0;
 }
+.table > tbody:before {
+    content: "";
+}
 </style>
   <div class="title">
     <h3>Pesanan</h3>
@@ -753,11 +756,9 @@ input[type=number] {
     if(val == "TAKEAWAY"){
       $('.divMeja').addClass('d-none');
       $('#headerOrder').addClass('d-none');
-      $('#saveAndPrint').addClass('d-none');
     } else {
       $('.divMeja').removeClass('d-none')
       $('#headerOrder').removeClass('d-none');
-      $('#saveAndPrint').removeClass('d-none');
     }
   }
 

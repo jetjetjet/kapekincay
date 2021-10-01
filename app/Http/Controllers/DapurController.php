@@ -18,7 +18,7 @@ class DapurController extends Controller
 {
   public function index()
   {
-    $ipserver = SettingRepository::getAppSetting('IPServer') ?? '127.0.0.1';
+    $ipserver = SettingRepository::getAppSetting('IpServer') ?? '127.0.0.1';
     return view('Dapur.index')->with('ipserver', $ipserver);
   }
 

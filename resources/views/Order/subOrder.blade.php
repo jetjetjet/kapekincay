@@ -13,18 +13,17 @@
   $canUpd = Perm::can(['order_save']) && ($sub->oddelivertext ?? false);
 // dd($sub);
 ?>
-
 <tr class="subitem">
   <td>
     <input type="hidden" name="dtl[{{ $rowIndex }}][odpromoid]" value="{{ isset($rowIndex) && isset($sub->odpromoid) ? $sub->odpromoid : null }}" class=" text-right"/>
     <input type="hidden" name="dtl[{{ $rowIndex }}][odmenuid]" value="{{$menuid}}" class=" text-right"/>
     <input type="hidden" name="dtl[{{ $rowIndex }}][odmenutext]" value="{{$menuText}}" class=" text-right"/>
-    <p id="dtl[{{ $rowIndex }}][odmenutext]"><span class="badge outline-badge-info {{ isset($rowIndex) && isset($sub->odpromoid) ? '' : 'd-none' }}"> Promo </span>&nbsp;{{$menuText}}</p>
+    <p class="mt-2" id="dtl[{{ $rowIndex }}][odmenutext]"><span class="badge outline-badge-info {{ isset($rowIndex) && isset($sub->odpromoid) ? '' : 'd-none' }}"> Promo </span>&nbsp;{{$menuText}}</p>
   </td>
   <td>
     <input type="hidden" name="dtl[{{ $rowIndex }}][odprice]" value="{{$menuPrice}}" class=" text-right"/>
     <input type="hidden" name="dtl[{{ $rowIndex }}][odpriceraw]" value="{{$menuPriceRaw}}" class=" text-right"/>
-    <p width="40%" id="dtl[{{ $rowIndex }}][odprice]">{{ number_format($menuPrice,0) }}</p>
+    <p class="mt-2" width="40%" id="dtl[{{ $rowIndex }}][odprice]">{{ number_format($menuPrice,0) }}</p>
     <input type="hidden" name="dtl[{{ $rowIndex }}][id]" value="{{ isset($rowIndex) && isset($sub->id) ? $sub->id : null }}" class=" text-right"/>
     <input type="hidden" name="dtl[{{ $rowIndex }}][index]" value="{{ $rowIndex }}" class=" text-right"/>
   </td>
@@ -40,7 +39,7 @@
   </td>
   <td>
     <div id="Totalp"><input type="hidden" name="dtl[{{ $rowIndex }}][odtotalprice]" value="{{$menuTotalprice}}" />
-      <p id="dtl[{{ $rowIndex }}][odtotalprice]" >{{ number_format($menuTotalprice,0) }}</p>
+      <p class="mt-2" id="dtl[{{ $rowIndex }}][odtotalprice]" >{{ number_format($menuTotalprice,0) }}</p>
     </div>
   </td>
   <td>
@@ -48,7 +47,7 @@
       <p class="text-center">{{ $menuRemark }}</p>
       <input type="hidden" value="{{$menuRemark}}" name="dtl[{{ $rowIndex }}][odremark]" style="width: 60px;">
     @else
-      <input type="text" {{isset($sub->id) && isset($rowIndex) ? 'readonly' : '' }} value="{{$menuRemark}}" name="dtl[{{ $rowIndex }}][odremark]" style="width: 60px;">
+      <input class="form-control" type="text" {{isset($sub->id) && isset($rowIndex) ? 'readonly' : '' }} value="{{$menuRemark}}" name="dtl[{{ $rowIndex }}][odremark]" style="width: 60px; height: 20px;">
     @endif
   </td>
     <td>
