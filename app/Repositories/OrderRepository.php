@@ -882,6 +882,7 @@ class OrderRepository
         $temp->totalPrice = $add['odtotalprice'];
         $temp->priceraw = $add['odpriceraw'];
         $temp->totalPriceraw = $add['odtotalpriceraw'];
+        $temp->odremark = $add['odremark'];
         $temp->promodiscount = $promo->promodiscount ?? 0;
         array_push($dataOrder->detail, $temp);
       }
@@ -922,6 +923,7 @@ class OrderRepository
         $temp->priceraw = $sub->odpriceraw;
         $temp->totalPriceraw = $sub->odtotalpriceraw;
         $temp->promodiscount = $sub->promodiscount;
+        $temp->odremark = $sub->odremark;
   
         array_push($dataOrder->detail, $temp);
       }

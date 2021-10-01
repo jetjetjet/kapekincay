@@ -28,8 +28,8 @@ class Cetak
   }
   private static function connector()
   {
-    // return new WindowsPrintConnector('test2');
-    return new NetworkPrintConnector(SettingRepository::getAppSetting('IpPrinter'), 9100, 2);
+    return new WindowsPrintConnector('test2');
+    // return new NetworkPrintConnector(SettingRepository::getAppSetting('IpPrinter'), 9100, 2);
   }
 
   public static function print($data)
@@ -66,21 +66,26 @@ class Cetak
       $printer->setEmphasis(false);
       if($data->detail){
         foreach($data->detail as $item){
-          $rPrice = $item->promo ? $item->priceraw : $item->price;
-          $rPriceTotal = $item->promo  ? $item->totalPriceraw : $item->totalPrice;
-          $printer->text($item->text . "\n");
-          $printer->text(self::getAsString($item->qty . " x " . number_format($rPrice,0), number_format($rPriceTotal,0))); // for 58mm Font A
-          
+          $printer->setEmphasis(true);
           if($item->promo){
-            $printer->text(self::getAsString( "Promo @" . number_format($item->promodiscount,0), number_format(($item->qty * $item->promodiscount),0))); // for 58mm Font A
+            $printer->text($item->text);
+            $printer->selectPrintMode(Printer::MODE_UNDERLINE);
+            $printer->text("(@".number_format($item->promodiscount).")\n");
+            $printer->selectPrintMode(Printer::MODE_FONT_A);
+          }else{
+            $printer->text($item->text."\n");
           }
+          $printer->setEmphasis(false);
+          $printer->text(self::getAsStringkasirmenu("" , number_format($item->price), " x ".$item->qty,number_format($item->totalPrice))); // for 58mm Font A
+          if($item->odremark)
+            $printer->text("Cttn : ".$item->odremark."\n");
         }
       }
   
       $printer->text("------------------------------------------------\n");
       /* Total */
       $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-      $printer->text(self::getAsString("Total ", number_format($data->price,0), "Rp "));
+      $printer->text(self::getAsStringkasirtotal("Total ", number_format($data->price,0), "Rp "));
       $printer->selectPrintMode();
   
       /* Footer */
@@ -214,16 +219,19 @@ class Cetak
       $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
       $printer->setEmphasis(true);
       $printer->selectPrintMode();
-      $printer->text(self::getSetting()['AppName'] ."\n");
-      if(self::getSetting()['header'])
-        $printer->text(self::getSetting()['header']."\n");
-      $printer->text(self::getSetting()['Alamat']."\n");
-      $printer->text("================================================\n");
+      // $printer->text(self::getSetting()['AppName'] ."\n");
+      // if(self::getSetting()['header'])
+      //   $printer->text(self::getSetting()['header']."\n");
+      // $printer->text(self::getSetting()['Alamat']."\n");
+      // $printer->text("================================================\n");
       /* Title of receipt */
       $printer -> setTextSize(2, 1);
       $printer->text($data->invoice . "\n");
       $printer -> setTextSize(1, 1);
-      $printer->text($data->orderType . "\n Meja ". $data->noTable . "\n");
+      if($data->orderType == "Makan Ditempat")
+        $printer->text($data->orderType . "\n Meja ". $data->noTable . "\n");
+      else
+        $printer->text($data->orderType . "\n");
       $printer->setEmphasis(false);
   
       $printer->text("Pesanan Tambahan\n");
@@ -235,14 +243,19 @@ class Cetak
       $printer->setEmphasis(false);
       if($data->detail){
         foreach($data->detail as $item){
-          $rPrice = $item->promo ? $item->priceraw : $item->price;
-          $rPriceTotal = $item->promo  ? $item->totalPriceraw : $item->totalPrice;
-          $printer->text($item->text . "\n");
-          $printer->text(self::getAsString($item->qty . " x " . number_format($rPrice,0), number_format($rPriceTotal,0))); // for 58mm Font A
-          
+          $printer->setEmphasis(true);
           if($item->promo){
-            $printer->text(self::getAsString( "Promo @" . number_format($item->promodiscount,0), number_format(($item->qty * $item->promodiscount),0))); // for 58mm Font A
+            $printer->text($item->text);
+            $printer->selectPrintMode(Printer::MODE_UNDERLINE);
+            $printer->text("(@".number_format($item->promodiscount).")\n");
+            $printer->selectPrintMode(Printer::MODE_FONT_A);
+          }else{
+            $printer->text($item->text."\n");
           }
+          $printer->setEmphasis(false);
+          $printer->text(self::getAsStringkasirmenu("" , number_format($item->price), " x ".$item->qty,number_format($item->totalPrice))); // for 58mm Font A
+          if($item->odremark)
+            $printer->text("Cttn : ".$item->odremark."\n");
         }
       }
   
