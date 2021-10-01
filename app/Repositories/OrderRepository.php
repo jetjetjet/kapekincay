@@ -853,7 +853,7 @@ class OrderRepository
   public static function printAdditional($id, $additional)
   {
     $dataOrder = new \StdClass();
-    $order = Order::join('boards', 'boards.id', 'orderboardid')
+    $order = Order::leftJoin('boards', 'boards.id', 'orderboardid')
       ->where('orderactive', '1')
       ->where('orders.id', $id)
       ->select(
