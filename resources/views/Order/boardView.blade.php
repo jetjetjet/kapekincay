@@ -77,7 +77,6 @@
 @endsection
 
 @section('js-order')
-  <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
   <script>
     $(document).ready(function (){
       //console.log(ws.Open)
