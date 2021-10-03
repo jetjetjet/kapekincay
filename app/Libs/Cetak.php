@@ -28,8 +28,8 @@ class Cetak
   }
   private static function connector()
   {
-    return new WindowsPrintConnector('test2');
-    // return new NetworkPrintConnector(SettingRepository::getAppSetting('IpPrinter'), 9100, 2);
+    // return new WindowsPrintConnector('test2');
+    return new NetworkPrintConnector(SettingRepository::getAppSetting('IpPrinter'), 9100, 2);
   }
 
   public static function print($data)
