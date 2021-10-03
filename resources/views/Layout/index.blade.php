@@ -186,6 +186,7 @@
         $('#notiferror').removeClass('d-none')
       }
       $(document).ready(function (){
+        App.init();
         feather.replace();
       })
     </script>
