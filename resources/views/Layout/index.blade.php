@@ -12,7 +12,7 @@
     <script src="{{ url('/') }}/assets/js/loader.js"></script>
 
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
-    <!-- <link href="{{ url('/') }}/font/font.css" rel="stylesheet" type="text/css"> -->
+    <link href="{{ url('/') }}/font/font.css" rel="stylesheet" type="text/css">
     <link href="{{ url('/') }}/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="{{ url('/') }}/assets/css/plugins.css" rel="stylesheet" type="text/css" />
     <link href="{{ url('/') }}/plugins/sweetalerts/sweetalert2.min.css" rel="stylesheet" type="text/css" />
