@@ -15,7 +15,7 @@
 							</a>
 						</li>
 						<li class="nav-item theme-text">
-							<a href="index.html" class="nav-link"> Cape </a>
+							<a href="index.html" class="nav-link"> {{ session('cafeName') }} </a>
 						</li>
 					</ul>
 					<ul class="list-unstyled menu-categories" id="topAccordion">
