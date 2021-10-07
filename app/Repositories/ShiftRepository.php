@@ -5,6 +5,7 @@ use App\Models\Shift;
 use DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Carbon;
 
 class ShiftRepository
 {
@@ -231,8 +232,9 @@ class ShiftRepository
 
   public static function cekShiftStatus()
   {
+    $date = Carbon::now()->format('Y-m-d');
     $cekShift = Shift::where('shiftactive',1)
-      ->whereRaw("( shiftstart::date = now()::date and shiftstart is not null )")
+      ->whereRaw("to_char(shiftstart, 'YYYY-MM-DD') = '{$date}' and shiftstart is not null")
       ->whereNull('shiftclose')
       ->select('id')
       ->first();
@@ -244,9 +246,10 @@ class ShiftRepository
 
   public static function shiftDashboard($loginid, $isAdmin)
   {
+    $date = Carbon::now()->format('Y-m-d');
     $text = Array('data' => null, 'can_close' => false);
     $cekShift = Shift::where('shiftactive',1)
-      ->whereRaw("( shiftstart::date = now()::date and shiftstart is not null ) and shiftclose is null");
+      ->whereRaw("to_char(shiftstart, 'YYYY-MM-DD') = '{$date}' and shiftstart is not null and shiftclose is null");
       
     if(!$isAdmin)
       $cekShift = $cekShift->where('shiftcreatedby', $loginid);
@@ -263,9 +266,10 @@ class ShiftRepository
 
   public static function shiftDashboardActive()
   {
+    $date = Carbon::now()->format('Y-m-d');
     $cekShift = Shift::join('users', 'users.id', 'shiftcreatedby')
       ->where('shiftactive',1)
-      ->whereRaw("( shiftstart::date = now()::date and shiftstart is not null )")
+      ->whereRaw("to_char(shiftstart, 'YYYY-MM-DD') = '{$date}' and shiftstart is not null")
       ->whereNull('shiftclose')
       ->select('shifts.id', 'shiftstart', 'username')
       ->first();
