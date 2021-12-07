@@ -114,7 +114,7 @@ class Cetak
         $printer->text(self::getSetting()['AppName']."\n");
       else{
         $tux = EscposImage::load(public_path(self::getSetting()['logoApp']),true);  
-        $printer -> graphics($tux);
+        $printer -> bitImage($tux);
       }
       $printer -> feed();
       $printer->selectPrintMode();
