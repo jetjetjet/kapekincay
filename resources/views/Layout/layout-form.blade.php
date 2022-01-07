@@ -6,7 +6,7 @@
   <link href="{{ url('/') }}/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
   <link href="{{ url('/') }}/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/select2/select2.min.css">
-  <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+  <!-- <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css"> -->
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/assets/css/forms/theme-checkbox-radio.css">
   <link href="{{ url('/') }}/plugins/file-upload/file-upload-with-preview.min.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" type="text/css" href="{{ url('/') }}/assets/css/forms/switches.css">
