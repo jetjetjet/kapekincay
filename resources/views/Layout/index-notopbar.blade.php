@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
     <title>{{ session('cafeName') ?? '' }} v.1.0.1</title>
     <link rel="icon" type="image/x-icon" href="{{ url('/') }}/assets/img/favicon.ico"/>
-    <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,600,700&display=swap" rel="stylesheet">
+    <link href="{{ url('/') }}/font/font.css" rel="stylesheet" type="text/css">
     <link href="{{ url('/') }}/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="{{ url('/') }}/assets/css/plugins.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/assets/css/elements/alert.css">
@@ -17,7 +17,7 @@
     <link href="{{ url('/') }}/plugins/sweetalerts/sweetalert2.min.css" rel="stylesheet" type="text/css" />
     <link href="{{ url('/') }}/plugins/sweetalerts/sweetalert.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/select2/select2.min.css">
-    <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url('/') }}/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css"> -->
   
     <style>
     /* SELECT2 MODAL */
