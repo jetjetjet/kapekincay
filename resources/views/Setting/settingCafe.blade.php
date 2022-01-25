@@ -38,12 +38,12 @@
             </div>
             <div class="form-group mb-2">
               <label for="Alamat">Alamat</label>
-              <textarea class="form-control" name="Alamat" rows="3" id="Alamat" value="{{ old('Alamat')}}" placeholder="" required></textarea>
+              <textarea class="form-control" name="Alamat" rows="3" id="Alamat" placeholder="" required>{{ old('Alamat')}}</textarea>
               <div class="invalid-feedback">
                 Alamat harus diisi!
               </div>
             </div>
-            <div class="form-group mb-2">
+            <!-- <div class="form-group mb-2">
               <label for="HeaderStruk">Header Struk Pelayan</label>
               <textarea class="form-control" name="HeaderStruk" required>{{ old('HeaderStruk')}}</textarea>
               <div class="invalid-feedback">
@@ -56,7 +56,7 @@
               <div class="invalid-feedback">
                 Format Akhir Struk harus diisi!
               </div>
-            </div>
+            </div> -->
             <div class="form-group mb-2">
               <label for="HeaderStruk">Header Struk Kasir</label>
               <textarea class="form-control" name="HeaderStrukKasir" required>{{ old('HeaderStrukKasir')}}</textarea>
@@ -78,6 +78,13 @@
             <div class="form-group mb-2">
               <label for="IpPrinter">Ip Printer Kasir</label>
               <input type="text" class="form-control" value="{{ old('IpPrinter')}}" name="IpPrinter" id="IpPrinter" placeholder="0.0.0.0" required>
+              <div class="invalid-feedback">
+                Ip Printer harus diisi!
+              </div>
+            </div>
+            <div class="form-group mb-2">
+              <label for="IpPrinter">Ip Printer 2</label>
+              <input type="text" class="form-control" value="{{ old('IpPrinter2')}}" name="IpPrinter2" id="IpPrinter2" placeholder="0.0.0.0" required>
               <div class="invalid-feedback">
                 Ip Printer harus diisi!
               </div>

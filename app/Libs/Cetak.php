@@ -26,17 +26,22 @@ class Cetak
       "logoApp" => SettingRepository::getAppSetting('logoApp'),
     );
   }
-  private static function connector()
+  private static function connector($status)
   {
     // return new WindowsPrintConnector('test2');
-    return new NetworkPrintConnector(SettingRepository::getAppSetting('IpPrinter'), 9100, 2);
+    if($status){
+      return new NetworkPrintConnector(SettingRepository::getAppSetting('IpPrinter2'), 9100, 2);
+    }else{
+      return new NetworkPrintConnector(SettingRepository::getAppSetting('IpPrinter'), 9100, 2);
+    }
   }
 
   public static function print($data)
   {
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = self::connector();
+      $status = $data->orderType == "Bungkus" ? true : false;
+      $connector = self::connector($status);
       $printer = new Printer($connector, $profile);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
       $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
@@ -106,7 +111,7 @@ class Cetak
   {
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = self::connector();
+      $connector = self::connector(false);
       $printer = new Printer($connector, $profile);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
       $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
@@ -213,7 +218,8 @@ class Cetak
   {
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = self::connector();
+      $status = $data->orderType = "Bungkus" ? true : false;
+      $connector = self::connector($status);
       $printer = new Printer($connector, $profile);
       $printer->setJustification(Printer::JUSTIFY_CENTER);
       $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
@@ -282,7 +288,7 @@ class Cetak
   {
     try{
       $profile = CapabilityProfile::load("simple");
-      $connector = self::connector();
+      $connector = self::connector(false);
       $printer = new Printer($connector, $profile);
       $printer -> pulse();
       $printer->close();
@@ -297,15 +303,36 @@ class Cetak
 
   public static function ping($respon)
   {
+    $profile = CapabilityProfile::load("simple");
     try{
-      $profile = CapabilityProfile::load("simple");
-      $connector = self::connector();
+      $connector = self::connector(false);
       $printer = new Printer($connector, $profile);
       $printer->close();
-      $respon['status'] = 'success';
+      array_push($respon['messages'], 'Printer Kasir Terhubung');
     }catch(\Exception $e){
       $printer = false;
-      $respon['status'] = "error";
+      array_push($respon['messages'], 'Printer Kasir Tidak Terhubung');
+    }
+
+    try{
+      $connector = self::connector(true);
+      $printer2 = new Printer($connector, $profile);
+      $printer2->close();
+      array_push($respon['messages'], 'Printer2 Terhubung');
+    }catch(\Exception $e){
+      $printer2 = false;
+      array_push($respon['messages'], 'Printer2 Tidak Terhubung');
+    }
+
+    if($printer && $printer2){
+      $respon['status'] = 'success';
+      array_push($respon['messages'], 'Printer Sudah Terhubung');
+    }elseif((!$printer && $printer2) || ($printer && !$printer2)){
+      $respon['status'] = 'warning';
+      array_push($respon['messages'], 'Salah Satu Printer Tidak Terhubung');
+    }else{
+      $respon['status'] = 'error';
+      array_push($respon['messages'], 'Printer Tidak Terhubung');
     }
     return $respon;
   }

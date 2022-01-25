@@ -118,11 +118,10 @@ class SettingController extends Controller
 			'NamaApp' => 'required',
 			'Alamat' => 'required',
 			'KodeInvoice' => 'required',
-			'HeaderStruk' => 'required',
-			'FooterStruk' => 'required', 
 			'HeaderStrukKasir' => 'required',
 			'FooterStrukKasir' => 'required', 
 			'IpPrinter' => 'required',
+      'IpPrinter2' => 'required',
 			'PasswordLaci' => 'required',
 			'Telp' => 'required'
 		);

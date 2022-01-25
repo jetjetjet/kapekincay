@@ -38,7 +38,7 @@ Mousetrap.bind('p', function(){
     url: url,
     type: "post",
     success: function(result){
-      //console.log(result);
+      console.log(result);
       var msg = result.messages[0];
       if(result.status == 'success'){
         swal({
@@ -49,9 +49,9 @@ Mousetrap.bind('p', function(){
         })
       }else{
         swal({
-          title: 'Printer Tidak Terhubung',
-          text: 'Cek kertas printer, Cek kabel, Jika tidak kunjung bisa, Hubungi Administrator',
-          type: 'error',
+          title: result.messages[2],
+          html: result.messages[0]+"<br>"+result.messages[1],
+          type: result.status,
           padding: '2em'
         })
       }

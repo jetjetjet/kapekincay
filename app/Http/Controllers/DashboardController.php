@@ -30,7 +30,7 @@ class DashboardController extends Controller
       $anka = $key + 1;
       $temp = new \StdClass();
       $temp->bln = $val;
-      $temp->val = strlen($anka) == 1 ? 0 . $anka:$key;;
+      $temp->val = strlen($anka) == 1 ? 0 . $anka:$anka;;
       $temp->skrg = $blnNow == $key + 1 ? true:false;
       array_push($data->bln, $temp);
     }
