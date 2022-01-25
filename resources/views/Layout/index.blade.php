@@ -6,7 +6,7 @@
     <meta name="ipws" content="{{ session('ipserver') }}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
-    <title>{{ session('cafeName') ?? '' }} v.1.0.1</title>
+    <title>{{ session('cafeName') ?? '' }} v.B 1.0.2</title>
     <link rel="icon" type="image/x-icon" href="{{ url('/') }}/assets/img/favicon.ico"/>
     <link href="{{ url('/') }}/assets/css/loader.css" rel="stylesheet" type="text/css" />
     <script src="{{ url('/') }}/assets/js/loader.js"></script>
@@ -129,7 +129,7 @@
 			</div>
       <div class="footer-wrapper">
           <div class="footer-section f-section-1">
-              <p class="">Copyright © 2021 <a target="_blank" href="https://www.facebook.com/Ikhwan-Komputer-Elektronika-626624144026593">IkhwanKomputer</a>, All rights reserved.</p>
+              <p class="">Copyright © 2022 <a target="_blank" href="https://www.facebook.com/Ikhwan-Komputer-Elektronika-626624144026593">IkhwanKomputer</a>, All rights reserved.</p>
           </div>
           <div class="footer-section f-section-2">
               <p class="">{{ session('cafeName') }}<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5c1ac3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-left"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg></p>

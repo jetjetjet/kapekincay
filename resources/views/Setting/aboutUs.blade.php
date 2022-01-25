@@ -20,7 +20,7 @@
                         <div class="d-flex justify-content-between privacy-head">
                             <div class="privacyHeader">
                                 <h1>Tentang Kami</h1>
-                                <p>Aplikasi ini di Lisensi oleh Ikhwan Komputer</p>
+                                <p>Aplikasi ini dirancang oleh Ikhwan Komputer</p>
                             </div>
                         </div>
 
